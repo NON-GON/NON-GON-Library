@@ -1,0 +1,21 @@
+#Menu{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 125px;
+  height: 600px;
+  color: #fff;
+  padding-left: 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1000;
+}
+
+.SubMenu{
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

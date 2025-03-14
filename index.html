@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./src/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geometry Test</title>
+</head>
+
+<body>
+  <div id="Menu">
+    <div class="SubMenu">
+      <label for="Geometry 1">Geometry 1</label>
+      <select id="geo1_shapeSelect">
+        <option value="circle">Circle</option>
+        <option value="ellipse">Ellipse</option>
+      </select>
+      <div id="circleInputs" style="display: none;">
+        <label for="radius">Radius:</label>
+        <input type="number" id="geo1_radius" name="radius" />
+      </div>
+      <div id="ellipseInputs" style="display: none;">
+        <div>
+          <label for="radiusX">Radius X:</label>
+          <input type="number" id="geo1_radiusX" name="radiusX" />
+        </div>
+        <div>
+          <label for="radiusY">Radius Y:</label>
+          <input type="number" id="geo1_radiusY" name="radiusY" />
+        </div>
+      </div>
+    </div>
+
+    <div class="SubMenu">
+      <label for="Geometry 2">Geometry 2</label>
+      <select id="geo2_shapeSelect">
+        <option value="circle">Circle</option>
+        <option value="ellipse">Ellipse</option>
+      </select>
+      <div id="circleInputs" style="display: none;">
+        <label for="radius">Radius:</label>
+        <input type="number" id="geo2_radius" name="radius" />
+      </div>
+      <div id="ellipseInputs" style="display: none;">
+        <div>
+          <label for="radiusX">Radius X:</label>
+          <input type="number" id="geo2_radiusX" name="radiusX" />
+        </div>
+        <div>
+          <label for="radiusY">Radius Y:</label>
+          <input type="number" id="geo2_radiusY" name="radiusY" />
+        </div>
+      </div>
+    </div>
+  
+  
+  </div>
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
