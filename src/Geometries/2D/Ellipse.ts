@@ -1,14 +1,16 @@
 import * as THREE from "three";
 export class Ellipse {
   public static create(
+    xposition: number,
+    yposition: number,
     xradius: number,
     yradius: number,
     angle: number,
     segments: number
   ): [number, number] {
     let curve = new THREE.EllipseCurve(
-      0,
-      0,
+      xposition,
+      yposition,
       xradius,
       yradius,
       0,

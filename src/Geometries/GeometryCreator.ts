@@ -30,34 +30,64 @@ enum _3Dgeo {
 }
 
 export class GeometryCreator {
-  public Dimension: geo_type;
-  public Primitive_2D: _2Dgeo;
-  public Primitive_3D: _3Dgeo;
-  public xradius: number;
-  public yradius: number;
-  public zradius: number;
-  public e: number;
-  public radius: number;
-  public e1: number;
-  public e2: number;
-  public render: boolean = false;
+  public Dimension: geo_type = geo_type._2D;
+  public Primitive_2D: _2Dgeo = _2Dgeo.Ellipse;
+  public Primitive_3D: _3Dgeo = _3Dgeo.Ellipsoid;
+  public xradius: number = 0;
+  public yradius: number = 0;
+  public zradius: number = 0;
+  public e: number = 0;
+  public radius: number = 0;
   public segments: number = 1000;
-  public prevPrimitive2D: _2Dgeo;
+  public xposition: number = 0;
+  public yposition: number = 0;
+  constructor(
+    xradius: number,
+    yradius: number,
+    xposition: number,
+    yposition: number
+  );
+  constructor(radius: number, xposition: number, yposition: number);
+  constructor(
+    xradiusOrRadius: number,
+    yradiusOrXposition: number,
+    xpositionOrYpostion: number,
+    yposition?: number
+  ) {
 
-  constructor(xradius?: number, yradius?: number, radius?: number) {
-    this.Dimension = geo_type._2D;
-    this.Primitive_2D = radius ? _2Dgeo.Circle : _2Dgeo.Ellipse;
-    this.Primitive_3D = _3Dgeo.Ellipsoid;
-    this.xradius = xradius || 0;
-    this.yradius = yradius || 0;
-    this.zradius = 0;
-    this.e = 0;
-    this.radius = radius || 0;
-    this.e1 = 0;
-    this.e2 = 0;
-    this.render = false;
+
+
+      console.log(arguments.length)
+      if (arguments.length === 4) {
+        // Ellipse case
+        this.Dimension = geo_type._2D;
+        this.Primitive_2D = _2Dgeo.Ellipse;
+        this.Primitive_3D = _3Dgeo.Ellipsoid;
+        this.xradius = xradiusOrRadius;
+        this.yradius = yradiusOrXposition;
+        this.zradius = 0;
+        this.e = 0;
+        this.radius = 0;
+        this.xposition = xpositionOrYpostion;
+        this.yposition = yposition ?? 0;
+      } else {
+        console.log("Circle Case")
+        // Circle case
+        this.Dimension = geo_type._2D;
+        this.Primitive_2D = _2Dgeo.Circle;
+        this.Primitive_3D = _3Dgeo.Ellipsoid;
+        this.xradius = 0;
+        this.yradius = 0;
+        this.zradius = 0;
+        this.e = 0;
+        this.radius = xradiusOrRadius;
+        this.xposition = yradiusOrXposition;
+        this.yposition = xpositionOrYpostion;
+      }
+
+    
+
     this.segments = 1000;
-    this.prevPrimitive2D = _2Dgeo.Ellipse;
   }
 
   /**
@@ -72,6 +102,8 @@ export class GeometryCreator {
     switch (this.Primitive_2D) {
       case _2Dgeo.Ellipse:
         points = Ellipse.create(
+          this.xposition,
+          this.yposition,
           this.xradius,
           this.yradius,
           angle,
@@ -91,6 +123,8 @@ export class GeometryCreator {
         break;
       case _2Dgeo.Circle:
         points = Ellipse.create(
+          this.xposition,
+          this.yposition,
           this.radius,
           this.radius,
           angle,

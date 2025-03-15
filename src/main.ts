@@ -1,14 +1,10 @@
 import * as THREE from "three";
 import { GeometryCreator } from "./Geometries/GeometryCreator";
 
-
-
-
-
 const scene = new THREE.Scene();
 
 initialization();
-function initialization(){
+function initialization() {
   const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -16,7 +12,7 @@ function initialization(){
     1000
   );
   const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth-15, window.innerHeight-20);
+  renderer.setSize(window.innerWidth - 15, window.innerHeight - 20);
   document.body.appendChild(renderer.domElement);
   camera.position.z = 50;
   animate(renderer, scene, camera);
@@ -42,19 +38,63 @@ shapeSelect?.addEventListener("change", function () {
 
 document.getElementById("geo1_radius")?.addEventListener("change", function () {
   const radius = (this as HTMLInputElement).value;
-  const geometryCreator = new GeometryCreator(1, 2, parseFloat(radius));
+  const geometryCreator = new GeometryCreator(parseFloat(radius), -20, 0);
   scene.remove(scene.children[0]);
   scene.add(geometryCreator.create2DGeometry());
 });
 
-document.getElementById("geo1_radiusY")?.addEventListener("change", function () {
-  const yradius = (this as HTMLInputElement).value;
-  const xradius = (document.getElementById("geo1_radiusX") as HTMLInputElement)
-    .value;
-  const geometryCreator = new GeometryCreator(
-    parseFloat(xradius),
-    parseFloat(yradius)
-  );
-  scene.remove(scene.children[0]);
+document
+  .getElementById("geo1_radiusY")
+  ?.addEventListener("change", function () {
+    const yradius = (this as HTMLInputElement).value;
+    const xradius = (document.getElementById(
+      "geo1_radiusX"
+    ) as HTMLInputElement).value;
+
+    const geometryCreator = new GeometryCreator(
+      parseFloat(xradius),
+      parseFloat(yradius),
+      -20,
+      0
+    );
+    scene.remove(scene.children[0]);
+    scene.add(geometryCreator.create2DGeometry());
+  });
+
+const shapeSelect2 = document.getElementById("geo2_shapeSelect");
+shapeSelect2?.addEventListener("change", function () {
+  const shape = (this as HTMLSelectElement).value;
+  const inputGroups: { [key: string]: HTMLElement | null } = {
+    circle: document.getElementById("circleInputs2"),
+    ellipse: document.getElementById("ellipseInputs2"),
+  };
+  for (const key in inputGroups) {
+    if (inputGroups[key]) {
+      inputGroups[key]!.style.display = key === shape ? "block" : "none";
+    }
+  }
+});
+
+document.getElementById("geo2_radius")?.addEventListener("change", function () {
+  const radius = (this as HTMLInputElement).value;
+  const geometryCreator = new GeometryCreator(parseFloat(radius), 20, 0);
+  scene.remove(scene.children[1]);
   scene.add(geometryCreator.create2DGeometry());
 });
+
+document
+  .getElementById("geo2_radiusY")
+  ?.addEventListener("change", function () {
+    const yradius = (this as HTMLInputElement).value;
+    const xradius = (document.getElementById(
+      "geo2_radiusX"
+    ) as HTMLInputElement).value;
+    const geometryCreator = new GeometryCreator(
+      parseFloat(xradius),
+      parseFloat(yradius),
+      20,
+      0
+    );
+    scene.remove(scene.children[1]);
+    scene.add(geometryCreator.create2DGeometry());
+  });
