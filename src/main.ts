@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { GeometryCreator } from "./Geometries/GeometryCreator";
 
 const scene = new THREE.Scene();
+let geo1: any | undefined;
+let geo2: any | undefined;
 
 initialization();
 function initialization() {
@@ -39,8 +41,14 @@ shapeSelect?.addEventListener("change", function () {
 document.getElementById("geo1_radius")?.addEventListener("change", function () {
   const radius = (this as HTMLInputElement).value;
   const geometryCreator = new GeometryCreator(parseFloat(radius), -20, 0);
-  scene.remove(scene.children[0]);
-  scene.add(geometryCreator.create2DGeometry());
+  if (geo1 === undefined) {
+    geo1 = geometryCreator.create2DGeometry();
+    scene.add(geo1);
+  } else {
+    scene.remove(geo1);
+    geo1 = geometryCreator.create2DGeometry();
+    scene.add(geo1);
+  }
 });
 
 document
@@ -57,8 +65,14 @@ document
       -20,
       0
     );
-    scene.remove(scene.children[0]);
-    scene.add(geometryCreator.create2DGeometry());
+    if (geo1 === undefined) {
+      geo1 = geometryCreator.create2DGeometry();
+      scene.add(geo1);
+    } else {
+      scene.remove(geo1);
+      geo1 = geometryCreator.create2DGeometry();
+      scene.add(geo1);
+    }
   });
 
 const shapeSelect2 = document.getElementById("geo2_shapeSelect");
@@ -78,8 +92,14 @@ shapeSelect2?.addEventListener("change", function () {
 document.getElementById("geo2_radius")?.addEventListener("change", function () {
   const radius = (this as HTMLInputElement).value;
   const geometryCreator = new GeometryCreator(parseFloat(radius), 20, 0);
-  scene.remove(scene.children[1]);
-  scene.add(geometryCreator.create2DGeometry());
+  if (geo2 === undefined) {
+    geo2 = geometryCreator.create2DGeometry();
+    scene.add(geo2);
+  } else {
+    scene.remove(geo2);
+    geo2 = geometryCreator.create2DGeometry();
+    scene.add(geo2);
+  }
 });
 
 document
@@ -95,6 +115,27 @@ document
       20,
       0
     );
-    scene.remove(scene.children[1]);
-    scene.add(geometryCreator.create2DGeometry());
+    if (geo2 === undefined) {
+      geo2 = geometryCreator.create2DGeometry();
+      scene.add(geo2);
+    } else {
+      scene.remove(geo2);
+      geo2 = geometryCreator.create2DGeometry();
+      scene.add(geo2);
+    }
+  });
+
+
+  document.getElementById("geo1_positionX")?.addEventListener("input", function () {
+    const posX = (this as HTMLInputElement).value;
+    if (geo1) {
+      geo1.position.x = parseFloat(posX);
+    }
+  });
+
+  document.getElementById("geo2_positionX")?.addEventListener("input", function () {
+    const posX = (this as HTMLInputElement).value;
+    if (geo2) {
+      geo2.position.x = parseFloat(posX);
+    }
   });

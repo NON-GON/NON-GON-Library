@@ -1,4 +1,19 @@
-Make a way to move the geometries
+Impelement Base types like:
+  Vec2
+  Vec3
+  Matrix...
+  Ellipse
+  Circle...
+  Etc...
+
+Refractor the code to use the new types Created
 
 
-Start implementing the minimum distance between the 2 ellipses
+Then:
+  Start implementing the minimum distance between the 2 ellipses
+
+
+  Perguntas:
+-> Posso importar uma biblioteca para resolver quartic formulas entre outras cenas matematicas
+
+Explicar como estou a estruturar o codigo. 
