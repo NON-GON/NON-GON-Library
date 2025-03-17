@@ -1,39 +1,33 @@
-import * as THREE from "three";
-import { GeometryCreator } from "../../Geometries/GeometryCreator";
-import { EuclideanDistance, quarticRoots } from "../Util/Utils";
+import { Ellipse } from "../../Geometries/2D/Ellipse";
+import { Distance, quarticRoots, Vector2, LocalSpaceToWorldSpace, WorldSpaceToLocalSpace } from "../Util/Utils";
 
 
 
-export function pointEllipseObj(point: [number, number],ellipse: GeometryCreator): {x:number,y:number} {
-  let res = [[Number, Number], [Number, Number]];
-  let T = { x: 0, y: 0 }; // Closest point on the ellipse
 
-  let a = ellipse.xradius;
-  let b = ellipse.yradius;
+export function pointEllipseObj(point: Vector2, ellipse: Ellipse): [Vector2, Vector2] {
+    let res: Vector2[] = [new Vector2(0, 0), new Vector2(0, 0)];
+    let T: Vector2 = new Vector2(0, 0); // Closest point on the ellipse
 
-  // Transform the query point to a new system of coordinates relative to the ellipse
-  //Vector2 Point_ = Ellipse.transform.InverseTransformPoint(Point);
-  let s1 = point[0];
-  let s2 = point[1];
+    let a = ellipse.xradius;
+    let b = ellipse.yradius;
 
-  T = pointEllipse(Point_,a,b);
-  // T = Ellipse.transform.TransformPoint(T);
-  
-  res[0] = [Point[0], Point[1]];
-  res[1] = [T.x, T.y];
+    // Transform the query point to a new system of coordinates relative to the ellipse
+    let Point_ = WorldSpaceToLocalSpace(ellipse, point);
 
-  return res;
+    T = pointEllipse(Point_, a, b);
+    T = LocalSpaceToWorldSpace(ellipse, T);
 
-
+    res[0] = point;
+    res[1] = T;
+    return [res[0], res[1]];
 }
 
-export function pointEllipse(point: [number, number], a: number, b: number):  [number, number] {
-  let pointObj = { x: point[0], y: point[1] };
-  let T = { x: 0, y: 0 }; // Closest point on the ellipse
+export function pointEllipse(point: Vector2, a: number, b: number): Vector2 {
+  let T = new Vector2(0, 0); // Closest point on the ellipse
 
   // Transform the query point to a new system of coordinates relative to the ellipse
-  let s1 = pointObj.x;
-  let s2 = pointObj.y;
+  let s1 = point.x;
+  let s2 = point.y;
 
   let multy = 1;
   let multx = 1;
@@ -87,17 +81,32 @@ export function pointEllipse(point: [number, number], a: number, b: number):  [n
   
   T.x = T.x * multx;
   T.y = T.y * multy;
-  
-  return [T.x, T.y];
+  return T;
 }
 
+export function ellipseEllipse(ellipse1: Ellipse, ellipse2: Ellipse): [Vector2, Vector2] {
+    let tol = 0.1;
+    let T: Vector2[] = [new Vector2(0, 0), new Vector2(0, 0)];
 
-export function ellipseEllipse(ellipse1: any, ellipse2:any) {
-  let tol = 0.1;
-  let p1 = [ellipse1.position.x, ellipse1.position.y];
-  let p2 = pointEllipse()
-  let distance = EuclideanDistance(p1, p2);
-  while(true){
+    let p1 = ellipse1.getCenter();
+    let p2 = pointEllipseObj(p1, ellipse2)[1];
+    let dist = Distance(p1, p2);
 
-  }
+    while(true){
+        p1 = pointEllipseObj(p2, ellipse1)[1];
+        let dist_ = Distance(p1, p2);
+        if (Math.abs(dist - dist_) < tol) {
+            break;
+        }
+        dist = dist_;
+        p2 = pointEllipseObj(p1, ellipse2)[1];
+        dist_ = Distance(p1, p2);
+        if (Math.abs(dist - dist_) < tol) {
+            break;
+        }
+        dist = dist_;
+    }
+    T[0] = p1;
+    T[1] = p2;
+    return [T[0], T[1]];
 }

@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Ellipse } from "./2D/Ellipse";
-import { Superellipse } from "./2D/SuperEllipse";
+import { Vector2 } from "../Calc/Util/Utils";
+
 
 enum geo_type {
   _2D,
@@ -96,40 +97,20 @@ export class GeometryCreator {
    * The class uses the specified radii and segments to generate the geometry points.
    */
   public create2DGeometry(): any {
-    let angle = Math.PI * 2;
-    let points;
-
+    let geometry: any;
     switch (this.Primitive_2D) {
       case _2Dgeo.Ellipse:
-        points = Ellipse.create(
-          this.xposition,
-          this.yposition,
-          this.xradius,
-          this.yradius,
-          angle,
-          this.segments
-        );
+        geometry = new Ellipse(new Vector2(this.xposition, this.yposition), this.xradius, this.yradius, this.segments);
+      
         break;
       case _2Dgeo.Supperellipse:
-        points = Superellipse.create(
-          this.xradius,
-          this.yradius,
-          this.e,
-          this.segments
-        );
+        //TODO: Implement Superellipse
         break;
       case _2Dgeo.Convex_Line:
         //TODO: Implement Convex Line
         break;
       case _2Dgeo.Circle:
-        points = Ellipse.create(
-          this.xposition,
-          this.yposition,
-          this.radius,
-          this.radius,
-          angle,
-          this.segments
-        );
+        geometry = new Ellipse( new Vector2(this.xposition, this.yposition), this.radius, this.radius, this.segments);
         break;
       case _2Dgeo.Convex_Circle:
         //TODO: Implement Convex Circle
@@ -139,7 +120,6 @@ export class GeometryCreator {
         break;
     }
 
-    let geometry = new THREE.BufferGeometry().setFromPoints(points);
     let material = new THREE.LineBasicMaterial({ color: 0xff0000 });
     let line = new THREE.Line(geometry, material);
     return line;
