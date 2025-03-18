@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { Ellipse } from "./2D/Ellipse";
 import { Vector2 } from "../Calc/Util/Utils";
 
-
 enum geo_type {
   _2D,
   _3D,
@@ -55,38 +54,33 @@ export class GeometryCreator {
     xpositionOrYpostion: number,
     yposition?: number
   ) {
-
-
-
-      console.log(arguments.length)
-      if (arguments.length === 4) {
-        // Ellipse case
-        this.Dimension = geo_type._2D;
-        this.Primitive_2D = _2Dgeo.Ellipse;
-        this.Primitive_3D = _3Dgeo.Ellipsoid;
-        this.xradius = xradiusOrRadius;
-        this.yradius = yradiusOrXposition;
-        this.zradius = 0;
-        this.e = 0;
-        this.radius = 0;
-        this.xposition = xpositionOrYpostion;
-        this.yposition = yposition ?? 0;
-      } else {
-        console.log("Circle Case")
-        // Circle case
-        this.Dimension = geo_type._2D;
-        this.Primitive_2D = _2Dgeo.Circle;
-        this.Primitive_3D = _3Dgeo.Ellipsoid;
-        this.xradius = 0;
-        this.yradius = 0;
-        this.zradius = 0;
-        this.e = 0;
-        this.radius = xradiusOrRadius;
-        this.xposition = yradiusOrXposition;
-        this.yposition = xpositionOrYpostion;
-      }
-
-    
+    console.log(arguments.length);
+    if (arguments.length === 4) {
+      // Ellipse case
+      this.Dimension = geo_type._2D;
+      this.Primitive_2D = _2Dgeo.Ellipse;
+      this.Primitive_3D = _3Dgeo.Ellipsoid;
+      this.xradius = xradiusOrRadius;
+      this.yradius = yradiusOrXposition;
+      this.zradius = 0;
+      this.e = 0;
+      this.radius = 0;
+      this.xposition = xpositionOrYpostion;
+      this.yposition = yposition ?? 0;
+    } else {
+      console.log("Circle Case");
+      // Circle case
+      this.Dimension = geo_type._2D;
+      this.Primitive_2D = _2Dgeo.Circle;
+      this.Primitive_3D = _3Dgeo.Ellipsoid;
+      this.xradius = 0;
+      this.yradius = 0;
+      this.zradius = 0;
+      this.e = 0;
+      this.radius = xradiusOrRadius;
+      this.xposition = yradiusOrXposition;
+      this.yposition = xpositionOrYpostion;
+    }
 
     this.segments = 1000;
   }
@@ -100,8 +94,12 @@ export class GeometryCreator {
     let geometry: any;
     switch (this.Primitive_2D) {
       case _2Dgeo.Ellipse:
-        geometry = new Ellipse(new Vector2(this.xposition, this.yposition), this.xradius, this.yradius, this.segments);
-      
+        geometry = new Ellipse(
+          new Vector2(this.xposition, this.yposition),
+          this.xradius,
+          this.yradius,
+          this.segments
+        );
         break;
       case _2Dgeo.Supperellipse:
         //TODO: Implement Superellipse
@@ -110,7 +108,12 @@ export class GeometryCreator {
         //TODO: Implement Convex Line
         break;
       case _2Dgeo.Circle:
-        geometry = new Ellipse( new Vector2(this.xposition, this.yposition), this.radius, this.radius, this.segments);
+        geometry = new Ellipse(
+          new Vector2(this.xposition, this.yposition),
+          this.radius,
+          this.radius,
+          this.segments
+        );
         break;
       case _2Dgeo.Convex_Circle:
         //TODO: Implement Convex Circle
@@ -120,8 +123,9 @@ export class GeometryCreator {
         break;
     }
 
+
     let material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-    let line = new THREE.Line(geometry, material);
+    let line = new THREE.Line(geometry.getGeometry(), material);
     return line;
   }
 }

@@ -23,9 +23,10 @@ export class Ellipse implements IGeometry2D {
     this.geometry = null;
   }
   public getGeometry(): any {
-    if (this.geometry !== null) {
+    if (this.geometry !== null && this.geometry !== undefined) {
       return this.geometry;
     } else {
+      console.log("Creating Ellipse Geometry");
       let curve = new THREE.EllipseCurve(
         this.center.x,
         this.center.y,
