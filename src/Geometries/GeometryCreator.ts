@@ -100,6 +100,7 @@ export class GeometryCreator {
           this.yradius,
           this.segments
         );
+
         break;
       case _2Dgeo.Supperellipse:
         //TODO: Implement Superellipse
@@ -122,8 +123,7 @@ export class GeometryCreator {
         //TODO: Implement point
         break;
     }
-
-
+    console.log(geometry.getGeometry());
     let material = new THREE.LineBasicMaterial({ color: 0xff0000 });
     let line = new THREE.Line(geometry.getGeometry(), material);
     return line;

@@ -43,6 +43,7 @@ export class Ellipse implements IGeometry2D {
       return this.geometry;
     }
   }
+  
   public getCenter(): Vector2 {
     return this.center;
   }
@@ -52,4 +53,5 @@ export class Ellipse implements IGeometry2D {
   public getSegments(): number {
     return this.segments;
   }
+  
 }

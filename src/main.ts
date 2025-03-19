@@ -5,6 +5,8 @@ const scene = new THREE.Scene();
 let geo1: any | undefined;
 let geo2: any | undefined;
 
+
+
 initialization();
 function initialization() {
   const camera = new THREE.PerspectiveCamera(
