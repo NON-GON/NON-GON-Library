@@ -1,11 +1,21 @@
 import * as THREE from "three";
-import { GeometryCreator } from "./Geometries/GeometryCreator";
+import { GeometryManager } from "./Geometries/GeometryManager";
+import { Vector2 } from "three";
+import { LineSegments } from "three";
 
+enum _2Dgeo {
+  Ellipse,
+  Supperellipse,
+  Line,
+  Circle,
+  Convex_Line,
+  Convex_Circle,
+  Point,
+}
 const scene = new THREE.Scene();
 let geo1: any | undefined;
 let geo2: any | undefined;
-
-
+let geometryManager = new GeometryManager("2D");
 
 initialization();
 function initialization() {
@@ -42,17 +52,20 @@ shapeSelect?.addEventListener("change", function () {
 
 document.getElementById("geo1_radius")?.addEventListener("change", function () {
   const radius = (this as HTMLInputElement).value;
-  const geometryCreator = new GeometryCreator(parseFloat(radius), -20, 0);
+  const circleParams = {
+    center: new Vector2(0, 0),
+    radius: parseFloat(radius),
+    segments: 64,
+  };
   if (geo1 === undefined) {
-    geo1 = geometryCreator.create2DGeometry();
+    geo1 = geometryManager.createGeometry(_2Dgeo.Circle, "geo1", circleParams);
     scene.add(geo1);
   } else {
     scene.remove(geo1);
-    geo1 = geometryCreator.create2DGeometry();
+    geo1 = geometryManager.createGeometry(_2Dgeo.Circle, "geo1", circleParams);
     scene.add(geo1);
   }
 });
-
 document
   .getElementById("geo1_radiusY")
   ?.addEventListener("change", function () {
@@ -60,19 +73,26 @@ document
     const xradius = (document.getElementById(
       "geo1_radiusX"
     ) as HTMLInputElement).value;
-
-    const geometryCreator = new GeometryCreator(
-      parseFloat(xradius),
-      parseFloat(yradius),
-      -20,
-      0
-    );
+    const ellipseParams = {
+      center: new Vector2(0, 0),
+      xradius: parseFloat(xradius),
+      yradius: parseFloat(yradius),
+      segments: 64,
+    };
     if (geo1 === undefined) {
-      geo1 = geometryCreator.create2DGeometry();
+      geo1 = geometryManager.createGeometry(
+        _2Dgeo.Ellipse,
+        "geo1",
+        ellipseParams
+      );
       scene.add(geo1);
     } else {
       scene.remove(geo1);
-      geo1 = geometryCreator.create2DGeometry();
+      geo1 = geometryManager.createGeometry(
+        _2Dgeo.Ellipse,
+        "geo1",
+        ellipseParams
+      );
       scene.add(geo1);
     }
   });
@@ -93,13 +113,17 @@ shapeSelect2?.addEventListener("change", function () {
 
 document.getElementById("geo2_radius")?.addEventListener("change", function () {
   const radius = (this as HTMLInputElement).value;
-  const geometryCreator = new GeometryCreator(parseFloat(radius), 20, 0);
+  const circleParams = {
+    center: new Vector2(10, 0),
+    radius: parseFloat(radius),
+    segments: 64,
+  };
   if (geo2 === undefined) {
-    geo2 = geometryCreator.create2DGeometry();
+    geo2 = geometryManager.createGeometry(_2Dgeo.Circle, "geo2", circleParams);
     scene.add(geo2);
   } else {
     scene.remove(geo2);
-    geo2 = geometryCreator.create2DGeometry();
+    geo2 = geometryManager.createGeometry(_2Dgeo.Circle, "geo2", circleParams);
     scene.add(geo2);
   }
 });
@@ -111,33 +135,63 @@ document
     const xradius = (document.getElementById(
       "geo2_radiusX"
     ) as HTMLInputElement).value;
-    const geometryCreator = new GeometryCreator(
-      parseFloat(xradius),
-      parseFloat(yradius),
-      20,
-      0
-    );
+    const ellipseParams = {
+      center: new Vector2(10, 0),
+      xradius: parseFloat(xradius),
+      yradius: parseFloat(yradius),
+      segments: 64,
+    };
     if (geo2 === undefined) {
-      geo2 = geometryCreator.create2DGeometry();
+      geo2 = geometryManager.createGeometry(
+        _2Dgeo.Ellipse,
+        "geo2",
+        ellipseParams
+      );
       scene.add(geo2);
     } else {
       scene.remove(geo2);
-      geo2 = geometryCreator.create2DGeometry();
+      geo2 = geometryManager.createGeometry(
+        _2Dgeo.Ellipse,
+        "geo2",
+        ellipseParams
+      );
       scene.add(geo2);
     }
   });
 
-
-  document.getElementById("geo1_positionX")?.addEventListener("input", function () {
+document
+  .getElementById("geo1_positionX")
+  ?.addEventListener("input", function () {
     const posX = (this as HTMLInputElement).value;
     if (geo1) {
       geo1.position.x = parseFloat(posX);
     }
   });
 
-  document.getElementById("geo2_positionX")?.addEventListener("input", function () {
+document
+  .getElementById("geo2_positionX")
+  ?.addEventListener("input", function () {
     const posX = (this as HTMLInputElement).value;
     if (geo2) {
       geo2.position.x = parseFloat(posX);
+    }
+  });
+
+document
+  .getElementById("calculateButton")
+  ?.addEventListener("click", function () {
+    const distance = geometryManager.calculateMinimumDistance(
+      _2Dgeo.Ellipse,
+      "geo1",
+      "geo2"
+    );
+    if (geo1 && geo2) {
+      const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+      const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector2(distance[0].x, distance[0].y),
+        new THREE.Vector2(distance[1].x, distance[1].y),
+      ]);
+      const line = new THREE.Line(lineGeometry, lineMaterial);
+      scene.add(line);
     }
   });

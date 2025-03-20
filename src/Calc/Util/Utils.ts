@@ -58,70 +58,73 @@ export function quarticRoots(
     throw new Error("Coefficient 'a' must not be zero for a quartic equation.");
   }
 
-  const maxIterations = 1000;
-  const tolerance = 1e-12;
+  // Normalize coefficients
+  const A = b / a;
+  const B = c / a;
+  const C = d / a;
+  const D = e / a;
 
-  // Evaluate quartic polynomial at x
-  function evalPoly(x: number, coeffs: number[]): number {
-    return (
-      coeffs[0] * x ** 4 +
-      coeffs[1] * x ** 3 +
-      coeffs[2] * x ** 2 +
-      coeffs[3] * x +
-      coeffs[4]
-    );
-  }
+  // Depress the quartic: x = y - A/4
+  const p = B - (3 * A ** 2) / 8;
+  const q = C + A ** 3 / 8 - (A * B) / 2;
+  const r = D - (3 * A ** 4) / 256 + (A ** 2 * B) / 16 - (A * C) / 4;
 
-  // Evaluate derivative
-  function evalPolyDeriv(x: number, coeffs: number[]): number {
-    return (
-      4 * coeffs[0] * x ** 3 +
-      3 * coeffs[1] * x ** 2 +
-      2 * coeffs[2] * x +
-      coeffs[3]
-    );
-  }
+  // Solve resolvent cubic: z³ + (p/2)z² + ((p² - 4r)/16)z - q²/64 = 0
+  const cubicA = 1;
+  const cubicB = 0.5 * p;
+  const cubicC = (p ** 2 - 4 * r) / 16;
+  const cubicD = -(q ** 2) / 64;
 
-  // Newton-Raphson method to find one real root
-  function newtonRaphson(coeffs: number[], guess: number): number {
-    let x = guess;
-    for (let i = 0; i < maxIterations; i++) {
-      const fx = evalPoly(x, coeffs);
-      const fpx = evalPolyDeriv(x, coeffs);
+  const cubicRoots = solveCubic(cubicA, cubicB, cubicC, cubicD);
+  const z = cubicRoots.find((root) => !isNaN(root))!; // Pick a real root
 
-      if (Math.abs(fpx) < 1e-14) break; // avoid division by near-zero
+  const sqrt1 = Math.sqrt(2 * z - p);
+  const sqrt2 = q / (2 * sqrt1);
 
-      const x1 = x - fx / fpx;
-      if (Math.abs(x1 - x) < tolerance) return x1;
-      x = x1;
-    }
-    return x;
-  }
+  // Now solve two quadratics
+  const quad1 = solveQuadratic(1, sqrt1, z - sqrt2);
+  const quad2 = solveQuadratic(1, -sqrt1, z + sqrt2);
 
-  // Deflate polynomial by dividing by (x - root)
-  function deflate(coeffs: number[], root: number): number[] {
-    const n = coeffs.length - 1;
-    let newCoeffs = [coeffs[0]]; // leading coefficient
-    for (let i = 1; i < n; i++) {
-      newCoeffs[i] = coeffs[i] + newCoeffs[i - 1] * root;
-    }
-    return newCoeffs;
-  }
+  // Undo the initial substitution (x = y - A/4)
+  const offset = -A / 4;
+  return [...quad1, ...quad2].map((root) => root + offset);
+}
 
-  let coeffs = [a, b, c, d, e];
-  let roots: number[] = [];
+// Solve cubic using Cardano's method
+function solveCubic(a: number, b: number, c: number, d: number): number[] {
+  const p = (3 * a * c - b ** 2) / (3 * a ** 2);
+  const q = (2 * b ** 3 - 9 * a * b * c + 27 * a ** 2 * d) / (27 * a ** 3);
+  const discriminant = q ** 2 / 4 + p ** 3 / 27;
+  const roots: number[] = [];
 
-  for (let k = 0; k < 4; k++) {
-    // Arbitrary initial guess (can be improved)
-    let guess = 0;
-    let root = newtonRaphson(coeffs, guess);
-    roots.push(root);
-    coeffs = deflate(coeffs, root); // reduce polynomial degree
+  if (discriminant >= 0) {
+    const sqrtDisc = Math.sqrt(discriminant);
+    const u = Math.cbrt(-q / 2 + sqrtDisc);
+    const v = Math.cbrt(-q / 2 - sqrtDisc);
+    roots.push(u + v - b / (3 * a));
+  } else {
+    const r = Math.sqrt((-p) ** 3 / 27);
+    const phi = Math.acos(-q / (2 * r));
+    const t = 2 * Math.cbrt(r);
+    roots.push(t * Math.cos(phi / 3) - b / (3 * a));
+    roots.push(t * Math.cos((phi + 2 * Math.PI) / 3) - b / (3 * a));
+    roots.push(t * Math.cos((phi + 4 * Math.PI) / 3) - b / (3 * a));
   }
 
   return roots;
 }
 
+// Solve quadratic ax² + bx + c = 0
+function solveQuadratic(a: number, b: number, c: number): number[] {
+  const discriminant = b ** 2 - 4 * a * c;
+  if (discriminant >= 0) {
+    const sqrtDisc = Math.sqrt(discriminant);
+    return [(-b + sqrtDisc) / (2 * a), (-b - sqrtDisc) / (2 * a)];
+  } else {
+    // Complex roots (return NaN for simplicity)
+    return [NaN, NaN];
+  }
+}
 
 export function WorldSpaceToLocalSpace(
   ellipse: Ellipse,
@@ -133,14 +136,13 @@ export function WorldSpaceToLocalSpace(
 
   // Step 2: Rotate point by negative ellipse rotation
   const cosTheta = Math.cos(-ellipse.rotation);
-  const sinTheta = Math.sin(-ellipse.rotation); 
+  const sinTheta = Math.sin(-ellipse.rotation);
 
   const localX = translatedX * cosTheta - translatedY * sinTheta;
   const localY = translatedX * sinTheta + translatedY * cosTheta;
 
   return new Vector2(localX, localY);
 }
-
 
 export function LocalSpaceToWorldSpace(
   ellipse: Ellipse,
@@ -159,4 +161,3 @@ export function LocalSpaceToWorldSpace(
 
   return new Vector2(worldX, worldY);
 }
-

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Ellipse } from "./2D/Ellipse";
+import { Superellipse } from "./2D/Superellipse";
 import { Vector2 } from "../Calc/Util/Utils";
 
 enum geo_type {
@@ -54,7 +55,6 @@ export class GeometryCreator {
     xpositionOrYpostion: number,
     yposition?: number
   ) {
-    console.log(arguments.length);
     if (arguments.length === 4) {
       // Ellipse case
       this.Dimension = geo_type._2D;
@@ -103,7 +103,13 @@ export class GeometryCreator {
 
         break;
       case _2Dgeo.Supperellipse:
-        //TODO: Implement Superellipse
+        geometry = new Superellipse(
+          new Vector2(this.xposition, this.yposition),
+          this.xradius,
+          this.yradius,
+          this.e,
+          this.segments
+        );
         break;
       case _2Dgeo.Convex_Line:
         //TODO: Implement Convex Line
@@ -123,7 +129,7 @@ export class GeometryCreator {
         //TODO: Implement point
         break;
     }
-    console.log(geometry.getGeometry());
+
     let material = new THREE.LineBasicMaterial({ color: 0xff0000 });
     let line = new THREE.Line(geometry.getGeometry(), material);
     return line;
