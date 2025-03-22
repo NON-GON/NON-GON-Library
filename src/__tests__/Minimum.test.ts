@@ -17,13 +17,13 @@ test("Minimum Distance", () => {
   const ellipseParams1 = {
     center: new Vector2(0, 0),
     xradius: 4,
-    yradius: 4,
+    yradius: 10,
     segments: 64,
   };
   const ellipseParams2 = {
     center: new Vector2(10, 0),
     xradius: 4,
-    yradius: 4,
+    yradius: 10,
     segments: 64,
   };
   geometryManager.createGeometry(_2Dgeo.Ellipse, "geo1", ellipseParams1);
@@ -31,5 +31,5 @@ test("Minimum Distance", () => {
 
   expect(
     geometryManager.calculateMinimumDistance(_2Dgeo.Ellipse, "geo1", "geo2")
-  ).toBe(new Vector2(12, 0));
+  ).toStrictEqual([new Vector2(4, 0), new Vector2(14, 0)]);
 });

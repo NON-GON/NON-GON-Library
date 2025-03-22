@@ -19,12 +19,12 @@ export function pointEllipseObj(
 
   // Transform the query point to a new system of coordinates relative to the ellipse
   let Point_ = WorldSpaceToLocalSpace(ellipse, point);
-  console.log("Point_:", Point_);
 
-  T = pointEllipse(Point_, a, b); // This is returning Nan on the y coordinate
-  console.log("Before LocalSpaceToWorldSpace T:", T);
+  T = pointEllipse(Point_, a, b); // Ensure no NaN values
+  if (isNaN(T.x) || isNaN(T.y)) {
+    throw new Error("Invalid result from pointEllipse");
+  }
   T = LocalSpaceToWorldSpace(ellipse, T);
-  console.log("After LocalSpaceToWorldSpace T:", T);
 
   res[0] = point;
   res[1] = T;
@@ -32,7 +32,6 @@ export function pointEllipseObj(
 }
 
 export function pointEllipse(point: Vector2, a: number, b: number): Vector2 {
-  console.log("Point:", point, "a:", a, "b:", b);
   let T = new Vector2(0, 0); // Closest point on the ellipse
 
   // Transform the query point to a new system of coordinates relative to the ellipse
@@ -69,7 +68,6 @@ export function pointEllipse(point: Vector2, a: number, b: number): Vector2 {
 
       // Solve quartic equation
       let roots = quarticRoots(-1, z3, z2, z1, z0);
-      console.log("Roots:", roots);
       // Find the largest valid root
       let t = -Infinity;
       for (let r = 0; r < 4; r++) {
@@ -105,18 +103,12 @@ export function ellipseEllipse(
 ): [Vector2, Vector2] {
   let tol = 0.1;
   let T: Vector2[] = [new Vector2(0, 0), new Vector2(0, 0)];
-  console.log("Start");
   let p1 = ellipse1.getCenter();
-  let p2 = pointEllipseObj(p1, ellipse2)[1]; // This is returning Nan
+  let p2 = pointEllipseObj(p1, ellipse2)[1];
 
-  console.log(p1, p2);
   let dist = Distance(p1, p2);
 
-  console.log(dist);
-  console.log("Second Step");
-
   while (true) {
-    console.log("Third Step");
     p1 = pointEllipseObj(p2, ellipse1)[1];
     let dist_ = Distance(p1, p2);
     if (Math.abs(dist - dist_) < tol) {
@@ -125,7 +117,6 @@ export function ellipseEllipse(
     dist = dist_;
     p2 = pointEllipseObj(p1, ellipse2)[1];
     dist_ = Distance(p1, p2);
-    console.log("Dist:", dist, "Dist2:", dist_);
     if (Math.abs(dist - dist_) < tol) {
       break;
     }
