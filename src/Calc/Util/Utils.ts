@@ -1,4 +1,5 @@
 import { Ellipse } from "../../Geometries/2D/Ellipse";
+import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 
 export class Vector2 {
   public x: number;
@@ -43,6 +44,47 @@ export class Vector2 {
     );
   }
 }
+
+export class Vector3 {
+  public x: number;
+  public y: number;
+  public z: number;
+
+  constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+
+  public add(vector: Vector3): Vector3 {
+    return new Vector3(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+  }
+
+  public subtract(vector: Vector3): Vector3 {
+    return new Vector3(this.x - vector.x, this.y - vector.y, this.z - vector.z);
+  }
+
+  public scale(scalar: number): Vector3 {
+    return new Vector3(this.x * scalar, this.y * scalar, this.z * scalar);
+  }
+
+  public dot(vector: Vector3): number {
+    return this.x * vector.x + this.y * vector.y + this.z * vector.z;
+  }
+
+  public magnitude(): number {
+    return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+  }
+
+  public normalize(): Vector3 {
+    const mag = this.magnitude();
+    if (mag === 0) {
+      return new Vector3(0, 0, 0);
+    }
+    return new Vector3(this.x / mag, this.y / mag, this.z / mag);
+  }
+}
+
 export function Distance(point1: Vector2, point2: Vector2): number {
   return point1.distanceTo(point2);
 }
@@ -126,6 +168,75 @@ function solveQuadratic(a: number, b: number, c: number): number[] {
   }
 }
 
+export function LocalSpaceToWorldSpace3D(
+  Ellipsoid: Ellipsoid,
+  point: Vector3
+): Vector3 {
+  // Step 1: Rotate point by ellipsoid rotation
+  const cosX = Math.cos(Ellipsoid.rotation.x);
+  const sinX = Math.sin(Ellipsoid.rotation.x);
+  const cosY = Math.cos(Ellipsoid.rotation.y);
+  const sinY = Math.sin(Ellipsoid.rotation.y);
+  const cosZ = Math.cos(Ellipsoid.rotation.z);
+  const sinZ = Math.sin(Ellipsoid.rotation.z);
+
+  // Apply rotation around X-axis
+  const rotatedX1 = point.x;
+  const rotatedY1 = point.y * cosX - point.z * sinX;
+  const rotatedZ1 = point.y * sinX + point.z * cosX;
+
+  // Apply rotation around Y-axis
+  const rotatedX2 = rotatedX1 * cosY - rotatedZ1 * sinY;
+  const rotatedY2 = rotatedY1;
+  const rotatedZ2 = rotatedX1 * sinY + rotatedZ1 * cosY;
+
+  // Apply rotation around Z-axis
+  const worldX = rotatedX2 * cosZ - rotatedY2 * sinZ;
+  const worldY = rotatedX2 * sinZ + rotatedY2 * cosZ;
+  const worldZ = rotatedZ2;
+
+  // Step 2: Translate back to world space
+  return new Vector3(
+    worldX + Ellipsoid.center.x,
+    worldY + Ellipsoid.center.y,
+    worldZ + Ellipsoid.center.z
+  );
+}
+
+export function WorldSpaceToLocalSpace3D(
+  ellipsoid: Ellipsoid,
+  point: Vector3
+): Vector3 {
+  // Step 1: Translate point to ellipsoid's center
+  const translatedX = point.x - ellipsoid.center.x;
+  const translatedY = point.y - ellipsoid.center.y;
+  const translatedZ = point.z - ellipsoid.center.z;
+
+  // Step 2: Rotate point by negative ellipsoid rotation
+  const cosX = Math.cos(-ellipsoid.rotation.x);
+  const sinX = Math.sin(-ellipsoid.rotation.x);
+  const cosY = Math.cos(-ellipsoid.rotation.y);
+  const sinY = Math.sin(-ellipsoid.rotation.y);
+  const cosZ = Math.cos(-ellipsoid.rotation.z);
+  const sinZ = Math.sin(-ellipsoid.rotation.z);
+
+  // Apply rotation around Z-axis
+  const rotatedX1 = translatedX * cosZ - translatedY * sinZ;
+  const rotatedY1 = translatedX * sinZ + translatedY * cosZ;
+  const rotatedZ1 = translatedZ;
+
+  // Apply rotation around Y-axis
+  const rotatedX2 = rotatedX1 * cosY + rotatedZ1 * sinY;
+  const rotatedY2 = rotatedY1;
+  const rotatedZ2 = -rotatedX1 * sinY + rotatedZ1 * cosY;
+
+  // Apply rotation around X-axis
+  const localX = rotatedX2;
+  const localY = rotatedY2 * cosX - rotatedZ2 * sinX;
+  const localZ = rotatedY2 * sinX + rotatedZ2 * cosX;
+
+  return new Vector3(localX, localY, localZ);
+}
 export function WorldSpaceToLocalSpace(
   ellipse: Ellipse,
   point: Vector2
@@ -161,3 +272,51 @@ export function LocalSpaceToWorldSpace(
 
   return new Vector2(worldX, worldY);
 }
+
+export function getRoot(r0: number, r1: number, r2: number, z0: number, z1: number, z2: number, g: number, maxIterations: number): number {
+  let n0 = r0 * z0;
+  let n1 = r1 * z1;
+  let n2 = r2 * z2;
+  let t0 = z2 - 1;
+
+  if (r0 === 1) {
+      t0 = z0 - 1;
+  }
+  if (r1 === 1) {
+      t0 = z1 - 1;
+  }
+  if (r2 === 1) {
+      t0 = z2 - 1;
+  }
+
+  let t1: number;
+  if (g < 0) {
+      t1 = 0;
+  } else {
+      t1 = -1 + Math.sqrt(n0 * n0 + n1 * n1 + n2 * n2);
+  }
+
+  let t = 0;
+  for (let i = 0; i < maxIterations; i++) {
+      t = (t0 + t1) / 2;
+      if (t === t0 || t === t1) {
+          break;
+      }
+      let ratio0 = n0 / (t + r0);
+      let ratio1 = n1 / (t + r1);
+      let ratio2 = n2 / (t + r2);
+      g = ratio0 * ratio0 + ratio1 * ratio1 + ratio2 * ratio2 - 1;
+      if (g > 0) {
+          t0 = t;
+      } else {
+          if (g < 0) {
+              t1 = t;
+          } else {
+              break;
+          }
+      }
+  }
+
+  return t;
+}
+
