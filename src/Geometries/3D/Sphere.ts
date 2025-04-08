@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { Vector3 } from "../../Calc/Util/Utils";
+import { IGeometry3D } from "./IGeometry3D";
 
-export class Ellipsoid {
+export class Sphere implements IGeometry3D {
   readonly center: Vector3;
   readonly xradius: number;
   readonly yradius: number;
@@ -23,6 +24,9 @@ export class Ellipsoid {
     this.zradius = zradius;
     this.segments = segments;
     this.geometry = null;
+  }
+  MinimumDistance(geometry: IGeometry3D): [Vector3, Vector3] {
+    throw new Error("Method not implemented.");
   }
 
   public getGeometry(): any {

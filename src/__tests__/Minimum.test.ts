@@ -13,7 +13,9 @@ enum _2Dgeo {
 }
 
 test("Minimum Distance", () => {
+
   const geometryManager = GeometryManager.getInstance("2D");
+  
   const ellipseParams1 = {
     center: new Vector2(0, 0),
     xradius: 4,
@@ -26,6 +28,7 @@ test("Minimum Distance", () => {
     yradius: 10,
     segments: 64,
   };
+
   geometryManager.createGeometry(_2Dgeo.Ellipse, "geo1", ellipseParams1);
   geometryManager.createGeometry(_2Dgeo.Ellipse, "geo2", ellipseParams2);
 

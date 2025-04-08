@@ -1,7 +1,12 @@
 import * as THREE from "three";
 import { Vector3 } from "../../Calc/Util/Utils";
+import { IGeometry3D } from "./IGeometry3D";
+import {
+  ellipsoidEllipsoid,
+  point_Ellipsoid,
+} from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 
-export class Ellipsoid {
+export class Ellipsoid implements IGeometry3D {
   readonly center: Vector3;
   readonly xradius: number;
   readonly yradius: number;
@@ -23,6 +28,16 @@ export class Ellipsoid {
     this.zradius = zradius;
     this.segments = segments;
     this.geometry = null;
+  }
+  MinimumDistance(geometry: IGeometry3D): [Vector3, Vector3] {
+    if (geometry instanceof Ellipsoid) {
+      const res = ellipsoidEllipsoid(this, geometry);
+      return [res[0], res[1]];
+    } else {
+      throw new Error(
+        "Minimum distance not implemented for this geometry type."
+      );
+    }
   }
 
   public getGeometry(): any {

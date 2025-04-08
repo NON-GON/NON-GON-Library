@@ -121,3 +121,47 @@ export function point_Ellipsoid(
   sol[1] = pop;
   return sol;
 }
+
+export function ellipsoidEllipsoid(
+  ellipsoid1: Ellipsoid,
+  ellipsoid2: Ellipsoid
+): Vector3[] {
+  let sol: Vector3[] = [new Vector3(0, 0, 0), new Vector3(0, 0, 0)];
+
+  // Calculate the direction vector between the two ellipsoids
+  let d = WorldSpaceToLocalSpace3D(
+    ellipsoid1,
+    ellipsoid1.getCenter().subtract(ellipsoid2.getCenter())
+  );
+
+
+  // Initialize points and distances
+  let point0 = ellipsoid1.getCenter();
+  let point1 = point_Ellipsoid(point0, ellipsoid2)[1];
+  let dist0 = point0.distanceTo(point1);
+  let dist1: number;
+  let n_iter = 0;
+
+  // Iterative process to find the closest points
+  while (true) {
+    point0 = point1;
+    point1 = point_Ellipsoid(point0, ellipsoid2)[1];
+    dist1 = point0.distanceTo(point1);
+
+    point0 = point1;
+    dist0 = dist1;
+    point1 = point_Ellipsoid(point0, ellipsoid1)[1];
+    dist1 = point0.distanceTo(point1);
+
+    if (Math.abs(dist0 - dist1) < 1e-1 || n_iter > 15) {
+      break;
+    }
+    dist0 = dist1;
+    n_iter++;
+  }
+
+  sol[0] = point1;
+  sol[1] = point0;
+
+  return sol;
+}

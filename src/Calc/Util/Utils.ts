@@ -76,6 +76,21 @@ export class Vector3 {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
 
+  public distanceTo(vector: Vector3): number {
+    return Math.sqrt(
+      Math.pow(this.x - vector.x, 2) +
+        Math.pow(this.y - vector.y, 2) +
+        Math.pow(this.z - vector.z, 2)
+    );
+  }
+
+  static angle(vector1: Vector3, vector2: Vector3): number {
+    const dotProduct = vector1.dot(vector2);
+    const magA = vector1.magnitude();
+    const magB = vector2.magnitude();
+    return Math.acos(dotProduct / (magA * magB));
+  }
+
   public normalize(): Vector3 {
     const mag = this.magnitude();
     if (mag === 0) {
@@ -273,50 +288,58 @@ export function LocalSpaceToWorldSpace(
   return new Vector2(worldX, worldY);
 }
 
-export function getRoot(r0: number, r1: number, r2: number, z0: number, z1: number, z2: number, g: number, maxIterations: number): number {
+export function getRoot(
+  r0: number,
+  r1: number,
+  r2: number,
+  z0: number,
+  z1: number,
+  z2: number,
+  g: number,
+  maxIterations: number
+): number {
   let n0 = r0 * z0;
   let n1 = r1 * z1;
   let n2 = r2 * z2;
   let t0 = z2 - 1;
 
   if (r0 === 1) {
-      t0 = z0 - 1;
+    t0 = z0 - 1;
   }
   if (r1 === 1) {
-      t0 = z1 - 1;
+    t0 = z1 - 1;
   }
   if (r2 === 1) {
-      t0 = z2 - 1;
+    t0 = z2 - 1;
   }
 
   let t1: number;
   if (g < 0) {
-      t1 = 0;
+    t1 = 0;
   } else {
-      t1 = -1 + Math.sqrt(n0 * n0 + n1 * n1 + n2 * n2);
+    t1 = -1 + Math.sqrt(n0 * n0 + n1 * n1 + n2 * n2);
   }
 
   let t = 0;
   for (let i = 0; i < maxIterations; i++) {
-      t = (t0 + t1) / 2;
-      if (t === t0 || t === t1) {
-          break;
-      }
-      let ratio0 = n0 / (t + r0);
-      let ratio1 = n1 / (t + r1);
-      let ratio2 = n2 / (t + r2);
-      g = ratio0 * ratio0 + ratio1 * ratio1 + ratio2 * ratio2 - 1;
-      if (g > 0) {
-          t0 = t;
+    t = (t0 + t1) / 2;
+    if (t === t0 || t === t1) {
+      break;
+    }
+    let ratio0 = n0 / (t + r0);
+    let ratio1 = n1 / (t + r1);
+    let ratio2 = n2 / (t + r2);
+    g = ratio0 * ratio0 + ratio1 * ratio1 + ratio2 * ratio2 - 1;
+    if (g > 0) {
+      t0 = t;
+    } else {
+      if (g < 0) {
+        t1 = t;
       } else {
-          if (g < 0) {
-              t1 = t;
-          } else {
-              break;
-          }
+        break;
       }
+    }
   }
 
   return t;
 }
-

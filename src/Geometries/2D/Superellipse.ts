@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { IGeometry2D } from "./IGeometry2D";
 import { Vector2 } from "../../Calc/Util/Utils";
+import { GeometryType2D } from "../GeoTypes";
 
 export class Superellipse implements IGeometry2D {
   readonly center: Vector2;
@@ -10,6 +11,7 @@ export class Superellipse implements IGeometry2D {
   readonly exponent: number;
   private geometry: any = null;
   public rotation: number = 0;
+  public type: GeometryType2D = GeometryType2D.Supperellipse;
 
   constructor(
     center: Vector2,
@@ -68,5 +70,10 @@ export class Superellipse implements IGeometry2D {
   }
   public getExponent(): number {
     return this.exponent;
+  }
+
+  public MinimumDistance(geometry: IGeometry2D): [Vector2, Vector2] {
+    throw new Error("Method not implemented.");
+    return [new Vector2(0, 0), new Vector2(0, 0)];
   }
 }

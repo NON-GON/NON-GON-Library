@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { GeometryManager } from "./Geometries/GeometryManager";
 import { Vector2 } from "three";
-import { LineSegments } from "three";
 
 enum _2Dgeo {
   Ellipse,
@@ -12,10 +11,21 @@ enum _2Dgeo {
   Convex_Circle,
   Point,
 }
+
+enum _3Dgeo {
+  Sphere,
+  Ellipsoid,
+  Cylinder,
+  Cone,
+  Cube,
+  Capsule,
+  Torus,
+}
+
 const scene = new THREE.Scene();
 let geo1: any | undefined;
 let geo2: any | undefined;
-let geometryManager = new GeometryManager("2D");
+let geometryManager = new GeometryManager();
 
 initialization();
 function initialization() {
@@ -31,6 +41,7 @@ function initialization() {
   camera.position.z = 50;
   animate(renderer, scene, camera);
 }
+
 function animate(renderer: any, scene: any, camera: any) {
   requestAnimationFrame(() => animate(renderer, scene, camera));
   renderer.render(scene, camera);
@@ -63,6 +74,7 @@ document.getElementById("geo1_radius")?.addEventListener("change", function () {
   } else {
     scene.remove(geo1);
     geo1 = geometryManager.createGeometry(_2Dgeo.Circle, "geo1", circleParams);
+
     scene.add(geo1);
   }
 });
@@ -180,11 +192,9 @@ document
 document
   .getElementById("calculateButton")
   ?.addEventListener("click", function () {
-    const distance = geometryManager.calculateMinimumDistance(
-      _2Dgeo.Ellipse,
-      "geo1",
-      "geo2"
-    );
+    const geo1 = geometryManager.getGeometry("geo1");
+    const geo2 = geometryManager.getGeometry("geo2");
+    const distance = geo1.MinimumDistance(geo2);
     if (geo1 && geo2) {
       const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
       const lineGeometry = new THREE.BufferGeometry().setFromPoints([
