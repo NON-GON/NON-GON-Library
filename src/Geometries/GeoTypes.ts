@@ -1,19 +1,27 @@
 export enum GeometryType2D {
-  Ellipse,
-  Supperellipse,
-  Line,
-  Circle,
-  Convex_Line,
-  Convex_Circle,
-  Point,
+  Ellipse = "Ellipse",
+  Supperellipse = "Supperellipse",
+  Line = "Line",
+  Circle = "Circle",
+  Convex_Line = "Convex_Line",
+  Convex_Circle = "Convex_Circle",
+  Point = "Point",
 }
 
 export enum GeometryType3D {
-  Sphere,
-  Ellipsoid,
-  Cylinder,
-  Cone,
-  Cube,
-  Capsule,
-  Torus,
+  Sphere = "Sphere",
+  Ellipsoid = "Ellipsoid",
+  Cylinder = "Cylinder",
+  Cone = "Cone",
+  Cube = "Cube",
+  Capsule = "Capsule",
+  Torus = "Torus",
+}
+
+export function isGeometryType2D(type: any): type is GeometryType2D {
+  return Object.values(GeometryType2D).includes(type);
+}
+
+export function isGeometryType3D(type: any): type is GeometryType3D {
+  return Object.values(GeometryType3D).includes(type);
 }

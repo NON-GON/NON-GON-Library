@@ -52,6 +52,10 @@ export class Ellipsoid implements IGeometry3D {
       );
       sphereGeometry.scale(this.xradius, this.yradius, this.zradius);
       this.geometry = sphereGeometry;
+
+      // Position the geometry at the ellipsoid's center
+      this.geometry.translate(this.center.x, this.center.y, this.center.z);
+
       return this.geometry;
     }
   }

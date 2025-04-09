@@ -4,27 +4,10 @@ import { Superellipse } from "./2D/Superellipse";
 import { Ellipsoid } from "./3D/Ellipsoid";
 import { Sphere } from "./3D/Sphere";
 import { Vector2 } from "../Calc/Util/Utils";
+import { Vector3 } from "../Calc/Util/Utils";
 import { ellipseEllipse } from "../Calc/Minimum_Distance/Minimum_Distance_2D";
-
-enum _2Dgeo {
-  Ellipse,
-  Supperellipse,
-  Line,
-  Circle,
-  Convex_Line,
-  Convex_Circle,
-  Point,
-}
-enum _3Dgeo {
-  Ellipsoid,
-  Sphere,
-  Cylinder,
-  Cone,
-  Box,
-  Convex_Hull,
-  Point_Cloud,
-  Point_Cloud_Sphere,
-}
+import { GeometryType3D, isGeometryType3D } from "./GeoTypes";
+import { GeometryType2D, isGeometryType2D } from "./GeoTypes";
 
 export class GeometryManager {
   private static _instance: GeometryManager;
@@ -60,26 +43,34 @@ export class GeometryManager {
     return GeometryManager._instance;
   }
 
-  public createGeometry(type: _2Dgeo, id: string, params: any): void;
-  public createGeometry(type: _3Dgeo, id: string, params: any): void;
+  public createGeometry(type: GeometryType2D, id: string, params: any): void;
+  public createGeometry(type: GeometryType3D, id: string, params: any): void;
 
-  public createGeometry(type: _2Dgeo | _3Dgeo, id: string, params: any): any {
+  public createGeometry(
+    type: GeometryType2D | GeometryType3D,
+    id: string,
+    params: any
+  ): any {
     let geometry: any = null;
-    if (type in _2Dgeo) {
-      return this.createGeometry2D(type as _2Dgeo, id, params, geometry);
-    } else if (type in _3Dgeo) {
-      return this.createGeometry3D(type as _3Dgeo, id, params, geometry);
+
+    if (isGeometryType2D(type)) {
+      return this.createGeometry2D(type, id, params, geometry);
+    } else if (isGeometryType3D(type)) {
+      console.log("Creating 3D Geometry");
+      return this.createGeometry3D(type, id, params, geometry);
+    } else {
+      console.error(`Invalid geometry type: ${type}`);
     }
   }
 
   public createGeometry3D(
-    type: _3Dgeo,
+    type: GeometryType3D,
     id: string,
     params: any,
     geometry: any
   ): any {
     switch (type) {
-      case _3Dgeo.Sphere:
+      case GeometryType3D.Sphere:
         geometry = new Sphere(
           params.center,
           params.xradius,
@@ -88,7 +79,7 @@ export class GeometryManager {
           params.segments
         );
         break;
-      case _3Dgeo.Ellipsoid:
+      case GeometryType3D.Ellipsoid:
         geometry = new Ellipsoid(
           params.center,
           params.xradius,
@@ -97,7 +88,7 @@ export class GeometryManager {
           params.segments
         );
         break;
-      case _3Dgeo.Cylinder:
+      case GeometryType3D.Cylinder:
         // Example: geometry = new Cylinder(params.center, params.radius, params.height, params.segments);
         break;
       default:
@@ -115,13 +106,13 @@ export class GeometryManager {
   }
 
   public createGeometry2D(
-    type: _2Dgeo,
+    type: GeometryType2D,
     id: string,
     params: any,
     geometry: any
   ): any {
     switch (type) {
-      case _2Dgeo.Ellipse:
+      case GeometryType2D.Ellipse:
         geometry = new Ellipse(
           params.center,
           params.xradius,
@@ -129,7 +120,7 @@ export class GeometryManager {
           params.segments
         );
         break;
-      case _2Dgeo.Supperellipse:
+      case GeometryType2D.Supperellipse:
         geometry = new Superellipse(
           params.center,
           params.xradius,
@@ -138,10 +129,10 @@ export class GeometryManager {
           params.exponent
         );
         break;
-      case _2Dgeo.Line:
+      case GeometryType2D.Line:
         // Example: geometry = new Line(params.start, params.end);
         break;
-      case _2Dgeo.Circle:
+      case GeometryType2D.Circle:
         geometry = new Ellipse(
           params.center,
           params.radius,
@@ -149,13 +140,13 @@ export class GeometryManager {
           params.segments
         );
         break;
-      case _2Dgeo.Convex_Line:
+      case GeometryType2D.Convex_Line:
         // Example: geometry = new ConvexLine(params.points);
         break;
-      case _2Dgeo.Convex_Circle:
+      case GeometryType2D.Convex_Circle:
         // Example: geometry = new ConvexCircle(params.center, params.radius);
         break;
-      case _2Dgeo.Point:
+      case GeometryType2D.Point:
         // Example: geometry = new Point(params.position);
         break;
     }
@@ -172,16 +163,10 @@ export class GeometryManager {
   public calculateMinimumDistance(
     id1: string,
     id2: string
-  ): [Vector2, Vector2] {
+  ): [Vector2, Vector2] | [Vector3, Vector3] {
     let geometry1 = this.getGeometry(id1);
     let geometry2 = this.getGeometry(id2);
-    let distance: [Vector2, Vector2] = [new Vector2(0, 0), new Vector2(0, 0)];
-    distance = geometry1.MinimumDistance(geometry2);
-    if (distance.length < 2) {
-      console.error("Distance calculation failed.");
-      return [new Vector2(0, 0), new Vector2(0, 0)];
-    }
-
+    let distance = geometry1.MinimumDistance(geometry2);
     console.log(`Minimum distance between ${id1} and ${id2}: ${distance}`);
     return distance;
   }
