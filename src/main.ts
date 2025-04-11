@@ -256,7 +256,6 @@ function calculate3DMinimumDistance() {
         new THREE.Vector3(distance[0].x, distance[0].y, distance[0].z),
         new THREE.Vector3(distance[1].x, distance[1].y, distance[1].z),
       ]);
-
       const line = new THREE.Line(lineGeometry, lineMaterial);
       scene.add(line);
     }

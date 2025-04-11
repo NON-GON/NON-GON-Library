@@ -8,6 +8,8 @@ export enum GeometryType2D {
   Point = "Point",
 }
 
+
+
 export enum GeometryType3D {
   Sphere = "Sphere",
   Ellipsoid = "Ellipsoid",

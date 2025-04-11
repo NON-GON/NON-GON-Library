@@ -1,5 +1,6 @@
 import { Ellipse } from "../../Geometries/2D/Ellipse";
 import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
+import { Sphere } from "../../Geometries/3D/Sphere";
 
 export class Vector2 {
   public x: number;
@@ -54,6 +55,10 @@ export class Vector3 {
     this.x = x;
     this.y = y;
     this.z = z;
+  }
+
+  static Zero(): Vector3 {
+    return new Vector3(0, 0, 0);
   }
 
   public add(vector: Vector3): Vector3 {
@@ -184,7 +189,7 @@ function solveQuadratic(a: number, b: number, c: number): number[] {
 }
 
 export function LocalSpaceToWorldSpace3D(
-  Ellipsoid: Ellipsoid,
+  Ellipsoid: Ellipsoid | Sphere,
   point: Vector3
 ): Vector3 {
   // Step 1: Rotate point by ellipsoid rotation
@@ -219,7 +224,7 @@ export function LocalSpaceToWorldSpace3D(
 }
 
 export function WorldSpaceToLocalSpace3D(
-  ellipsoid: Ellipsoid,
+  ellipsoid: Ellipsoid | Sphere,
   point: Vector3
 ): Vector3 {
   // Step 1: Translate point to ellipsoid's center

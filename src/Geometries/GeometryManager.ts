@@ -5,7 +5,6 @@ import { Ellipsoid } from "./3D/Ellipsoid";
 import { Sphere } from "./3D/Sphere";
 import { Vector2 } from "../Calc/Util/Utils";
 import { Vector3 } from "../Calc/Util/Utils";
-import { ellipseEllipse } from "../Calc/Minimum_Distance/Minimum_Distance_2D";
 import { GeometryType3D, isGeometryType3D } from "./GeoTypes";
 import { GeometryType2D, isGeometryType2D } from "./GeoTypes";
 
@@ -52,7 +51,6 @@ export class GeometryManager {
     params: any
   ): any {
     let geometry: any = null;
-
     if (isGeometryType2D(type)) {
       return this.createGeometry2D(type, id, params, geometry);
     } else if (isGeometryType3D(type)) {

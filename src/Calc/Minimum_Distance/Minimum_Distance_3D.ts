@@ -6,11 +6,12 @@ import {
   getRoot,
 } from "../Util/Utils";
 import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
+import { Sphere } from "../../Geometries/3D/Sphere";
 import { pointEllipse } from "./Minimum_Distance_2D";
 
 export function point_Ellipsoid(
   point: Vector3,
-  ellipsoid: Ellipsoid
+  ellipsoid: Ellipsoid | Sphere
 ): Vector3[] {
   let sol: Vector3[] = [new Vector3(0, 0, 0), new Vector3(0, 0, 0)];
   let a = ellipsoid.xradius; // Ellipsoid semi-axis
@@ -123,8 +124,8 @@ export function point_Ellipsoid(
 }
 
 export function ellipsoidEllipsoid(
-  ellipsoid1: Ellipsoid,
-  ellipsoid2: Ellipsoid
+  ellipsoid1: Ellipsoid | Sphere,
+  ellipsoid2: Ellipsoid | Sphere
 ): Vector3[] {
   let sol: Vector3[] = [new Vector3(0, 0, 0), new Vector3(0, 0, 0)];
 

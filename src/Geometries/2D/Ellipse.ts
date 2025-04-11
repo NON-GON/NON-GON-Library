@@ -3,7 +3,6 @@ import { IGeometry2D } from "./IGeometry2D";
 import { Vector2 } from "../../Calc/Util/Utils";
 import { GeometryType2D } from "../GeoTypes";
 import {ellipseEllipse} from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
-import { pointEllipse } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
 export class Ellipse implements IGeometry2D {
   readonly center: Vector2;
   readonly xradius: number;
