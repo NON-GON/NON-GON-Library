@@ -28,6 +28,23 @@ export class Superellipse implements IGeometry2D {
     this.geometry = null;
   }
 
+  InverseTransformDirection(direction: Vector2): Vector2 {
+    const cos = Math.cos(this.rotation);
+    const sin = Math.sin(this.rotation);
+    return new Vector2(
+      direction.x * cos + direction.y * sin,
+      -direction.x * sin + direction.y * cos
+    );
+  }
+  TransformPoint(point: Vector2): Vector2 {
+    const cos = Math.cos(this.rotation);
+    const sin = Math.sin(this.rotation);
+    return new Vector2(
+      point.x * cos - point.y * sin + this.center.x,
+      point.x * sin + point.y * cos + this.center.y
+    );
+  }
+
   public getGeometry(): any {
     if (this.geometry !== null && this.geometry !== undefined) {
       return this.geometry;

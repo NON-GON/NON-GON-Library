@@ -11,6 +11,13 @@ export class Vector2 {
     this.y = y;
   }
 
+  public clone(): Vector2 {
+    return new Vector2(this.x, this.y);
+  }
+  static Zero(): Vector2 {
+    return new Vector2(0, 0);
+  }
+
   public add(vector: Vector2): Vector2 {
     return new Vector2(this.x + vector.x, this.y + vector.y);
   }

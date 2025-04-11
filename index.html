@@ -9,63 +9,44 @@
 </head>
 
 <body>
-  <div id="Menu">
-    <button type="button" id="calculateButton">Calculate Button</button>
-    <div class="SubMenu">
-      <label for="Geometry 1">Geometry 1</label>
-      <select id="geo1_shapeSelect">
-        <option value="circle">Circle</option>
-        <option value="ellipse">Ellipse</option>
-      </select>
-      <div id="circleInputs" style="display: none;">
-        <label for="radius">Radius:</label>
-        <input type="number" id="geo1_radius" name="radius" />
-      </div>
-      <div id="ellipseInputs" style="display: none;">
-        <div>
-          <label for="radiusX">Radius X:</label>
-          <input type="number" id="geo1_radiusX" name="radiusX" />
-        </div>
-        <div>
-          <label for="radiusY">Radius Y:</label>
-          <input type="number" id="geo1_radiusY" name="radiusY" />
-        </div>
-      </div>
-      <div>
-        <label for="geo_positionx">Position X:</label>
-        <input type="range" id="geo1_positionX" name="positionx" min="-20" max="20" value="-20" />
+  <div id="T-Menu">
+    <div id="T-Menu-Left">
+      <div id="T-Menu-Title">Geometry Test</div>
+      <div id="T-Menu-Buttons">
+        <button id="T-MD">Minimum Distance</button>
+        <button id="T-PQ">Proximity Query</button>
+        <button id="T-About">About</button>
       </div>
     </div>
-
-    <div class="SubMenu">
-      <label for="Geometry 2">Geometry 2</label>
-      <select id="geo2_shapeSelect">
-        <option value="circle">Circle</option>
-        <option value="ellipse">Ellipse</option>
-      </select>
-      <div id="circleInputs2" style="display: none;">
-        <label for="radius">Radius:</label>
-        <input type="number" id="geo2_radius" name="radius" />
-      </div>
-      <div id="ellipseInputs2" style="display: none;">
-        <div>
-          <label for="radiusX">Radius X:</label>
-          <input type="number" id="geo2_radiusX" name="radiusX" />
-        </div>
-        <div>
-          <label for="radiusY">Radius Y:</label>
-          <input type="number" id="geo2_radiusY" name="radiusY" />
-        </div>
-      </div>
-      <div>
-        <label for="geo_positionx">Position X:</label>
-        <input type="range" id="geo2_positionX" name="positionx" min="-20" max="20" value="20" />
-      </div>
+    <div id="T-Menu-Right">
+      <div id="Back"><span>B</span></div>
+      <div id="Forward"><span>F</span></div>
     </div>
-  
-  
   </div>
-  <div id="app"></div>
+  <div id="L-Menu">
+    <div id="D2-Menu">
+      <div id="D2-Menu-Title">2D</div>
+      <div id="D2-Menu-Buttons">
+        <button class="D2-Menu-Button">Ellipse</button>
+        <button class="D2-Menu-Button">Line</button>
+        <button class="D2-Menu-Button">Plane</button>
+        <button class="D2-Menu-Button">Point</button>
+        <button class="D2-Menu-Button">Superellipse</button>
+      </div>
+    </div>
+    <div id="D3-Menu">
+      <div id="D3-Menu-Title">3D</div>
+      <div id="D3-Menu-Buttons">
+        <button class="D3-Menu-Button">Cylinder</button>
+        <button class="D3-Menu-Button">Ellipsoid</button>
+        <button class="D3-Menu-Button">Elliptic Paraboloid</button>
+        <button class="D3-Menu-Button">Hyperboloid</button>
+        <button class="D3-Menu-Button">Sphere</button>
+        <button class="D3-Menu-Button">Superellipse</button>
+      </div>
+
+    </div>
+  </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
 

@@ -1,4 +1,6 @@
 import { Ellipse } from "../../Geometries/2D/Ellipse";
+import { Line } from "../../Geometries/2D/Line";
+import { Superellipse } from "../../Geometries/2D/Superellipse";
 import {
   Distance,
   quarticRoots,
@@ -126,3 +128,46 @@ export function ellipseEllipse(
   T[1] = p2;
   return [T[0], T[1]];
 }
+
+export function superellipseLine(
+  line: Line,
+  superellipse: Superellipse
+): [Vector2, Vector2] {
+  let n = line.TransformDirection(new Vector2(0, 1));
+
+  let a = superellipse.xradius;
+  let b = superellipse.yradius;
+  let e = superellipse.exponent;
+
+  n = superellipse.InverseTransformDirection(n);
+  let nx = n.x;
+  let ny = n.y;
+  let phi = Math.atan(
+    (Math.sign(ny) * Math.pow(Math.abs(b * ny), 1 / (2 - e))) /
+      (Math.sign(nx) * Math.pow(Math.abs(a * nx), 1 / (2 - e)))
+  );
+
+  let cosPhi = Math.cos(phi);
+  let sinPhi = Math.sin(phi);
+
+  let T = new Vector2(
+    Math.sign(cosPhi) * a * Math.pow(Math.abs(cosPhi), e),
+    Math.sign(sinPhi) * b * Math.pow(Math.abs(sinPhi), e)
+  );
+  let Ti = T.clone().scale(-1);
+
+  T = superellipse.TransformPoint(T);
+  Ti = superellipse.TransformPoint(Ti);
+
+  let T_ = line.InverseTransformPoint(T);
+  let Ti_ = line.InverseTransformPoint(Ti);
+
+  if (Math.abs(Ti_.y) < Math.abs(T_.y)) {
+    T = Ti;
+    T_ = Ti_;
+  }
+  let L = line.TransformPoint(new Vector2(T_.x, 0));
+
+  return [L, T];
+}
+

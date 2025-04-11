@@ -69,13 +69,7 @@ export class GeometryManager {
   ): any {
     switch (type) {
       case GeometryType3D.Sphere:
-        geometry = new Sphere(
-          params.center,
-          params.xradius,
-          params.yradius,
-          params.zradius,
-          params.segments
-        );
+        geometry = new Sphere(params.center, params.radius, params.segments);
         break;
       case GeometryType3D.Ellipsoid:
         geometry = new Ellipsoid(
@@ -133,8 +127,8 @@ export class GeometryManager {
       case GeometryType2D.Circle:
         geometry = new Ellipse(
           params.center,
-          params.radius,
-          params.radius,
+          params.xradius,
+          params.yradius,
           params.segments
         );
         break;
