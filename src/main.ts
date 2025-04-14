@@ -42,9 +42,8 @@ function animate(renderer: any, scene: any, camera: any) {
 
 const paramsGeo3 = {
   center: new Vector3(10, 10, 0),
-  xradius: 2,
-  yradius: 2,
-  zradius: 2,
+
+  
   segments: 64,
 };
 const paramesGeo4 = {

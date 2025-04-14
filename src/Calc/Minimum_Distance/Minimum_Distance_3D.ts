@@ -9,6 +9,8 @@ import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 import { Sphere } from "../../Geometries/3D/Sphere";
 import { pointEllipse } from "./Minimum_Distance_2D";
 
+
+
 export function point_Ellipsoid(
   point: Vector3,
   ellipsoid: Ellipsoid | Sphere
@@ -165,4 +167,18 @@ export function ellipsoidEllipsoid(
   sol[1] = point0;
 
   return sol;
+}
+
+export superellipsoidPlane(
+  plane: Plane,
+  superellipsoid: Superellipsoid
+): [Vector3, Vector3] {
+  let sol = [new Vector3(0, 0, 0), new Vector3(0, 0, 0)];
+  let center = superellipsoid.getCenter();
+  center = superellipsoid.InverseTransformPoint(center);
+  center = Plane.TransformPoint(center);
+  let n;
+  if(center.y > 0){
+    
+  }
 }
