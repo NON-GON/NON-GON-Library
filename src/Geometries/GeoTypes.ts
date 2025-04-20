@@ -6,9 +6,8 @@ export enum GeometryType2D {
   Convex_Line = "Convex_Line",
   Convex_Circle = "Convex_Circle",
   Point = "Point",
+  Plane = "Plane",
 }
-
-
 
 export enum GeometryType3D {
   Sphere = "Sphere",
@@ -16,8 +15,7 @@ export enum GeometryType3D {
   Cylinder = "Cylinder",
   Cone = "Cone",
   Cube = "Cube",
-  Capsule = "Capsule",
-  Torus = "Torus",
+  Superellipsoid = "Superellipsoid",
 }
 
 export function isGeometryType2D(type: any): type is GeometryType2D {

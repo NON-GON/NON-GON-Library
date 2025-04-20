@@ -8,8 +8,8 @@ import {
 import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 import { Sphere } from "../../Geometries/3D/Sphere";
 import { pointEllipse } from "./Minimum_Distance_2D";
-
-
+import { Plane } from "../../Geometries/2D/Plane";
+import { Superellipsoid } from "../../Geometries/3D/Superellipsoid";
 
 export function point_Ellipsoid(
   point: Vector3,
@@ -137,7 +137,6 @@ export function ellipsoidEllipsoid(
     ellipsoid1.getCenter().subtract(ellipsoid2.getCenter())
   );
 
-
   // Initialize points and distances
   let point0 = ellipsoid1.getCenter();
   let point1 = point_Ellipsoid(point0, ellipsoid2)[1];
@@ -169,16 +168,118 @@ export function ellipsoidEllipsoid(
   return sol;
 }
 
-export superellipsoidPlane(
+export function superellipsoidPlane(
   plane: Plane,
   superellipsoid: Superellipsoid
 ): [Vector3, Vector3] {
-  let sol = [new Vector3(0, 0, 0), new Vector3(0, 0, 0)];
+  let sol: [Vector3, Vector3] = [Vector3.Zero(), Vector3.Zero()];
+
+  const variables = superellipsoid.getGeometry();
+
   let center = superellipsoid.getCenter();
   center = superellipsoid.InverseTransformPoint(center);
-  center = Plane.TransformPoint(center);
-  let n;
-  if(center.y > 0){
-    
+  
+  center = plane.TransformPoint(center);
+
+  let n: Vector3;
+  if (center.y > 0) {
+    let temp = plane.TransformDirection(new Vector3(0, 1, 0));
+    if (temp instanceof Vector2) {
+      n = new Vector3(temp.x, temp.y, 0);
+    }else {
+      n = temp;
+    }
+  } else {
+    let temp = plane.TransformDirection(new Vector3(0, -1, 0));
+    if (temp instanceof Vector2) {
+      n = new Vector3(temp.x, temp.y, 0);
+    }else {
+      n = temp;
+    }
   }
+
+  n = superellipsoid.InverseTransformDirection(n);
+
+  const a = variables.xradius;
+  const b = variables.yradius;
+  const c = variables.zradius;
+  const e1 = variables.e1;
+  const e2 = variables.e2;
+
+  const nx = n.x;
+  const ny = n.y;
+  const nz = n.z;
+
+  const EPS = Math.pow(10, -6);
+  let phi1: number;
+  let phi2: number;
+
+  if (Math.abs(nx) <= EPS && Math.abs(ny) <= EPS) {
+    phi1 = Math.PI / 2;
+    phi2 = (Math.sign(nz) * Math.PI) / 2;
+  } else if (Math.abs(nx) <= EPS && Math.abs(nz) <= EPS) {
+    phi1 = Math.PI + (Math.sign(ny) * Math.PI) / 2;
+    phi2 = 0;
+  } else if (Math.abs(ny) <= EPS && Math.abs(nz) <= EPS) {
+    phi1 = Math.PI + Math.sign(nx) * Math.PI;
+    phi2 = 0;
+  } else {
+    const anx = Math.abs(a * nx);
+    const bny = Math.abs(b * ny);
+    phi1 = Math.atan2(
+      Math.sign(ny) * Math.pow(bny, 1 / (2 - e1)),
+      Math.sign(nx) * Math.pow(anx, 1 / (2 - e1))
+    );
+
+    if (anx > bny) {
+      const Cphi = Math.cos(phi1);
+      phi2 = Math.atan2(
+        Math.sign(nz) *
+          Math.pow(
+            Math.abs(
+              c * nz * Math.sign(Cphi) * Math.pow(Math.abs(Cphi), 2 - e1)
+            ),
+            1 / (2 - e2)
+          ),
+        Math.sign(nx) * Math.pow(anx, 1 / (2 - e2))
+      );
+    } else {
+      const Sphi = Math.sin(phi1);
+      phi2 = Math.atan2(
+        Math.sign(nz) *
+          Math.pow(
+            Math.abs(
+              c * nz * Math.sign(Sphi) * Math.pow(Math.abs(Sphi), 2 - e1)
+            ),
+            1 / (2 - e2)
+          ),
+        Math.sign(ny) * Math.pow(bny, 1 / (2 - e2))
+      );
+    }
+  }
+
+  const point1_local = superellipsoid.point(phi1, phi2, variables);
+  const point2_local = point1_local.clone().multiplyScalar(-1);
+
+  const point1_world = superellipsoid.localToWorld(point1_local.clone());
+  const point2_world = superellipsoid.localToWorld(point2_local.clone());
+
+  const point_plane1 = plane.worldToLocal(point1_world.clone());
+  const point_plane2 = plane.worldToLocal(point2_world.clone());
+
+  const dist1 = Math.abs(point_plane1.y);
+  const dist2 = Math.abs(point_plane2.y);
+
+  point_plane1.y = 0;
+  point_plane2.y = 0;
+
+  if (dist1 < dist2) {
+    sol[0] = plane.localToWorld(point_plane1.clone());
+    sol[1] = point1_world;
+  } else {
+    sol[0] = plane.localToWorld(point_plane2.clone());
+    sol[1] = point2_world;
+  }
+
+  return sol;
 }

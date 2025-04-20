@@ -1,19 +1,29 @@
 import { Vector2 } from "../../Calc/Util/Utils";
 import { GeometryType2D } from "../GeoTypes";
 import { IGeometry2D } from "./IGeometry2D";
+import * as THREE from "three";
+
 //TODO: think more how to do this
 export class Point implements IGeometry2D {
   center: Vector2;
   segments: number = 0; // Not applicable for a point, default to 0
   type: GeometryType2D = GeometryType2D.Point; // Assuming GeometryType2D.Point exists
   rotation: number = 0; // Not applicable for a point, default to 0
+  private geometry: any = null; // Placeholder for geometry object
 
   constructor(center: Vector2) {
     this.center = center;
   }
 
   getGeometry(): Vector2 {
-    return this.center;
+    if (this.geometry !== null && this.geometry !== undefined) {
+      return this.geometry;
+    } else {
+      console.log("Creating Point Geometry");
+      const points = [this.center];
+      this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      return this.geometry;
+    }
   }
 
   getCenter(): Vector2 {

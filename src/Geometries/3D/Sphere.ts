@@ -1,8 +1,6 @@
 import * as THREE from "three";
-import { Vector2, Vector3 } from "../../Calc/Util/Utils";
+import { Vector3 } from "../../Calc/Util/Utils";
 import { IGeometry3D } from "./IGeometry3D";
-import { Ellipse } from "../2D/Ellipse";
-import { Superellipse } from "../2D/Superellipse";
 import { Point } from "../2D/Point";
 import { Ellipsoid } from "./Ellipsoid";
 import {
@@ -11,10 +9,12 @@ import {
 } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 import { IGeometry2D } from "../2D/IGeometry2D";
 import {
+  GeometryType2D,
   GeometryType3D,
   isGeometryType2D,
   isGeometryType3D,
 } from "../GeoTypes";
+
 export class Sphere implements IGeometry3D {
   readonly center: Vector3;
   readonly xradius: number;
@@ -49,19 +49,14 @@ export class Sphere implements IGeometry3D {
     }
   }
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
-    switch (geometry.constructor) {
-      case Point:
-        throw new Error(
-          "Minimum distance not implemented for this geometry type."
+    switch (geometry.type) {
+      case GeometryType2D.Point:
+        let point = geometry as Point;
+        const res = point_Ellipsoid(
+          new Vector3(point.center.x, point.center.y, 0),
+          this
         );
-      case Ellipse:
-        throw new Error(
-          "Minimum distance not implemented for this geometry type."
-        );
-      case Superellipse:
-        throw new Error(
-          "Minimum distance not implemented for this geometry type."
-        );
+        return [res[0], res[1]];
       default:
         throw new Error(
           "Minimum distance not implemented for this geometry type."

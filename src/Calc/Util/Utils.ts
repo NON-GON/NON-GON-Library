@@ -64,12 +64,32 @@ export class Vector3 {
     this.z = z;
   }
 
+  public clone(): Vector3 {
+    return new Vector3(this.x, this.y, this.z);
+  }
+
   static Zero(): Vector3 {
     return new Vector3(0, 0, 0);
   }
 
   public add(vector: Vector3): Vector3 {
     return new Vector3(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+  }
+
+  applyMatrix4(matrix: number[]): Vector3 {
+
+    const x = this.x, y = this.y, z = this.z;
+    const w = 1 / (matrix[3] * x + matrix[7] * y + matrix[11] * z + matrix[15]);
+
+    const nx = (matrix[0] * x + matrix[4] * y + matrix[8] * z + matrix[12]) * w;
+    const ny = (matrix[1] * x + matrix[5] * y + matrix[9] * z + matrix[13]) * w;
+    const nz = (matrix[2] * x + matrix[6] * y + matrix[10] * z + matrix[14]) * w;
+
+    this.x = nx;
+    this.y = ny;
+    this.z = nz;
+
+    return this;
   }
 
   public subtract(vector: Vector3): Vector3 {
