@@ -377,3 +377,76 @@ export function getRoot(
 
   return t;
 }
+
+export function getRotationZ(ellipse: Ellipse): number {
+  const cosTheta = Math.cos(ellipse.rotation);
+  const sinTheta = Math.sin(ellipse.rotation);
+  return Math.atan2(sinTheta, cosTheta) * (180 / Math.PI);
+}
+
+export function SAT(
+  axis: Vector3,
+  corners: Vector3[],
+  minAlong: number,
+  maxAlong: number
+): number[] {
+  minAlong = Number.MAX_VALUE;
+  maxAlong = -Number.MAX_VALUE;
+
+  for (let i = 0; i < corners.length; i++) {
+    const dotVal = axis.dot(corners[i]);
+    if (dotVal < minAlong) minAlong = dotVal;
+    if (dotVal > maxAlong) maxAlong = dotVal;
+  }
+
+  return [minAlong, maxAlong];
+}
+
+export function overlaps(
+  min1: number,
+  max1: number,
+  min2: number,
+  max2: number
+): boolean {
+  return (
+    isBetweenOrdered(min2, min1, max1) || isBetweenOrdered(min1, min2, max2)
+  );
+}
+
+export function isBetweenOrdered(
+  val: number,
+  lowerBound: number,
+  upperBound: number
+): boolean {
+  return lowerBound <= val && val <= upperBound;
+}
+
+export function calDetMatrix3x3(matrix: number[][]): number {
+  if (matrix.length !== 3 || matrix.some((row) => row.length !== 3)) {
+    throw new Error("Input must be a 3x3 matrix.");
+  }
+
+  let det = 0;
+  for (let i = 0; i < 3; i++) {
+    det +=
+      matrix[0][i] *
+      (matrix[1][(i + 1) % 3] * matrix[2][(i + 2) % 3] -
+        matrix[1][(i + 2) % 3] * matrix[2][(i + 1) % 3]);
+  }
+  return det;
+}
+
+export function descartesLawOfSignsThirdDegreePolynomial(
+  a3: number,
+  a2: number,
+  a1: number,
+  a0: number
+): boolean {
+  return (
+    (a3 < 0 && a2 === 0 && a1 > 0 && a0 < 0) ||
+    (a3 < 0 && a2 > 0 && a1 === 0 && a0 < 0) ||
+    (a3 < 0 && a2 > 0 && a1 < 0 && a0 < 0) ||
+    (a3 < 0 && a2 > 0 && a1 > 0 && a0 < 0) ||
+    (a3 < 0 && a2 < 0 && a1 > 0 && a0 < 0)
+  );
+}
