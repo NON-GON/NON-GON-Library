@@ -58,7 +58,10 @@ export class Line implements IGeometry2D {
       return this.geometry;
     } else {
       console.log("Creating Line Geometry");
-      const points = [this.start, this.end];
+      let points = [
+        new THREE.Vector2(this.start.x, this.start.y),
+        new THREE.Vector2(this.end.x, this.end.y),
+      ];
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
       return this.geometry;
     }

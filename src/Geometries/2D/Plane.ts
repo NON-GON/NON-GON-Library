@@ -76,13 +76,10 @@ export class Plane implements IGeometry2D {
     // Returns the center of the plane
     return this.center;
   }
+  
   public getSegments(): number {
     return this.segments;
   }
-
-
-
-
   TransformPoint(point: Vector2): Vector2 {
     // Transforms a point from world coordinates to local coordinates
     const transformedPoint = new Vector2(

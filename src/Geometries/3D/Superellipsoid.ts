@@ -166,4 +166,22 @@ export class Superellipsoid implements IGeometry3D {
     );
     return transformedPoint;
   }
+
+  public point(theta: number, phi: number): Vector3 {
+    const sign = (x: number) => (x < 0 ? -1 : 1);
+    const exp = (base: number, p: number) =>
+      sign(base) * Math.pow(Math.abs(base), p);
+
+    const x =
+      this.xradius *
+      exp(Math.cos(theta), this.e1) *
+      exp(Math.cos(phi), this.e2);
+    const y =
+      this.yradius *
+      exp(Math.sin(theta), this.e1) *
+      exp(Math.cos(phi), this.e2);
+    const z = this.zradius * exp(Math.sin(phi), this.e2);
+
+    return new Vector3(x, y, z);
+  }
 }

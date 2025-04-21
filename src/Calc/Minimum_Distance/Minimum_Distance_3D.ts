@@ -178,22 +178,24 @@ export function superellipsoidPlane(
 
   let center = superellipsoid.getCenter();
   center = superellipsoid.InverseTransformPoint(center);
-  
-  center = plane.TransformPoint(center);
+
+  //todo: REVIEW THIS
+  let temp = plane.TransformPoint(center);
+  center = new Vector3(temp.x, temp.y, 0);
 
   let n: Vector3;
   if (center.y > 0) {
     let temp = plane.TransformDirection(new Vector3(0, 1, 0));
     if (temp instanceof Vector2) {
       n = new Vector3(temp.x, temp.y, 0);
-    }else {
+    } else {
       n = temp;
     }
   } else {
     let temp = plane.TransformDirection(new Vector3(0, -1, 0));
     if (temp instanceof Vector2) {
       n = new Vector3(temp.x, temp.y, 0);
-    }else {
+    } else {
       n = temp;
     }
   }
@@ -258,8 +260,8 @@ export function superellipsoidPlane(
     }
   }
 
-  const point1_local = superellipsoid.point(phi1, phi2, variables);
-  const point2_local = point1_local.clone().multiplyScalar(-1);
+  const point1_local = superellipsoid.point(phi1, phi2);
+  const point2_local = point1_local.clone().scale(-1);
 
   const point1_world = superellipsoid.localToWorld(point1_local.clone());
   const point2_world = superellipsoid.localToWorld(point2_local.clone());
