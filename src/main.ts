@@ -40,49 +40,19 @@ function animate(renderer: any, scene: any, camera: any) {
 
 
 
-const paramsGeo3 = {
-  center: new Vector3(10, 10, 0),
+// Point Ellipse Test
+GeometryManager
 
-  
-  segments: 64,
-};
-const paramesGeo4 = {
-  center: new Vector3(0, 0, 0),
-  xradius: 4,
-  yradius: 2,
-  zradius: 2,
-  segments: 64,
-};
 
-let geo3 = geometryManager.createGeometry(
-  GeometryType3D.Ellipsoid,
-  "geo3",
-  paramsGeo3
-);
-let geo4 = geometryManager.createGeometry(
-  GeometryType3D.Ellipsoid,
-  "geo4",
-  paramesGeo4
-);
 
-scene.add(geo3);
-scene.add(geo4);
 
-calculate3DMinimumDistance();
-function calculate3DMinimumDistance() {
-  const geo3 = geometryManager.getGeometry("geo3");
-  const geo4 = geometryManager.getGeometry("geo4");
-  if (geo3 && geo4) {
-    const distance = geometryManager.calculateMinimumDistance("geo3", "geo4");
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000ff0 });
-    if (distance[0] instanceof Vector3 && distance[1] instanceof Vector3) {
-      console.log(distance[0], distance[1]);
-      const lineGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(distance[0].x, distance[0].y, distance[0].z),
-        new THREE.Vector3(distance[1].x, distance[1].y, distance[1].z),
-      ]);
-      const line = new THREE.Line(lineGeometry, lineMaterial);
-      scene.add(line);
-    }
-  }
+
+function drawMinimumDistance(point1: Vector3, point2: Vector3) {
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000ff0 });
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(point1.x, point1.y, point1.z),
+    new THREE.Vector3(point2.x, point2.y, point2.z),
+  ]);
+  const line = new THREE.Line(lineGeometry, lineMaterial);
+  scene.add(line);
 }

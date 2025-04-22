@@ -11,7 +11,7 @@ import { Superellipsoid } from "../3D/Superellipsoid";
 export class Plane implements IGeometry2D {
   center: Vector2;
   segments: number;
-  type: GeometryType2D;
+  type: GeometryType2D = GeometryType2D.Plane;
   private geometry: any = null;
   rotation: number;
   width: number;
@@ -20,14 +20,12 @@ export class Plane implements IGeometry2D {
   constructor(
     center: Vector2,
     segments: number,
-    type: GeometryType2D,
     rotation: number,
     width: number,
     height: number
   ) {
     this.center = center;
     this.segments = segments;
-    this.type = type;
     this.rotation = rotation;
     this.width = width;
     this.height = height;

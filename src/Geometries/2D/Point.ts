@@ -15,7 +15,7 @@ import { Ellipse } from "./Ellipse";
 
 export class Point implements IGeometry2D {
   center: Vector2;
-  segments: number = 0;
+  segments: number = 1;
   type: GeometryType2D = GeometryType2D.Point;
   rotation: number = 0;
   private geometry: any = null;

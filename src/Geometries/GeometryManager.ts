@@ -7,6 +7,10 @@ import { Vector2 } from "../Calc/Util/Utils";
 import { Vector3 } from "../Calc/Util/Utils";
 import { GeometryType3D, isGeometryType3D } from "./GeoTypes";
 import { GeometryType2D, isGeometryType2D } from "./GeoTypes";
+import { Superellipsoid } from "./3D/Superellipsoid";
+import { Line } from "./2D/Line";
+import { Point } from "./2D/Point";
+import { Plane } from "three";
 
 export class GeometryManager {
   private static _instance: GeometryManager;
@@ -54,7 +58,6 @@ export class GeometryManager {
     if (isGeometryType2D(type)) {
       return this.createGeometry2D(type, id, params, geometry);
     } else if (isGeometryType3D(type)) {
-      console.log("Creating 3D Geometry");
       return this.createGeometry3D(type, id, params, geometry);
     } else {
       console.error(`Invalid geometry type: ${type}`);
@@ -80,8 +83,16 @@ export class GeometryManager {
           params.segments
         );
         break;
-      case GeometryType3D.Cylinder:
-        // Example: geometry = new Cylinder(params.center, params.radius, params.height, params.segments);
+      case GeometryType3D.Superellipsoid:
+        geometry = new Superellipsoid(
+          params.center,
+          params.xradius,
+          params.yradius,
+          params.zradius,
+          params.segments,
+          params.e1,
+          params.e2
+        );
         break;
       default:
         console.error(`Invalid parameters for geometry type: ${type}`);
@@ -122,7 +133,7 @@ export class GeometryManager {
         );
         break;
       case GeometryType2D.Line:
-        // Example: geometry = new Line(params.start, params.end);
+        geometry = new Line(params.start, params.end, params.rotation);
         break;
       case GeometryType2D.Circle:
         geometry = new Ellipse(
@@ -132,14 +143,19 @@ export class GeometryManager {
           params.segments
         );
         break;
-      case GeometryType2D.Convex_Line:
-        // Example: geometry = new ConvexLine(params.points);
-        break;
-      case GeometryType2D.Convex_Circle:
-        // Example: geometry = new ConvexCircle(params.center, params.radius);
-        break;
       case GeometryType2D.Point:
-        // Example: geometry = new Point(params.position);
+        geometry = new Point(params.center);
+        break;
+      case GeometryType2D.Plane:
+        geometry = new Plane(
+          params.center,
+          params.segments,
+          params.type,
+          params.rotation,
+          params.width,
+          params.height
+        );
+
         break;
     }
     if (geometry) {
