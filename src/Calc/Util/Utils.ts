@@ -384,6 +384,18 @@ export function getRotationZ(ellipse: Ellipse): number {
   return Math.atan2(sinTheta, cosTheta) * (180 / Math.PI);
 }
 
+export function getRotationX(ellipse: Ellipse): number {
+  const cosTheta = Math.cos(ellipse.rotation);
+  const sinTheta = Math.sin(ellipse.rotation);
+  return Math.atan2(sinTheta, cosTheta) * (180 / Math.PI);
+}
+
+export function getRotationY(ellipse: Ellipse): number {
+  const cosTheta = Math.cos(ellipse.rotation);
+  const sinTheta = Math.sin(ellipse.rotation);
+  return Math.atan2(sinTheta, cosTheta) * (180 / Math.PI);
+}
+
 export function SAT(
   axis: Vector3,
   corners: Vector3[],
@@ -433,6 +445,29 @@ export function calDetMatrix3x3(matrix: number[][]): number {
       (matrix[1][(i + 1) % 3] * matrix[2][(i + 2) % 3] -
         matrix[1][(i + 2) % 3] * matrix[2][(i + 1) % 3]);
   }
+  return det;
+}
+
+export function calDetMatrix4x4(matrix: number[][]): number {
+  if (matrix.length !== 4 || matrix.some((row) => row.length !== 4)) {
+    throw new Error("Input must be a 4x4 matrix.");
+  }
+
+  const getSubMatrix3x3 = (
+    excludeRow: number,
+    excludeCol: number
+  ): number[][] => {
+    return matrix
+      .filter((_, rowIndex) => rowIndex !== excludeRow)
+      .map((row) => row.filter((_, colIndex) => colIndex !== excludeCol));
+  };
+
+  const det =
+    matrix[0][0] * calDetMatrix3x3(getSubMatrix3x3(0, 0)) -
+    matrix[1][0] * calDetMatrix3x3(getSubMatrix3x3(1, 0)) +
+    matrix[2][0] * calDetMatrix3x3(getSubMatrix3x3(2, 0)) -
+    matrix[3][0] * calDetMatrix3x3(getSubMatrix3x3(3, 0));
+
   return det;
 }
 

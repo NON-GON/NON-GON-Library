@@ -1,11 +1,10 @@
 import * as THREE from "three";
 import { GeometryManager } from "./Geometries/GeometryManager";
-import { Vector2 } from "three";
 import { GeometryType2D, GeometryType3D } from "./Geometries/GeoTypes";
-import { Vector3 } from "./Calc/Util/Utils";
+import { Vector3, Vector2 } from "./Calc/Util/Utils";
+
+
 const scene = new THREE.Scene();
-let geo1: any | undefined;
-let geo2: any | undefined;
 let geometryManager = new GeometryManager();
 
 let angle = 0; // Add a variable to track the rotation angle
@@ -38,21 +37,164 @@ function animate(renderer: any, scene: any, camera: any) {
   renderer.render(scene, camera);
 }
 
-
-
 // Point Ellipse Test
-GeometryManager
 
+function pointEllipseTest() {
+  let params0 = {
+    center: new Vector2(20, 0),
+  };
+  geometryManager.createGeometry(GeometryType2D.Point, "geo0", params0);
 
+  let params1 = {
+    center: new Vector2(0, 0),
+    xradius: 10,
+    yradius: 5,
+    segments: 100,
+  };
+  geometryManager.createGeometry(GeometryType2D.Ellipse, "geo1", params1);
 
+  scene.add(geometryManager.getGeometryMesh("geo1"));
+  scene.add(geometryManager.getGeometryMesh("geo0"));
 
+  let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
+  drawMinimumDistance(points[0], points[1]);
+}
 
-function drawMinimumDistance(point1: Vector3, point2: Vector3) {
+function ellipseEllipseTest() {
+  let params0 = {
+    center: new Vector2(10, 0),
+    xradius: 2,
+    yradius: 5,
+    segments: 100,
+  };
+  geometryManager.createGeometry(GeometryType2D.Ellipse, "geo0", params0);
+
+  let params1 = {
+    center: new Vector2(0, 0),
+    xradius: 5,
+    yradius: 2,
+    segments: 100,
+  };
+  geometryManager.createGeometry(GeometryType2D.Ellipse, "geo1", params1);
+
+  scene.add(geometryManager.getGeometryMesh("geo1"));
+  scene.add(geometryManager.getGeometryMesh("geo0"));
+
+  let points = geometryManager.calculateMinimumDistance("geo1", "geo0");
+  drawMinimumDistance(points[0], points[1]);
+}
+
+function superellipseLineTest() {
+  let params0 = {
+    center: new Vector2(0, 20),
+    xradius: 10,
+    yradius: 5,
+    segments: 100,
+    exponent: 2,
+  };
+  let params1 = {
+    start: new Vector2(0, 0),
+    end: new Vector2(10, 10),
+    rotation: 0,
+  };
+  geometryManager.createGeometry(GeometryType2D.Supperellipse, "geo0", params0);
+  geometryManager.createGeometry(GeometryType2D.Line, "geo1", params1);
+  scene.add(geometryManager.getGeometryMesh("geo1"));
+  scene.add(geometryManager.getGeometryMesh("geo0"));
+  let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
+  drawMinimumDistance(points[0], points[1]);
+}
+
+function pointEllipsoidTest() {
+  let params0 = {
+    center: new Vector2(0, 0),
+  };
+  geometryManager.createGeometry(GeometryType2D.Point, "geo0", params0);
+  let params1 = {
+    center: new Vector3(15, 0, 0),
+    xradius: 10,
+    yradius: 5,
+    zradius: 5,
+    segments: 100,
+  };
+  geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo1", params1);
+  scene.add(geometryManager.getGeometryMesh("geo1"));
+  scene.add(geometryManager.getGeometryMesh("geo0"));
+  let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
+  drawMinimumDistance(points[0], points[1]);
+}
+
+function EllipsoidEllipsoidTest() {
+  let params0 = {
+    center: new Vector3(-10, 0, 0),
+    xradius: 10,
+    yradius: 5,
+    zradius: 5,
+    segments: 100,
+  };
+  geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo0", params0);
+  let params1 = {
+    center: new Vector3(15, 0, 0),
+    xradius: 10,
+    yradius: 5,
+    zradius: 5,
+    segments: 100,
+  };
+  geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo1", params1);
+  scene.add(geometryManager.getGeometryMesh("geo1"));
+  scene.add(geometryManager.getGeometryMesh("geo0"));
+  let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
+  drawMinimumDistance(points[0], points[1]);
+}
+
+function SuperellipsoidPlaneTest() {
+  let params0 = {
+    center: new Vector3(0, 20, 0),
+    xradius: 5,
+    yradius: 5,
+    zradius: 5,
+    segments: 100,
+    e1: 5,
+    e2: 5,
+  };
+  let params1 = {
+    center: new Vector2(0, 0),
+    segments: 100,
+    rotation: 0,
+    width: 10,
+    height: 10,
+  };
+  geometryManager.createGeometry(
+    GeometryType3D.Superellipsoid,
+    "geo0",
+    params0
+  );
+  geometryManager.createGeometry(GeometryType2D.Plane, "geo1", params1);
+  scene.add(geometryManager.getGeometryMesh("geo1"));
+  scene.add(geometryManager.getGeometryMesh("geo0"));
+  let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
+  drawMinimumDistance(points[0], points[1]);
+}
+
+function drawMinimumDistance(
+  point1: Vector3 | Vector2,
+  point2: Vector3 | Vector2
+) {
   const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000ff0 });
   const lineGeometry = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(point1.x, point1.y, point1.z),
-    new THREE.Vector3(point2.x, point2.y, point2.z),
+    new THREE.Vector3(
+      point1.x,
+      point1.y,
+      point1 instanceof Vector3 ? point1.z : 0
+    ),
+    new THREE.Vector3(
+      point2.x,
+      point2.y,
+      point2 instanceof Vector3 ? point2.z : 0
+    ),
   ]);
   const line = new THREE.Line(lineGeometry, lineMaterial);
   scene.add(line);
 }
+
+SuperellipsoidPlaneTest();

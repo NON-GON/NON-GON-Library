@@ -71,8 +71,8 @@ export class Superellipsoid implements IGeometry3D {
     } else {
       console.log("Creating Superellipsoid Geometry");
 
-      const n1 = this.e1 ?? 2; // roundness in latitudinal direction
-      const n2 = this.e2 ?? 2; // roundness in longitudinal direction
+      const n1 = this.e1 ?? 2; 
+      const n2 = this.e2 ?? 2; 
       const a = this.xradius ?? 1;
       const b = this.yradius ?? 1;
       const c = this.zradius ?? 1;
@@ -94,11 +94,13 @@ export class Superellipsoid implements IGeometry3D {
           const y = b * exp(Math.cos(v), n1) * exp(Math.sin(u), n2);
           const z = c * exp(Math.sin(v), n1);
 
-          points.push(new THREE.Vector3(x, y, z));
+          points.push(new Vector3(x, y, z));
         }
       }
-
-      this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      
+      console.log("Superellipsoid points: ", points);
+      const threePoints = points.map(p => new THREE.Vector3(p.x, p.y, p.z));
+      this.geometry = new THREE.BufferGeometry().setFromPoints(threePoints);
       return this.geometry;
     }
   }
@@ -123,9 +125,9 @@ export class Superellipsoid implements IGeometry3D {
     const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
       new THREE.Euler(this.rotation.x, this.rotation.y, this.rotation.z)
     );
-    const inverseRotationMatrix = new THREE.Matrix4().getInverse(
-      rotationMatrix
-    );
+    const inverseRotationMatrix = new THREE.Matrix4()
+      .copy(rotationMatrix)
+      .invert();
     const translatedPoint = point.clone().subtract(this.center);
     const transformedPoint = translatedPoint.applyMatrix4(
       inverseRotationMatrix
@@ -136,15 +138,14 @@ export class Superellipsoid implements IGeometry3D {
     const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
       new THREE.Euler(this.rotation.x, this.rotation.y, this.rotation.z)
     );
-    const inverseRotationMatrix = new THREE.Matrix4().getInverse(
-      rotationMatrix
-    );
+    const inverseRotationMatrix = new THREE.Matrix4()
+      .copy(rotationMatrix)
+      .invert();
     const transformedDirection = direction
       .clone()
       .applyMatrix4(inverseRotationMatrix);
     return transformedDirection;
   }
-  //TODO: verify this functions
 
   localToWorld(point: Vector3): Vector3 {
     const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
@@ -157,9 +158,9 @@ export class Superellipsoid implements IGeometry3D {
     const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
       new THREE.Euler(this.rotation.x, this.rotation.y, this.rotation.z)
     );
-    const inverseRotationMatrix = new THREE.Matrix4().getInverse(
-      rotationMatrix
-    );
+    const inverseRotationMatrix = new THREE.Matrix4()
+      .copy(rotationMatrix)
+      .invert();
     const translatedPoint = point.clone().subtract(this.center);
     const transformedPoint = translatedPoint.applyMatrix4(
       inverseRotationMatrix

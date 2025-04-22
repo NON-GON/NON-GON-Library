@@ -10,7 +10,7 @@ import { GeometryType2D, isGeometryType2D } from "./GeoTypes";
 import { Superellipsoid } from "./3D/Superellipsoid";
 import { Line } from "./2D/Line";
 import { Point } from "./2D/Point";
-import { Plane } from "three";
+import { Plane } from "./2D/Plane";
 
 export class GeometryManager {
   private static _instance: GeometryManager;
@@ -22,6 +22,18 @@ export class GeometryManager {
 
   public getGeometry(name: string): any {
     return this._geometries[name];
+  }
+
+  public getGeometryMesh(name: string): any {
+    let geometry = this._geometries[name];
+    if (geometry) {
+      let material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+      let line = new THREE.Line(geometry.getGeometry(), material);
+      return line;
+    } else {
+      console.error(`Geometry with name ${name} not found.`);
+      return null;
+    }
   }
 
   public getAllGeometries(): { [key: string]: any } {
@@ -150,7 +162,6 @@ export class GeometryManager {
         geometry = new Plane(
           params.center,
           params.segments,
-          params.type,
           params.rotation,
           params.width,
           params.height

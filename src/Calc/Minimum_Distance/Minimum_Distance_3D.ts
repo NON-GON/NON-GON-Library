@@ -179,7 +179,6 @@ export function superellipsoidPlane(
   let center = superellipsoid.getCenter();
   center = superellipsoid.InverseTransformPoint(center);
 
-  //todo: REVIEW THIS
   let temp = plane.TransformPoint(center);
   center = new Vector3(temp.x, temp.y, 0);
 
