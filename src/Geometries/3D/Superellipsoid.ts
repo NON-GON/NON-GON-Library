@@ -19,6 +19,8 @@ export class Superellipsoid implements IGeometry3D {
   readonly e1: number;
   readonly e2: number;
   readonly segments: number;
+  private segmentsU: number = 40;
+  private segmentsV: number = 80;
   private geometry: any = null;
   public type: GeometryType3D = GeometryType3D.Superellipsoid;
   public rotation: Vector3 = new Vector3(0, 0, 0); // Rotation angles in radians
@@ -30,7 +32,7 @@ export class Superellipsoid implements IGeometry3D {
     zradius: number,
     e1: number,
     e2: number,
-    segments: number
+    segments: number = 80
   ) {
     this.center = center;
     this.xradius = xradius;
@@ -40,6 +42,8 @@ export class Superellipsoid implements IGeometry3D {
     this.e2 = e2;
     this.segments = segments;
     this.geometry = null;
+    this.segmentsU = segments/2;
+    this.segmentsV = segments;
   }
 
   MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
@@ -70,14 +74,13 @@ export class Superellipsoid implements IGeometry3D {
       return this.geometry;
     } else {
       console.log("Creating Superellipsoid Geometry");
-
+      console.log(this.segmentsU, this.segmentsV);
       const n1 = this.e1 ?? 2; 
       const n2 = this.e2 ?? 2; 
       const a = this.xradius ?? 1;
       const b = this.yradius ?? 1;
       const c = this.zradius ?? 1;
-      const segmentsU = this.segments ?? 32;
-      const segmentsV = this.segments ?? 16;
+
 
       const points: Vector3[] = [];
 
@@ -85,10 +88,10 @@ export class Superellipsoid implements IGeometry3D {
       const exp = (base: number, p: number) =>
         sign(base) * Math.pow(Math.abs(base), p);
 
-      for (let i = 0; i <= segmentsV; i++) {
-        const v = -Math.PI / 2 + (i / segmentsV) * Math.PI;
-        for (let j = 0; j <= segmentsU; j++) {
-          const u = -Math.PI + (j / segmentsU) * 2 * Math.PI;
+      for (let i = 0; i <= this.segmentsU; i++) {
+        const v = -Math.PI / 2 + (i / this.segmentsU) * Math.PI;
+        for (let j = 0; j <= this.segmentsV; j++) {
+          const u = -Math.PI + (j / this.segmentsV) * 2 * Math.PI;
 
           const x = a * exp(Math.cos(v), n1) * exp(Math.cos(u), n2);
           const y = b * exp(Math.cos(v), n1) * exp(Math.sin(u), n2);
@@ -98,7 +101,6 @@ export class Superellipsoid implements IGeometry3D {
         }
       }
       
-      console.log("Superellipsoid points: ", points);
       const threePoints = points.map(p => new THREE.Vector3(p.x, p.y, p.z));
       this.geometry = new THREE.BufferGeometry().setFromPoints(threePoints);
       return this.geometry;

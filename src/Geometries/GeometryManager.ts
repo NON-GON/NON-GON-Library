@@ -101,9 +101,9 @@ export class GeometryManager {
           params.xradius,
           params.yradius,
           params.zradius,
-          params.segments,
           params.e1,
-          params.e2
+          params.e2,
+          params.segments
         );
         break;
       default:

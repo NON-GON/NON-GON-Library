@@ -3,7 +3,6 @@ import { GeometryManager } from "./Geometries/GeometryManager";
 import { GeometryType2D, GeometryType3D } from "./Geometries/GeoTypes";
 import { Vector3, Vector2 } from "./Calc/Util/Utils";
 
-
 const scene = new THREE.Scene();
 let geometryManager = new GeometryManager();
 
@@ -36,8 +35,6 @@ function animate(renderer: any, scene: any, camera: any) {
 
   renderer.render(scene, camera);
 }
-
-// Point Ellipse Test
 
 function pointEllipseTest() {
   let params0 = {
@@ -197,4 +194,3 @@ function drawMinimumDistance(
   scene.add(line);
 }
 
-SuperellipsoidPlaneTest();

@@ -10,5 +10,4 @@ export interface IGeometry3D {
   getCenter(): Vector3;
   type: GeometryType3D;
   MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3];
-
 }
