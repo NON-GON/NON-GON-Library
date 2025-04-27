@@ -2,35 +2,35 @@ import * as THREE from "three";
 import { IGeometry2D } from "./IGeometry2D";
 import { Vector2 } from "../../Calc/Util/Utils";
 import { GeometryType2D } from "../GeoTypes";
-import {
-  ellipseEllipse,
-  pointEllipseObj,
-} from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
 import { IGeometry3D } from "../3D/IGeometry3D";
 import { Vector3 } from "../../Calc/Util/Utils";
 import { isGeometryType2D, isGeometryType3D } from "../GeoTypes";
 import { Point } from "./Point";
+import { Geometry2DBase } from "./Geometry2DBase";
+import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
 
-export class Ellipse implements IGeometry2D {
-  readonly center: Vector2;
+export class Ellipse extends Geometry2DBase implements IGeometry2D {
   readonly xradius: number;
   readonly yradius: number;
-  readonly segments: number;
-  private geometry: any = null;
-  public rotation: number = 0; // TODO: Implement rotation
   public type: GeometryType2D = GeometryType2D.Ellipse;
 
   constructor(
-    center: Vector2,
+    center: Vector3 | Vector2,
     xradius: number,
     yradius: number,
-    segments: number
+    rotation: Vector3 | Vector2,
+    segments: number,
   ) {
-    this.center = center;
+    super();
+    this.center =
+      center instanceof Vector2 ? new Vector3(center.x, center.y, 0) : center;
+    this.rotation =
+      rotation instanceof Vector2
+        ? new Vector3(rotation.x, rotation.y, 0)
+        : rotation;
     this.xradius = xradius;
     this.yradius = yradius;
     this.segments = segments;
-    this.geometry = null;
   }
 
   public getGeometry(): any {
@@ -51,25 +51,15 @@ export class Ellipse implements IGeometry2D {
       this.geometry = new THREE.BufferGeometry().setFromPoints(
         curve.getPoints(this.segments)
       );
+      this.normalizeGeometry();
       return this.geometry;
     }
   }
-
-  public getCenter(): Vector2 {
-    return this.center;
-  }
-  public getRadius(): Vector2 {
-    return new Vector2(this.xradius, this.yradius);
-  }
-  public getSegments(): number {
-    return this.segments;
-  }
-
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Point:
         let point = geometry as Point;
-        let res = pointEllipseObj(
+        let res = MinimumDistance2D.pointEllipseObj(
           new Vector2(point.center.x, point.center.y),
           this
         );
@@ -79,7 +69,7 @@ export class Ellipse implements IGeometry2D {
         ];
       case GeometryType2D.Ellipse:
         let ellipse = geometry as Ellipse;
-        let temp = ellipseEllipse(ellipse, this);
+        let temp = MinimumDistance2D.ellipseEllipse(ellipse, this);
         return [
           new Vector3(temp[0].x, temp[0].y, 0),
           new Vector3(temp[1].x, temp[1].y, 0),

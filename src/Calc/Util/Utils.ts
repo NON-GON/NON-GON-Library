@@ -1,4 +1,3 @@
-import { Ellipse } from "../../Geometries/2D/Ellipse";
 import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 import { Sphere } from "../../Geometries/3D/Sphere";
 
@@ -9,6 +8,10 @@ export class Vector2 {
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
+  }
+
+  public toVector3(): Vector3 {
+    return new Vector3(this.x, this.y, 0);
   }
 
   public clone(): Vector2 {
@@ -67,7 +70,9 @@ export class Vector3 {
   public clone(): Vector3 {
     return new Vector3(this.x, this.y, this.z);
   }
-
+  public toVector3(): Vector3 {
+    return new Vector3(this.x, this.y, this.z);
+  }
   static Zero(): Vector3 {
     return new Vector3(0, 0, 0);
   }
@@ -286,41 +291,6 @@ export function WorldSpaceToLocalSpace3D(
 
   return new Vector3(localX, localY, localZ);
 }
-export function WorldSpaceToLocalSpace(
-  ellipse: Ellipse,
-  point: Vector2
-): Vector2 {
-  // Step 1: Translate point to ellipse's center
-  const translatedX = point.x - ellipse.center.x;
-  const translatedY = point.y - ellipse.center.y;
-
-  // Step 2: Rotate point by negative ellipse rotation
-  const cosTheta = Math.cos(-ellipse.rotation);
-  const sinTheta = Math.sin(-ellipse.rotation);
-
-  const localX = translatedX * cosTheta - translatedY * sinTheta;
-  const localY = translatedX * sinTheta + translatedY * cosTheta;
-
-  return new Vector2(localX, localY);
-}
-
-export function LocalSpaceToWorldSpace(
-  ellipse: Ellipse,
-  point: Vector2
-): Vector2 {
-  // Step 1: Rotate point by ellipse rotation
-  const cosTheta = Math.cos(ellipse.rotation);
-  const sinTheta = Math.sin(ellipse.rotation);
-
-  const rotatedX = point.x * cosTheta - point.y * sinTheta;
-  const rotatedY = point.x * sinTheta + point.y * cosTheta;
-
-  // Step 2: Translate back to world space
-  const worldX = rotatedX + ellipse.center.x;
-  const worldY = rotatedY + ellipse.center.y;
-
-  return new Vector2(worldX, worldY);
-}
 
 export function getRoot(
   r0: number,
@@ -378,24 +348,6 @@ export function getRoot(
   return t;
 }
 
-export function getRotationZ(ellipse: Ellipse): number {
-  const cosTheta = Math.cos(ellipse.rotation);
-  const sinTheta = Math.sin(ellipse.rotation);
-  return Math.atan2(sinTheta, cosTheta) * (180 / Math.PI);
-}
-
-export function getRotationX(ellipse: Ellipse): number {
-  const cosTheta = Math.cos(ellipse.rotation);
-  const sinTheta = Math.sin(ellipse.rotation);
-  return Math.atan2(sinTheta, cosTheta) * (180 / Math.PI);
-}
-
-export function getRotationY(ellipse: Ellipse): number {
-  const cosTheta = Math.cos(ellipse.rotation);
-  const sinTheta = Math.sin(ellipse.rotation);
-  return Math.atan2(sinTheta, cosTheta) * (180 / Math.PI);
-}
-
 export function SAT(
   axis: Vector3,
   corners: Vector3[],
@@ -413,7 +365,6 @@ export function SAT(
 
   return [minAlong, maxAlong];
 }
-
 
 export function overlaps(
   min1: number,

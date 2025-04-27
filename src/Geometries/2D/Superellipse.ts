@@ -7,49 +7,36 @@ import {
   isGeometryType2D,
   isGeometryType3D,
 } from "../GeoTypes";
-import { superellipseLine } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
 import { Line } from "./Line";
-
-export class Superellipse implements IGeometry2D {
-  readonly center: Vector2;
+import { Geometry2DBase } from "./Geometry2DBase";
+import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+export class Superellipse extends Geometry2DBase implements IGeometry2D {
   readonly xradius: number;
   readonly yradius: number;
   readonly segments: number;
   readonly exponent: number;
-  private geometry: any = null;
-  public rotation: number = 0;
   public type: GeometryType2D = GeometryType2D.Supperellipse;
 
   constructor(
-    center: Vector2,
+    center: Vector2 | Vector3,
     xradius: number,
     yradius: number,
-    segments: number,
-    exponent: number // n in superellipse formula
+    exponent: number,
+    rotation: Vector2 | Vector3,
+    segments: number
   ) {
-    this.center = center;
+    super();
+    this.center =
+      center instanceof Vector2 ? new Vector3(center.x, center.y, 0) : center;
+    this.rotation =
+      rotation instanceof Vector2
+        ? new Vector3(rotation.x, rotation.y, 0)
+        : rotation;
     this.xradius = xradius;
     this.yradius = yradius;
     this.segments = segments;
     this.exponent = exponent;
     this.geometry = null;
-  }
-
-  InverseTransformDirection(direction: Vector2): Vector2 {
-    const cos = Math.cos(this.rotation);
-    const sin = Math.sin(this.rotation);
-    return new Vector2(
-      direction.x * cos + direction.y * sin,
-      -direction.x * sin + direction.y * cos
-    );
-  }
-  TransformPoint(point: Vector2): Vector2 {
-    const cos = Math.cos(this.rotation);
-    const sin = Math.sin(this.rotation);
-    return new Vector2(
-      point.x * cos - point.y * sin + this.center.x,
-      point.x * sin + point.y * cos + this.center.y
-    );
   }
 
   public getGeometry(): any {
@@ -79,18 +66,13 @@ export class Superellipse implements IGeometry2D {
       }
 
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      this.normalizeGeometry();
       return this.geometry;
     }
   }
 
-  public getCenter(): Vector2 {
-    return this.center;
-  }
   public getRadius(): Vector2 {
     return new Vector2(this.xradius, this.yradius);
-  }
-  public getSegments(): number {
-    return this.segments;
   }
   public getExponent(): number {
     return this.exponent;
@@ -99,10 +81,10 @@ export class Superellipse implements IGeometry2D {
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Line:
-        const res = superellipseLine(geometry as Line, this);
+        const res = MinimumDistance2D.superellipseLine(geometry as Line, this);
         return [
-          new Vector3(res[0].x, res[0].y, 0),
-          new Vector3(res[1].x, res[1].y, 0),
+          new Vector3(res[0].x, res[0].y, res[0].z),
+          new Vector3(res[1].x, res[1].y, res[1].z),
         ];
       default:
         throw new Error(

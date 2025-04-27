@@ -132,6 +132,7 @@ export class GeometryManager {
           params.center,
           params.xradius,
           params.yradius,
+          params.rotation,
           params.segments
         );
         break;
@@ -140,8 +141,9 @@ export class GeometryManager {
           params.center,
           params.xradius,
           params.yradius,
-          params.segments,
-          params.exponent
+          params.exponent,
+          params.rotation,
+          params.segments
         );
         break;
       case GeometryType2D.Line:
@@ -150,8 +152,9 @@ export class GeometryManager {
       case GeometryType2D.Circle:
         geometry = new Ellipse(
           params.center,
-          params.xradius,
-          params.yradius,
+          params.radius,
+          params.radius,
+          params.rotation,
           params.segments
         );
         break;
@@ -161,10 +164,10 @@ export class GeometryManager {
       case GeometryType2D.Plane:
         geometry = new Plane(
           params.center,
-          params.segments,
           params.rotation,
           params.width,
-          params.height
+          params.height,
+          params.segments
         );
 
         break;
@@ -186,7 +189,7 @@ export class GeometryManager {
     let geometry1 = this.getGeometry(id1);
     let geometry2 = this.getGeometry(id2);
     let distance = geometry1.MinimumDistance(geometry2);
-    console.log(`Minimum distance between ${id1} and ${id2}: ${distance}`);
+    console.log(`Minimum distance between ${id1} and ${id2}: ${distance[0].distanceTo(distance[1])}`);
     return distance;
   }
 }

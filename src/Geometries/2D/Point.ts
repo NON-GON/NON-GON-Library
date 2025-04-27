@@ -8,20 +8,20 @@ import {
 import { IGeometry2D } from "./IGeometry2D";
 import * as THREE from "three";
 import { IGeometry3D } from "../3D/IGeometry3D";
-import { point_Ellipsoid } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 import { Ellipsoid } from "../3D/Ellipsoid";
-import { pointEllipseObj } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
 import { Ellipse } from "./Ellipse";
+import { Geometry2DBase } from "./Geometry2DBase";
+import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 
-export class Point implements IGeometry2D {
-  center: Vector2;
+export class Point extends Geometry2DBase implements IGeometry2D {
   segments: number = 1;
   type: GeometryType2D = GeometryType2D.Point;
-  rotation: number = 0;
-  private geometry: any = null;
 
-  constructor(center: Vector2) {
-    this.center = center;
+  constructor(center: Vector3 | Vector2) {
+    super();
+    this.center =
+      center instanceof Vector2 ? new Vector3(center.x, center.y, 0) : center;
   }
 
   getGeometry(): Vector2 {
@@ -31,19 +31,19 @@ export class Point implements IGeometry2D {
       console.log("Creating Point Geometry");
       const points = [this.center];
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      this.normalizeGeometry();
       return this.geometry;
     }
-  }
-
-  getCenter(): Vector2 {
-    return this.center;
   }
 
   MinimumDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType3D.Ellipsoid:
         let vec3 = new Vector3(this.center.x, this.center.y, 0);
-        let res = point_Ellipsoid(vec3, geometry as Ellipsoid);
+        let res = MinimumDistance3D.point_Ellipsoid(
+          vec3,
+          geometry as Ellipsoid
+        );
         return [res[0], res[1]];
       default:
         throw new Error(
@@ -54,10 +54,13 @@ export class Point implements IGeometry2D {
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Ellipse:
-        let res = pointEllipseObj(this.center, geometry as Ellipse);
+        let res = MinimumDistance2D.pointEllipseObj(
+          this.center,
+          geometry as Ellipse
+        );
         return [
-          new Vector3(res[0].x, res[0].y, 0),
-          new Vector3(res[1].x, res[1].y, 0),
+          new Vector3(res[0].x, res[0].y, res[0].z),
+          new Vector3(res[1].x, res[1].y, res[1].z),
         ];
       default:
         throw new Error(

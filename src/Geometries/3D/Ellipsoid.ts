@@ -2,10 +2,6 @@ import * as THREE from "three";
 import { Vector3 } from "../../Calc/Util/Utils";
 import { IGeometry3D } from "./IGeometry3D";
 import { Point } from "../2D/Point";
-import {
-  ellipsoidEllipsoid,
-  point_Ellipsoid,
-} from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 import { IGeometry2D } from "../2D/IGeometry2D";
 import {
   GeometryType3D,
@@ -13,6 +9,7 @@ import {
   isGeometryType2D,
   isGeometryType3D,
 } from "../GeoTypes";
+import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 
 export class Ellipsoid implements IGeometry3D {
   readonly center: Vector3;
@@ -42,10 +39,10 @@ export class Ellipsoid implements IGeometry3D {
   MinimumDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType3D.Ellipsoid:
-        const res = ellipsoidEllipsoid(this, geometry as Ellipsoid);
+        const res = MinimumDistance3D.ellipsoidEllipsoid(this, geometry as Ellipsoid);
         return [res[0], res[1]];
       case GeometryType3D.Sphere:
-        const res1 = ellipsoidEllipsoid(this, geometry as Ellipsoid);
+        const res1 = MinimumDistance3D.ellipsoidEllipsoid(this, geometry as Ellipsoid);
         return [res1[0], res1[1]];
       default:
         throw new Error(
@@ -57,7 +54,7 @@ export class Ellipsoid implements IGeometry3D {
     switch (geometry.type) {
       case GeometryType2D.Point:
         let point = geometry as Point;
-        const res = point_Ellipsoid(
+        const res = MinimumDistance3D.point_Ellipsoid(
           new Vector3(point.center.x, point.center.y, 0),
           this
         );

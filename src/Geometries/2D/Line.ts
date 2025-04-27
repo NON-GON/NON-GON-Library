@@ -7,50 +7,35 @@ import {
   isGeometryType2D,
   isGeometryType3D,
 } from "../GeoTypes";
-import { superellipseLine } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
 import { Superellipse } from "./Superellipse";
+import { Geometry2DBase } from "./Geometry2DBase";
+import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
 
-export class Line implements IGeometry2D {
-  center: Vector2;
+export class Line extends Geometry2DBase implements IGeometry2D {
   segments: number;
   type: GeometryType2D;
-  rotation: number;
-  private geometry: any = null; // Placeholder for geometry object
-  start: Vector2;
-  end: Vector2;
+  start: Vector3;
+  end: Vector3;
 
-  constructor(start: Vector2, end: Vector2, rotation: number = 0) {
-    this.start = start;
-    this.end = end;
-    this.center = new Vector2((start.x + end.x) / 2, (start.y + end.y) / 2);
+  constructor(
+    start: Vector2 | Vector3,
+    end: Vector2 | Vector3,
+    rotation: Vector3
+  ) {
+    super();
+    this.start =
+      start instanceof Vector2 ? new Vector3(start.x, start.y, 0) : start;
+    this.end = end instanceof Vector2 ? new Vector3(end.x, end.y, 0) : end;
+    if (this.start instanceof Vector3 || this.end instanceof Vector3) {
+      this.center = new Vector3(
+        (start.x + end.x) / 2,
+        (start.y + end.y) / 2,
+        (start.toVector3().z + end.toVector3().z) / 2
+      );
+    }
     this.segments = 1; // A line has one segment by default
     this.type = GeometryType2D.Line;
     this.rotation = rotation;
-  }
-
-  TransformDirection(direction: Vector2): Vector2 {
-    const cos = Math.cos(this.rotation);
-    const sin = Math.sin(this.rotation);
-    return new Vector2(
-      direction.x * cos - direction.y * sin,
-      direction.x * sin + direction.y * cos
-    );
-  }
-  InverseTransformPoint(point: Vector2): Vector2 {
-    const cos = Math.cos(this.rotation);
-    const sin = Math.sin(this.rotation);
-    return new Vector2(
-      point.x * cos + point.y * sin,
-      -point.x * sin + point.y * cos
-    );
-  }
-  TransformPoint(point: Vector2): Vector2 {
-    const cos = Math.cos(this.rotation);
-    const sin = Math.sin(this.rotation);
-    return new Vector2(
-      point.x * cos - point.y * sin + this.center.x,
-      point.x * sin + point.y * cos + this.center.y
-    );
   }
 
   public getGeometry(): any {
@@ -59,22 +44,24 @@ export class Line implements IGeometry2D {
     } else {
       console.log("Creating Line Geometry");
       let points = [
-        new THREE.Vector2(this.start.x, this.start.y),
-        new THREE.Vector2(this.end.x, this.end.y),
+        new THREE.Vector3(this.start.x, this.start.y, this.start.z),
+        new THREE.Vector3(this.end.x, this.end.y, this.end.z),
       ];
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      this.geometry.rotateX(this.rotation.x);
+      this.geometry.rotateY(this.rotation.y);
+      this.geometry.rotateZ(this.rotation.z); 
       return this.geometry;
     }
-  }
-
-  getCenter(): Vector2 {
-    return this.center;
   }
 
   MinimumDistance2D(geometry: IGeometry2D): [Vector2, Vector2] {
     switch (geometry.type) {
       case GeometryType2D.Supperellipse:
-        let res = superellipseLine(this, geometry as Superellipse);
+        let res = MinimumDistance2D.superellipseLine(
+          this,
+          geometry as Superellipse
+        );
         return [res[0], res[1]];
       default:
         throw new Error(

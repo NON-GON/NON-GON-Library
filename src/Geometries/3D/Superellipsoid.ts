@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { Vector3 } from "../../Calc/Util/Utils";
 import { IGeometry3D } from "./IGeometry3D";
 import { IGeometry2D } from "../2D/IGeometry2D";
-import { superellipsoidPlane } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 import { Plane } from "../2D/Plane";
 import {
   GeometryType2D,
@@ -10,6 +9,8 @@ import {
   isGeometryType2D,
   isGeometryType3D,
 } from "../GeoTypes";
+import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
+
 
 export class Superellipsoid implements IGeometry3D {
   readonly center: Vector3;
@@ -60,7 +61,7 @@ export class Superellipsoid implements IGeometry3D {
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Plane:
-        let res = superellipsoidPlane(geometry as Plane, this);
+        let res = MinimumDistance3D.superellipsoidPlane(geometry as Plane, this);
         return [res[0], res[1]];
       default:
         throw new Error(
