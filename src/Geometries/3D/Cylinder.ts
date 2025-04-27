@@ -2,37 +2,41 @@ import * as THREE from "three";
 import { Vector3 } from "../../Calc/Util/Utils";
 import { IGeometry3D } from "./IGeometry3D";
 import { IGeometry2D } from "../2D/IGeometry2D";
-import {
-  GeometryType3D,
-} from "../GeoTypes";
+import { GeometryType3D } from "../GeoTypes";
+import { Geometry3DBase } from "./Geometry3DBase";
 
-export class Cylinder implements IGeometry3D {
-  readonly center: Vector3;
+export class Cylinder extends Geometry3DBase implements IGeometry3D {
   readonly xradius: number;
   readonly yradius: number;
   readonly height: number;
-  readonly segments: number;
-  private geometry: any = null;
   public type: GeometryType3D = GeometryType3D.Cylinder;
-  public rotation: Vector3 = new Vector3(0, 0, 0); // Rotation angles in radians
 
   constructor(
     center: Vector3,
     xradius: number,
     yradius: number,
     height: number,
+    rotation: Vector3,
     segments: number
   ) {
+    super();
     this.center = center;
     this.xradius = xradius;
     this.yradius = yradius;
     this.height = height;
+    this.rotation = rotation;
     this.segments = segments;
-    this.geometry = null;
   }
 
   MinimumDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     throw new Error("Minimum distance not implemented for this geometry type.");
+  }
+
+  public forward(): Vector3 {
+    const x = Math.cos(this.rotation.y) * Math.cos(this.rotation.x);
+    const y = Math.sin(this.rotation.x);
+    const z = Math.sin(this.rotation.y) * Math.cos(this.rotation.x);
+    return new Vector3(x, y, z).normalize();
   }
 
   public getGeometry(): any {
@@ -48,20 +52,8 @@ export class Cylinder implements IGeometry3D {
       );
       this.geometry = cylinderGeometry;
 
-      this.geometry.translate(this.center.x, this.center.y, this.center.z);
-
+      this.normalizeGeometry();
       return this.geometry;
     }
-  }
-
-  public getCenter(): Vector3 {
-    return this.center;
-  }
-
-  public getRadii(): Vector3 {
-    throw new Error("getRadii not implemented for this geometry type.");
-  }
-  public getSegments(): number {
-    return this.segments;
   }
 }

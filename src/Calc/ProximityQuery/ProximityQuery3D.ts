@@ -1,5 +1,12 @@
 import { Cylinder } from "../../Geometries/3D/Cylinder";
-import { calDetMatrix4x4, overlaps, SAT, Vector3 } from "../Util/Utils";
+import {
+  calDetMatrix4x4,
+  FindClosestPoints,
+  FindIntersectionPoints,
+  overlaps,
+  SAT,
+  Vector3,
+} from "../Util/Utils";
 
 export class ProximityQuery3D {
   public static PointSphere3D(
@@ -138,36 +145,33 @@ export class ProximityQuery3D {
     }
     return true;
   }
+
   public static Cylinder_Cylinder_Chittawadigi(
     cylinder1: Cylinder,
     cylinder2: Cylinder
   ): boolean {
-    const variables1 = cylinder1.getGeometryCreator();
-    const variables2 = cylinder2.getGeometryCreator();
-    const xradius1 = variables1.xradius;
-    const xradius2 = variables2.xradius;
-    const yradius1 = variables1.yradius;
-    const yradius2 = variables2.yradius;
+    const xradius1 = cylinder1.xradius;
+    const xradius2 = cylinder2.xradius;
+    const yradius1 = cylinder1.yradius;
+    const yradius2 = cylinder2.yradius;
 
-    const cylinder1Position = cylinder1.position;
-    const cylinder2Position = cylinder2.position;
+    const cylinder1Position = cylinder1.getCenter();
+    const cylinder2Position = cylinder2.getCenter();
 
-    const zAxisCylinder1 = cylinder1.forward;
-    const zAxisCylinder2 = cylinder2.forward;
+    const zAxisCylinder1 = cylinder1.forward();
+    const zAxisCylinder2 = cylinder2.forward();
 
     let closestPointAxisCylinder1: Vector3;
     let closestPointAxisCylinder2: Vector3;
 
-    ProximityQuery3D.FindClosestPoints(
+    const { closestPointLineA, closestPointLineB } = FindClosestPoints(
       cylinder1Position,
       cylinder1Position.add(zAxisCylinder1),
       cylinder2Position,
-      cylinder2Position.add(zAxisCylinder2),
-      (p1, p2) => {
-        closestPointAxisCylinder1 = p1;
-        closestPointAxisCylinder2 = p2;
-      }
+      cylinder2Position.add(zAxisCylinder2)
     );
+    closestPointAxisCylinder1 = closestPointLineA;
+    closestPointAxisCylinder2 = closestPointLineB;
 
     const commonNormal = closestPointAxisCylinder2.subtract(
       closestPointAxisCylinder1
@@ -176,8 +180,8 @@ export class ProximityQuery3D {
     let b: number, theta: number, a: number, alpha: number, c: number;
 
     if (
-      closestPointAxisCylinder1.equals(cylinder1Position) &&
-      closestPointAxisCylinder2.equals(cylinder2Position)
+      closestPointAxisCylinder1.equal(cylinder1Position) &&
+      closestPointAxisCylinder2.equal(cylinder2Position)
     ) {
       b = 0;
       c = Math.abs(cylinder2Position.z - cylinder1Position.z);
@@ -194,7 +198,8 @@ export class ProximityQuery3D {
       a = commonNormal.magnitude();
       const endOfSecondRay = endOfFirstRay.add(commonNormal);
       alpha =
-        Math.round(cylinder1.forward.angleTo(cylinder2.forward) * 100) / 100;
+        Math.round(cylinder1.forward().angleTo(cylinder2.forward()) * 100) /
+        100;
 
       if (alpha > 90) {
         alpha = 180 - alpha;
@@ -236,41 +241,37 @@ export class ProximityQuery3D {
           doZAxisIntersect = true;
         }
 
-        const Circle1Center1 = cylinder1Position.add(
-          zAxisCylinder1.multiplyScalar(s1)
-        );
+        const Circle1Center1 = cylinder1Position.add(zAxisCylinder1.scale(s1));
         const Circle2Center1 = cylinder1Position.subtract(
-          zAxisCylinder1.multiplyScalar(s1)
+          zAxisCylinder1.scale(s1)
         );
-        const Circle1Center2 = cylinder2Position.add(
-          zAxisCylinder2.multiplyScalar(s2)
-        );
+        const Circle1Center2 = cylinder2Position.add(zAxisCylinder2.scale(s2));
         const Circle2Center2 = cylinder2Position.subtract(
-          zAxisCylinder2.multiplyScalar(s2)
+          zAxisCylinder2.scale(s2)
         );
 
-        const point1 = CirclePlaneIntersection.FindIntersectionPoints(
+        const point1 = FindIntersectionPoints(
           cylinder1Position,
           commonNormal,
           Circle1Center1,
           zAxisCylinder1,
           r1
         );
-        const point2 = CirclePlaneIntersection.FindIntersectionPoints(
+        const point2 = FindIntersectionPoints(
           cylinder1Position,
           commonNormal,
           Circle2Center1,
           zAxisCylinder1,
           r1
         );
-        const point3 = CirclePlaneIntersection.FindIntersectionPoints(
+        const point3 = FindIntersectionPoints(
           cylinder2Position,
           commonNormal,
           Circle1Center2,
           zAxisCylinder2,
           r2
         );
-        const point4 = CirclePlaneIntersection.FindIntersectionPoints(
+        const point4 = FindIntersectionPoints(
           cylinder2Position,
           commonNormal,
           Circle2Center2,
@@ -341,16 +342,15 @@ export class ProximityQuery3D {
     ellipsoid1: any,
     ellipsoid2: any
   ): number[] {
-    const variables1 = ellipsoid1.getGeometryCreator();
-    const xradius1 = variables1.xradius;
-    const yradius1 = variables1.yradius;
-    const zradius1 = variables1.zradius;
-    const xEllipsoid1 = ellipsoid1.position.x;
-    const yEllipsoid1 = ellipsoid1.position.y;
-    const zEllipsoid1 = ellipsoid1.position.z;
-    const alpha1 = getRotationX(ellipsoid1) * (Math.PI / 180);
-    const beta1 = getRotationY(ellipsoid1) * (Math.PI / 180);
-    const phi1 = getRotationZ(ellipsoid1) * (Math.PI / 180);
+    const xradius1 = ellipsoid1.xradius;
+    const yradius1 = ellipsoid1.yradius;
+    const zradius1 = ellipsoid1.zradius;
+    const xEllipsoid1 = ellipsoid1.getCenter().x;
+    const yEllipsoid1 = ellipsoid1.getCenter().y;
+    const zEllipsoid1 = ellipsoid1.getCenter().z;
+    const alpha1 = ellipsoid1.getRotation().x * (Math.PI / 180);
+    const beta1 = ellipsoid1.getRotation().y * (Math.PI / 180);
+    const phi1 = ellipsoid1.getRotation().z * (Math.PI / 180);
     const sinAlpha1 = Math.sin(alpha1);
     const sinBeta1 = Math.sin(beta1);
     const sinPhi1 = Math.sin(phi1);
@@ -358,16 +358,15 @@ export class ProximityQuery3D {
     const cosBeta1 = Math.cos(beta1);
     const cosPhi1 = Math.cos(phi1);
 
-    const variables2 = ellipsoid2.getGeometryCreator();
-    const xradius2 = variables2.xradius;
-    const yradius2 = variables2.yradius;
-    const zradius2 = variables2.zradius;
-    const xEllipsoid2 = ellipsoid2.position.x;
-    const yEllipsoid2 = ellipsoid2.position.y;
-    const zEllipsoid2 = ellipsoid2.position.z;
-    const alpha2 = getRotationX(ellipsoid2) * (Math.PI / 180);
-    const beta2 = getRotationY(ellipsoid2) * (Math.PI / 180);
-    const phi2 = getRotationZ(ellipsoid2) * (Math.PI / 180);
+    const xradius2 = ellipsoid2.xradius;
+    const yradius2 = ellipsoid2.yradius;
+    const zradius2 = ellipsoid2.zradius;
+    const xEllipsoid2 = ellipsoid2.getCenter().x;
+    const yEllipsoid2 = ellipsoid2.getCenter().y;
+    const zEllipsoid2 = ellipsoid2.getCenter().z;
+    const alpha2 = ellipsoid2.getRotation().x * (Math.PI / 180);
+    const beta2 = ellipsoid2.getRotation().y * (Math.PI / 180);
+    const phi2 = ellipsoid2.getRotation().z * (Math.PI / 180);
     const sinAlpha2 = Math.sin(alpha2);
     const sinBeta2 = Math.sin(beta2);
     const sinPhi2 = Math.sin(phi2);

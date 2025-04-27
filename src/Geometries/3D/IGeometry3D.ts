@@ -5,9 +5,13 @@ import { GeometryType3D } from "../GeoTypes";
 export interface IGeometry3D {
   readonly center: Vector3;
   readonly segments: number;
+  readonly type: GeometryType3D;
+  readonly geometry: any;
   rotation: Vector3;
   getGeometry(): any;
   getCenter(): Vector3;
-  type: GeometryType3D;
+  getRotation(): Vector3;
+  getType(): GeometryType3D;
+  getSegments(): number;
   MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3];
 }

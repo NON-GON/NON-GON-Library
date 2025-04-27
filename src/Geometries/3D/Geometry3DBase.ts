@@ -1,12 +1,12 @@
 import { Vector3 } from "../../Calc/Util/Utils";
-import { IGeometry3D } from "../3D/IGeometry3D";
-import { GeometryType2D } from "../GeoTypes";
-import { IGeometry2D } from "./IGeometry2D";
+import { IGeometry2D } from "../2D/IGeometry2D";
+import { GeometryType3D } from "../GeoTypes";
+import { IGeometry3D } from "./IGeometry3D";
 
-export abstract class Geometry2DBase implements IGeometry2D {
+export abstract class Geometry3DBase implements IGeometry3D {
   center: Vector3 = new Vector3(0, 0, 0);
   segments: number = 100;
-  abstract type: GeometryType2D;
+  abstract type: GeometryType3D;
   geometry: any = null;
   rotation: Vector3 = new Vector3(0, 0, 0);
 
@@ -23,7 +23,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     return this.rotation;
   }
 
-  public getType(): GeometryType2D {
+  public getType(): GeometryType3D {
     return this.type;
   }
 
@@ -36,7 +36,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     }
   }
 
-  MinimumDistance(geometry: IGeometry2D | IGeometry3D): [Vector3, Vector3] {
+  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     throw new Error("Method not implemented.");
   }
 

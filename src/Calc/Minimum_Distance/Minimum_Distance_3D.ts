@@ -1,10 +1,4 @@
-import {
-  Vector3,
-  Vector2,
-  WorldSpaceToLocalSpace3D,
-  LocalSpaceToWorldSpace3D,
-  getRoot,
-} from "../Util/Utils";
+import { Vector3, Vector2, getRoot } from "../Util/Utils";
 import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 import { Sphere } from "../../Geometries/3D/Sphere";
 import { Plane } from "../../Geometries/2D/Plane";
@@ -16,12 +10,21 @@ export class MinimumDistance3D {
     ellipsoid: Ellipsoid | Sphere
   ): Vector3[] {
     let sol: Vector3[] = [new Vector3(0, 0, 0), new Vector3(0, 0, 0)];
-    let a = ellipsoid.xradius; // Ellipsoid semi-axis
-    let b = ellipsoid.yradius;
-    let c = ellipsoid.zradius;
+    let a = 0;
+    let b = 0;
+    let c = 0;
+    if (ellipsoid instanceof Sphere) {
+      a = ellipsoid.radius; // Ellipsoid semi-axis
+      b = ellipsoid.radius;
+      c = ellipsoid.radius;
+    } else if (ellipsoid instanceof Ellipsoid) {
+      a = ellipsoid.xradius; // Ellipsoid semi-axis
+      b = ellipsoid.yradius;
+      c = ellipsoid.zradius;
+    }
 
     // Transform the query point to a new system of coordinates relative to the ellipsoid
-    let Point_ = WorldSpaceToLocalSpace3D(ellipsoid, point);
+    let Point_ = ellipsoid.WorldSpaceToLocalSpace(point);
     let s1 = Point_.x;
     let s2 = Point_.y;
     let s3 = Point_.z;
@@ -132,7 +135,7 @@ export class MinimumDistance3D {
     z = multz * z;
     sol[0] = point;
     let pop = new Vector3(x, y, z);
-    pop = LocalSpaceToWorldSpace3D(ellipsoid, pop);
+    pop = ellipsoid.LocalSpaceToWorldSpace(pop);
     sol[1] = pop;
     return sol;
   }
@@ -142,8 +145,6 @@ export class MinimumDistance3D {
     ellipsoid2: Ellipsoid | Sphere
   ): Vector3[] {
     let sol: Vector3[] = [new Vector3(0, 0, 0), new Vector3(0, 0, 0)];
-
-
 
     // Initialize points and distances
     let point0 = ellipsoid1.getCenter();
@@ -270,8 +271,12 @@ export class MinimumDistance3D {
     const point1_local = superellipsoid.point(phi1, phi2);
     const point2_local = point1_local.clone().scale(-1);
 
-    const point1_world = superellipsoid.localToWorld(point1_local.clone());
-    const point2_world = superellipsoid.localToWorld(point2_local.clone());
+    const point1_world = superellipsoid.LocalSpaceToWorldSpace(
+      point1_local.clone()
+    );
+    const point2_world = superellipsoid.LocalSpaceToWorldSpace(
+      point2_local.clone()
+    );
 
     const point_plane1 = plane.WorldSpaceToLocalSpace(point1_world.clone());
     const point_plane2 = plane.WorldSpaceToLocalSpace(point2_world.clone());

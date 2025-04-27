@@ -2,7 +2,6 @@ import { Ellipse } from "../../Geometries/2D/Ellipse";
 import {
   calDetMatrix3x3,
   descartesLawOfSignsThirdDegreePolynomial,
-  getRotationZ,
   overlaps,
   SAT,
   Vector3,
@@ -80,7 +79,7 @@ export function characteristicPolynomial(
   const matrixB: number[][] = Array.from({ length: 3 }, () => Array(3).fill(0));
 
   // Ellipse 1
-  const theta1 = getRotationZ(Ellipse1) * (Math.PI / 180);
+  const theta1 = Ellipse1.getRotation().z* (Math.PI / 180);
   const sinTheta1 = Math.sin(theta1);
   const cosTheta1 = Math.cos(theta1);
   const aaEllipse1 = xradius1 * xradius1;
@@ -108,7 +107,7 @@ export function characteristicPolynomial(
   matrixA[2][2] = F1;
 
   // Ellipse 2
-  const theta2 = getRotationZ(Ellipse2) * (Math.PI / 180);
+  const theta2 = Ellipse2.getRotation().z * (Math.PI / 180);
   const sinTheta2 = Math.sin(theta2);
   const cosTheta2 = Math.cos(theta2);
   const aaEllipse2 = xradius2 * xradius2;

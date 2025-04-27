@@ -48,6 +48,9 @@ export class Vector2 {
     }
     return new Vector2(this.x / mag, this.y / mag);
   }
+  public equal(vector: Vector2): boolean {
+    return this.x === vector.x && this.y === vector.y;
+  }
 
   public distanceTo(vector: Vector2): number {
     return Math.sqrt(
@@ -114,6 +117,38 @@ export class Vector3 {
   public magnitude(): number {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
+  public equal(vector: Vector3): boolean {
+    return this.x === vector.x && this.y === vector.y && this.z === vector.z;
+  }
+
+  public cross(vector: Vector3): Vector3 {
+    return new Vector3(
+      this.y * vector.z - this.z * vector.y,
+      this.z * vector.x - this.x * vector.z,
+      this.x * vector.y - this.y * vector.x
+    );
+  }
+
+  public set(x: number, y: number, z: number): Vector3;
+  public set(vector: Vector3): Vector3;
+  public set(xOrVector: number | Vector3, y?: number, z?: number): Vector3 {
+    if (xOrVector instanceof Vector3) {
+      this.x = xOrVector.x;
+      this.y = xOrVector.y;
+      this.z = xOrVector.z;
+    } else {
+      this.x = xOrVector;
+      this.y = y!;
+      this.z = z!;
+    }
+    return this;
+  }
+  public angleTo(vector: Vector3): number {
+    const dotProduct = this.dot(vector);
+    const magA = this.magnitude();
+    const magB = vector.magnitude();
+    return Math.acos(dotProduct / (magA * magB));
+  }
 
   public distanceTo(vector: Vector3): number {
     return Math.sqrt(
@@ -137,6 +172,40 @@ export class Vector3 {
     }
     return new Vector3(this.x / mag, this.y / mag, this.z / mag);
   }
+}
+
+export function FindClosestPoints(
+  A1: Vector3,
+  A2: Vector3,
+  B1: Vector3,
+  B2: Vector3
+): { closestPointLineA: Vector3; closestPointLineB: Vector3 } {
+  const directionA = A2.subtract(A1);
+  const directionB = B2.subtract(B1);
+  const crossProduct = directionA.cross(directionB);
+
+  // Check if lines are parallel
+  if (crossProduct.magnitude() < 0.001) {
+    return { closestPointLineA: A1, closestPointLineB: B1 };
+  }
+
+  const lineVector = A1.subtract(B1);
+  const a = directionA.dot(directionA);
+  const b = directionA.dot(directionB);
+  const c = directionB.dot(directionB);
+  const d = directionA.dot(lineVector);
+  const e = directionB.dot(lineVector);
+
+  const denominator = a * c - b * b;
+
+  // Calculate the parameters for the lines
+  const s = (b * e - c * d) / denominator;
+  const t = (a * e - b * d) / denominator;
+
+  const closestPointLineA = A1.add(directionA.scale(s));
+  const closestPointLineB = B1.add(directionB.scale(t));
+
+  return { closestPointLineA, closestPointLineB };
 }
 
 export function Distance(point1: Vector2, point2: Vector2): number {
@@ -220,76 +289,6 @@ function solveQuadratic(a: number, b: number, c: number): number[] {
     // Complex roots (return NaN for simplicity)
     return [NaN, NaN];
   }
-}
-
-export function LocalSpaceToWorldSpace3D(
-  Ellipsoid: Ellipsoid | Sphere,
-  point: Vector3
-): Vector3 {
-  // Step 1: Rotate point by ellipsoid rotation
-  const cosX = Math.cos(Ellipsoid.rotation.x);
-  const sinX = Math.sin(Ellipsoid.rotation.x);
-  const cosY = Math.cos(Ellipsoid.rotation.y);
-  const sinY = Math.sin(Ellipsoid.rotation.y);
-  const cosZ = Math.cos(Ellipsoid.rotation.z);
-  const sinZ = Math.sin(Ellipsoid.rotation.z);
-
-  // Apply rotation around X-axis
-  const rotatedX1 = point.x;
-  const rotatedY1 = point.y * cosX - point.z * sinX;
-  const rotatedZ1 = point.y * sinX + point.z * cosX;
-
-  // Apply rotation around Y-axis
-  const rotatedX2 = rotatedX1 * cosY - rotatedZ1 * sinY;
-  const rotatedY2 = rotatedY1;
-  const rotatedZ2 = rotatedX1 * sinY + rotatedZ1 * cosY;
-
-  // Apply rotation around Z-axis
-  const worldX = rotatedX2 * cosZ - rotatedY2 * sinZ;
-  const worldY = rotatedX2 * sinZ + rotatedY2 * cosZ;
-  const worldZ = rotatedZ2;
-
-  // Step 2: Translate back to world space
-  return new Vector3(
-    worldX + Ellipsoid.center.x,
-    worldY + Ellipsoid.center.y,
-    worldZ + Ellipsoid.center.z
-  );
-}
-
-export function WorldSpaceToLocalSpace3D(
-  ellipsoid: Ellipsoid | Sphere,
-  point: Vector3
-): Vector3 {
-  // Step 1: Translate point to ellipsoid's center
-  const translatedX = point.x - ellipsoid.center.x;
-  const translatedY = point.y - ellipsoid.center.y;
-  const translatedZ = point.z - ellipsoid.center.z;
-
-  // Step 2: Rotate point by negative ellipsoid rotation
-  const cosX = Math.cos(-ellipsoid.rotation.x);
-  const sinX = Math.sin(-ellipsoid.rotation.x);
-  const cosY = Math.cos(-ellipsoid.rotation.y);
-  const sinY = Math.sin(-ellipsoid.rotation.y);
-  const cosZ = Math.cos(-ellipsoid.rotation.z);
-  const sinZ = Math.sin(-ellipsoid.rotation.z);
-
-  // Apply rotation around Z-axis
-  const rotatedX1 = translatedX * cosZ - translatedY * sinZ;
-  const rotatedY1 = translatedX * sinZ + translatedY * cosZ;
-  const rotatedZ1 = translatedZ;
-
-  // Apply rotation around Y-axis
-  const rotatedX2 = rotatedX1 * cosY + rotatedZ1 * sinY;
-  const rotatedY2 = rotatedY1;
-  const rotatedZ2 = -rotatedX1 * sinY + rotatedZ1 * cosY;
-
-  // Apply rotation around X-axis
-  const localX = rotatedX2;
-  const localY = rotatedY2 * cosX - rotatedZ2 * sinX;
-  const localZ = rotatedY2 * sinX + rotatedZ2 * cosX;
-
-  return new Vector3(localX, localY, localZ);
 }
 
 export function getRoot(
@@ -436,4 +435,50 @@ export function descartesLawOfSignsThirdDegreePolynomial(
     (a3 < 0 && a2 > 0 && a1 > 0 && a0 < 0) ||
     (a3 < 0 && a2 < 0 && a1 > 0 && a0 < 0)
   );
+}
+
+export function FindIntersectionPoints(
+  planePoint: Vector3,
+  planeNormal: Vector3,
+  circleCenter: Vector3,
+  circleNormal: Vector3,
+  radius: number
+): Vector3[] | null {
+  // Ensure the circle's normal is perpendicular to the plane
+  const dotProduct = planeNormal.dot(circleNormal);
+  if (dotProduct >= 0.00001 || dotProduct <= -0.00001) {
+    return null;
+  }
+
+  // Project circle center onto the plane
+  const distanceToPlane = planeNormal.dot(circleCenter.subtract(planePoint));
+  const projectedCenter = circleCenter.subtract(
+    planeNormal.scale(distanceToPlane)
+  );
+
+  // Calculate distance from the projected center to the circle center
+  const centerDistance = projectedCenter.distanceTo(circleCenter);
+
+  if (centerDistance > radius) {
+    // No intersection
+    return [];
+  } else if (centerDistance === radius) {
+    // One intersection point
+    return [projectedCenter];
+  } else {
+    // Two intersection points
+    const distanceFromProjectedCenter = Math.sqrt(
+      radius * radius - centerDistance * centerDistance
+    );
+    const direction = planeNormal.cross(circleNormal).normalize();
+
+    const intersectionPoint1 = projectedCenter.add(
+      direction.scale(distanceFromProjectedCenter)
+    );
+    const intersectionPoint2 = projectedCenter.subtract(
+      direction.scale(distanceFromProjectedCenter)
+    );
+
+    return [intersectionPoint1, intersectionPoint2];
+  }
 }

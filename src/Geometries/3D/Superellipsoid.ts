@@ -10,10 +10,9 @@ import {
   isGeometryType3D,
 } from "../GeoTypes";
 import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
+import { Geometry3DBase } from "./Geometry3DBase";
 
-
-export class Superellipsoid implements IGeometry3D {
-  readonly center: Vector3;
+export class Superellipsoid extends Geometry3DBase implements IGeometry3D {
   readonly xradius: number;
   readonly yradius: number;
   readonly zradius: number;
@@ -22,9 +21,7 @@ export class Superellipsoid implements IGeometry3D {
   readonly segments: number;
   private segmentsU: number = 40;
   private segmentsV: number = 80;
-  private geometry: any = null;
   public type: GeometryType3D = GeometryType3D.Superellipsoid;
-  public rotation: Vector3 = new Vector3(0, 0, 0); // Rotation angles in radians
 
   constructor(
     center: Vector3,
@@ -33,17 +30,19 @@ export class Superellipsoid implements IGeometry3D {
     zradius: number,
     e1: number,
     e2: number,
+    rotation: Vector3,
     segments: number = 80
   ) {
+    super();
     this.center = center;
     this.xradius = xradius;
     this.yradius = yradius;
     this.zradius = zradius;
     this.e1 = e1;
     this.e2 = e2;
+    this.rotation = rotation;
     this.segments = segments;
-    this.geometry = null;
-    this.segmentsU = segments/2;
+    this.segmentsU = segments / 2;
     this.segmentsV = segments;
   }
 
@@ -61,7 +60,10 @@ export class Superellipsoid implements IGeometry3D {
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Plane:
-        let res = MinimumDistance3D.superellipsoidPlane(geometry as Plane, this);
+        let res = MinimumDistance3D.superellipsoidPlane(
+          geometry as Plane,
+          this
+        );
         return [res[0], res[1]];
       default:
         throw new Error(
@@ -76,12 +78,11 @@ export class Superellipsoid implements IGeometry3D {
     } else {
       console.log("Creating Superellipsoid Geometry");
       console.log(this.segmentsU, this.segmentsV);
-      const n1 = this.e1 ?? 2; 
-      const n2 = this.e2 ?? 2; 
+      const n1 = this.e1 ?? 2;
+      const n2 = this.e2 ?? 2;
       const a = this.xradius ?? 1;
       const b = this.yradius ?? 1;
       const c = this.zradius ?? 1;
-
 
       const points: Vector3[] = [];
 
@@ -101,74 +102,16 @@ export class Superellipsoid implements IGeometry3D {
           points.push(new Vector3(x, y, z));
         }
       }
-      
-      const threePoints = points.map(p => new THREE.Vector3(p.x, p.y, p.z));
+
+      const threePoints = points.map((p) => new THREE.Vector3(p.x, p.y, p.z));
       this.geometry = new THREE.BufferGeometry().setFromPoints(threePoints);
+      this.normalizeGeometry();
       return this.geometry;
     }
   }
 
-  public getCenter(): Vector3 {
-    return this.center;
-  }
-
-  public getRadii(): Vector3 {
-    return new Vector3(this.xradius, this.yradius, this.zradius);
-  }
-
-  public getSegments(): number {
-    return this.segments;
-  }
-
   public getExponent(): [number, number] {
     return [this.e1, this.e2];
-  }
-
-  public InverseTransformPoint(point: Vector3): Vector3 {
-    const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
-      new THREE.Euler(this.rotation.x, this.rotation.y, this.rotation.z)
-    );
-    const inverseRotationMatrix = new THREE.Matrix4()
-      .copy(rotationMatrix)
-      .invert();
-    const translatedPoint = point.clone().subtract(this.center);
-    const transformedPoint = translatedPoint.applyMatrix4(
-      inverseRotationMatrix
-    );
-    return transformedPoint;
-  }
-  public InverseTransformDirection(direction: Vector3): Vector3 {
-    const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
-      new THREE.Euler(this.rotation.x, this.rotation.y, this.rotation.z)
-    );
-    const inverseRotationMatrix = new THREE.Matrix4()
-      .copy(rotationMatrix)
-      .invert();
-    const transformedDirection = direction
-      .clone()
-      .applyMatrix4(inverseRotationMatrix);
-    return transformedDirection;
-  }
-
-  localToWorld(point: Vector3): Vector3 {
-    const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
-      new THREE.Euler(this.rotation.x, this.rotation.y, this.rotation.z)
-    );
-    const transformedPoint = point.clone().applyMatrix4(rotationMatrix);
-    return transformedPoint.add(this.center);
-  }
-  worldToLocal(point: Vector3): Vector3 {
-    const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
-      new THREE.Euler(this.rotation.x, this.rotation.y, this.rotation.z)
-    );
-    const inverseRotationMatrix = new THREE.Matrix4()
-      .copy(rotationMatrix)
-      .invert();
-    const translatedPoint = point.clone().subtract(this.center);
-    const transformedPoint = translatedPoint.applyMatrix4(
-      inverseRotationMatrix
-    );
-    return transformedPoint;
   }
 
   public point(theta: number, phi: number): Vector3 {

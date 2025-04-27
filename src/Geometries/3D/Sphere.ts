@@ -11,33 +11,39 @@ import {
   isGeometryType3D,
 } from "../GeoTypes";
 import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
+import { Geometry3DBase } from "./Geometry3DBase";
 
-export class Sphere implements IGeometry3D {
-  readonly center: Vector3;
-  readonly xradius: number;
-  readonly yradius: number;
-  readonly zradius: number;
+export class Sphere extends Geometry3DBase implements IGeometry3D {
+  readonly radius: number;
   readonly segments: number;
-  private geometry: any = null;
   public type: GeometryType3D = GeometryType3D.Sphere;
-  public rotation: Vector3 = new Vector3(0, 0, 0); // Rotation angles in radians
 
-  constructor(center: Vector3, radius: number, segments: number) {
+  constructor(
+    center: Vector3,
+    radius: number,
+    rotation: Vector3,
+    segments: number
+  ) {
+    super();
     this.center = center;
-    this.xradius = radius;
-    this.yradius = radius;
-    this.zradius = radius;
+    this.radius = radius;
+    this.rotation = rotation;
     this.segments = segments;
-    this.geometry = null;
   }
 
   MinimumDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType3D.Ellipsoid:
-        const res = MinimumDistance3D.ellipsoidEllipsoid(this, geometry as Ellipsoid);
+        const res = MinimumDistance3D.ellipsoidEllipsoid(
+          this,
+          geometry as Ellipsoid
+        );
         return [res[0], res[1]];
       case GeometryType3D.Sphere:
-        const res1 = MinimumDistance3D.ellipsoidEllipsoid(this, geometry as Ellipsoid);
+        const res1 = MinimumDistance3D.ellipsoidEllipsoid(
+          this,
+          geometry as Ellipsoid
+        );
         return [res1[0], res1[1]];
       default:
         throw new Error(
@@ -76,29 +82,14 @@ export class Sphere implements IGeometry3D {
     } else {
       console.log("Creating Ellipsoid Geometry");
       const sphereGeometry = new THREE.SphereGeometry(
-        1,
+        this.radius,
         this.segments,
         this.segments
       );
-      sphereGeometry.scale(this.xradius, this.yradius, this.zradius);
       this.geometry = sphereGeometry;
-
-      // Position the geometry at the ellipsoid's center
-      this.geometry.translate(this.center.x, this.center.y, this.center.z);
+      this.normalizeGeometry();
 
       return this.geometry;
     }
-  }
-
-  public getCenter(): Vector3 {
-    return this.center;
-  }
-
-  public getRadii(): Vector3 {
-    return new Vector3(this.xradius, this.yradius, this.zradius);
-  }
-
-  public getSegments(): number {
-    return this.segments;
   }
 }
