@@ -1,11 +1,15 @@
 import { Cylinder } from "../../Geometries/3D/Cylinder";
+import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 import {
   calDetMatrix4x4,
+  DescartesLawOfSignsFourthDegreePolynomial,
   FindClosestPoints,
   FindIntersectionPoints,
   overlaps,
+  RectanglesIntersect,
   SAT,
   Vector3,
+  VertexEdgeTestFunction,
 } from "../Util/Utils";
 
 export class ProximityQuery3D {
@@ -315,13 +319,11 @@ export class ProximityQuery3D {
           }
         }
 
-        if (
-          !RectanglesIntersection.RectanglesIntersect(Q1Vertices, Q2Vertices)
-        ) {
+        if (!RectanglesIntersect(Q1Vertices, Q2Vertices)) {
           return false;
         }
 
-        return VertexEdgeTest.VertexEdgeTestFunction(
+        return VertexEdgeTestFunction(
           s1,
           s2,
           r1,
@@ -944,4 +946,22 @@ export class ProximityQuery3D {
 
     return [a4, a3, a2, a1, a0];
   }
+
+  public static Ellipsoid_Ellipsoid_Caravantes(
+    Ellipsoid1: Ellipsoid,
+    Ellipsoid2: Ellipsoid
+  ): boolean {
+    const characteristicPolynomialValues = this.characteristicPolynomialEllipsoid(
+      Ellipsoid1,
+      Ellipsoid2
+    );
+
+    const a4 = characteristicPolynomialValues[0];
+    const a3 = characteristicPolynomialValues[1];
+    const a2 = characteristicPolynomialValues[2];
+    const a1 = characteristicPolynomialValues[3];
+    const a0 = characteristicPolynomialValues[4];
+    return !DescartesLawOfSignsFourthDegreePolynomial(a4, a3, a2, a1, a0);
+  }
+  
 }

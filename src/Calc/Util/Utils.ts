@@ -1,5 +1,4 @@
-import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
-import { Sphere } from "../../Geometries/3D/Sphere";
+import { Cylinder } from "../../Geometries/3D/Cylinder";
 
 export class Vector2 {
   public x: number;
@@ -481,4 +480,1225 @@ export function FindIntersectionPoints(
 
     return [intersectionPoint1, intersectionPoint2];
   }
+}
+
+export function RectanglesIntersect(
+  rect1Points: Vector3[],
+  rect2Points: Vector3[]
+): boolean {
+  return (
+    DoLinesIntersect(
+      rect1Points[0],
+      rect1Points[1],
+      rect2Points[0],
+      rect2Points[1]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[0],
+      rect1Points[1],
+      rect2Points[1],
+      rect2Points[2]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[0],
+      rect1Points[1],
+      rect2Points[2],
+      rect2Points[3]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[0],
+      rect1Points[1],
+      rect2Points[3],
+      rect2Points[0]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[1],
+      rect1Points[2],
+      rect2Points[0],
+      rect2Points[1]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[1],
+      rect1Points[2],
+      rect2Points[1],
+      rect2Points[2]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[1],
+      rect1Points[2],
+      rect2Points[2],
+      rect2Points[3]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[1],
+      rect1Points[2],
+      rect2Points[3],
+      rect2Points[0]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[2],
+      rect1Points[3],
+      rect2Points[0],
+      rect2Points[1]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[2],
+      rect1Points[3],
+      rect2Points[1],
+      rect2Points[2]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[2],
+      rect1Points[3],
+      rect2Points[2],
+      rect2Points[3]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[2],
+      rect1Points[3],
+      rect2Points[3],
+      rect2Points[0]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[3],
+      rect1Points[0],
+      rect2Points[0],
+      rect2Points[1]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[3],
+      rect1Points[0],
+      rect2Points[1],
+      rect2Points[2]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[3],
+      rect1Points[0],
+      rect2Points[2],
+      rect2Points[3]
+    ) ||
+    DoLinesIntersect(
+      rect1Points[3],
+      rect1Points[0],
+      rect2Points[3],
+      rect2Points[0]
+    )
+  );
+}
+
+export function DoLinesIntersect(
+  A1: Vector3,
+  A2: Vector3,
+  B1: Vector3,
+  B2: Vector3
+): boolean {
+  const directionA = A2.subtract(A1);
+  const directionB = B2.subtract(B1);
+  const crossProduct = directionA.cross(directionB);
+
+  // Check if lines are parallel
+  if (crossProduct.magnitude() < 0.001) {
+    const lineVector = B1.subtract(A1);
+    const dotProduct = lineVector.dot(directionA);
+
+    // Check if lines coincide
+    if (Math.abs(dotProduct) < 0.001) {
+      return true; // Lines coincide
+    } else {
+      return false; // Lines are parallel but not coincident
+    }
+  }
+
+  const lineVector = A1.subtract(B1);
+  const a = directionA.dot(directionA);
+  const b = directionA.dot(directionB);
+  const c = directionB.dot(directionB);
+  const d = directionA.dot(lineVector);
+  const e = directionB.dot(lineVector);
+
+  const denominator = a * c - b * b;
+
+  // Calculate the parameters for the lines
+  const s = (b * e - c * d) / denominator;
+  const t = (a * e - b * d) / denominator;
+
+  const closestPointLineA = A1.add(directionA.scale(s));
+  const closestPointLineB = B1.add(directionB.scale(t));
+
+  return closestPointLineA.equal(closestPointLineB);
+}
+
+export function checkVertices(
+  vertexCylinder1: number,
+  vertexCylinder2: number,
+  u: number,
+  w: number,
+  v1: number,
+  v2: number,
+  s1: number,
+  s2: number,
+  r1: number,
+  r2: number,
+  a: number,
+  b: number,
+  c: number,
+  alpha: number,
+  cylinder1: Cylinder,
+  cylinder2: Cylinder,
+  commonNormal: Vector3
+): boolean {
+  // Case 1: top and bottom verification
+  // Case 2 is in SideVerifications function
+
+  // Vertex K1 Edge K2 L2
+  if (vertexCylinder1 === 0 && vertexCylinder2 === 0) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex K1 Edge M2 N2
+  if (vertexCylinder1 === 0 && vertexCylinder2 === 2) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex K1 Edge L2 M2
+  if (vertexCylinder1 === 0 && vertexCylinder2 === 1) {
+    const f = 1;
+    const g = Math.cos(alpha);
+    const h = (c + s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex K1 Edge K2 N2
+  if (vertexCylinder1 === 0 && vertexCylinder2 === 3) {
+    const f = 1;
+    const g = -Math.cos(alpha);
+    const h = (c - s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+
+  // Vertex L1 Edge K2 L2
+  if (vertexCylinder1 === 1 && vertexCylinder2 === 0) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex L1 Edge M2 N2
+  if (vertexCylinder1 === 1 && vertexCylinder2 === 2) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex L1 Edge L2 M2
+  if (vertexCylinder1 === 1 && vertexCylinder2 === 1) {
+    const f = -1;
+    const g = Math.cos(alpha);
+    const h = (c + s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex L1 Edge K2 N2
+  if (vertexCylinder1 === 1 && vertexCylinder2 === 3) {
+    const f = -1;
+    const g = -Math.cos(alpha);
+    const h = (c - s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+
+  // Vertex M1 Edge K2 L2
+  if (vertexCylinder1 === 2 && vertexCylinder2 === 0) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex M1 Edge M2 N2
+  if (vertexCylinder1 === 2 && vertexCylinder2 === 2) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex M1 Edge L2 M2
+  if (vertexCylinder1 === 2 && vertexCylinder2 === 1) {
+    const f = -1;
+    const g = Math.cos(alpha);
+    const h = (c + s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex M1 Edge K2 N2
+  if (vertexCylinder1 === 2 && vertexCylinder2 === 3) {
+    const f = -1;
+    const g = -Math.cos(alpha);
+    const h = (c - s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+
+  // Vertex N1 Edge K2 L2
+  if (vertexCylinder1 === 3 && vertexCylinder2 === 0) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex N1 Edge M2 N2
+  if (vertexCylinder1 === 3 && vertexCylinder2 === 2) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex N1 Edge L2 M2
+  if (vertexCylinder1 === 3 && vertexCylinder2 === 1) {
+    const f = 1;
+    const g = Math.cos(alpha);
+    const h = (c + s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex N1 Edge K2 N2
+  if (vertexCylinder1 === 3 && vertexCylinder2 === 3) {
+    const f = 1;
+    const g = -Math.cos(alpha);
+    const h = (c - s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+
+  // Vertex K2 Edge K1 L1
+  if (vertexCylinder1 === 0 && vertexCylinder2 === 0) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex K2 Edge M1 N1
+  if (vertexCylinder1 === 2 && vertexCylinder2 === 0) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex K2 Edge L1 M1
+  if (vertexCylinder1 === 1 && vertexCylinder2 === 0) {
+    const f = -1;
+    const g = -Math.cos(alpha);
+    const h = (c + s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex K2 Edge K1 N1
+  if (vertexCylinder1 === 3 && vertexCylinder2 === 0) {
+    const f = 1;
+    const g = -Math.cos(alpha);
+    const h = (c + s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+
+  // Vertex L2 Edge K1 L1
+  if (vertexCylinder1 === 0 && vertexCylinder2 === 1) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex L2 Edge M1 N1
+  if (vertexCylinder1 === 2 && vertexCylinder2 === 1) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex L2 Edge L1 M1
+  if (vertexCylinder1 === 1 && vertexCylinder2 === 1) {
+    const f = -1;
+    const g = Math.cos(alpha);
+    const h = (c + s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex L2 Edge K1 N1
+  if (vertexCylinder1 === 3 && vertexCylinder2 === 1) {
+    const f = 1;
+    const g = Math.cos(alpha);
+    const h = (c + s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+
+  // Vertex M2 Edge K1 L1
+  if (vertexCylinder1 === 0 && vertexCylinder2 === 2) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex M2 Edge M1 N1
+  if (vertexCylinder1 === 2 && vertexCylinder2 === 2) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex M2 Edge L1 M1
+  if (vertexCylinder1 === 1 && vertexCylinder2 === 2) {
+    const f = -1;
+    const g = Math.cos(alpha);
+    const h = (c - s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex M2 Edge K1 N1
+  if (vertexCylinder1 === 3 && vertexCylinder2 === 2) {
+    const f = 1;
+    const g = Math.cos(alpha);
+    const h = (c - s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+
+  // Vertex N2 Edge K1 L1
+  if (vertexCylinder1 === 0 && vertexCylinder2 === 3) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex N2 Edge M1 N1
+  if (vertexCylinder1 === 2 && vertexCylinder2 === 3) {
+    if (
+      rectangleIntersection(
+        u,
+        w,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal,
+        r1,
+        r2
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex N2 Edge L1 M1
+  if (vertexCylinder1 === 1 && vertexCylinder2 === 3) {
+    const f = -1;
+    const g = -Math.cos(alpha);
+    const h = (c - s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+  // Vertex N2 Edge K1 N1
+  if (vertexCylinder1 === 3 && vertexCylinder2 === 3) {
+    const f = 1;
+    const g = -Math.cos(alpha);
+    const h = (c - s2) * Math.sin(alpha);
+    if (
+      SideVerification(
+        f,
+        g,
+        h,
+        u,
+        w,
+        a,
+        r1,
+        r2,
+        cylinder1,
+        cylinder2,
+        s1,
+        s2,
+        commonNormal
+      )
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export function SideVerification(
+  f: number,
+  g: number,
+  h: number,
+  u: number,
+  w: number,
+  a: number,
+  r1: number,
+  r2: number,
+  cylinder1: Cylinder,
+  cylinder2: Cylinder,
+  s1: number,
+  s2: number,
+  commonNormal: Vector3
+): boolean {
+  // Quartic equation coefficients
+  const lambda1 =
+    -Math.pow(f, 4) + 2 * Math.pow(f, 2) * Math.pow(g, 2) - Math.pow(g, 4);
+  const lambda2 =
+    -4 * a * Math.pow(f, 2) * Math.pow(g, 2) + 4 * a * Math.pow(g, 4);
+  const lambda3 =
+    2 * Math.pow(r1, 2) * Math.pow(f, 4) +
+    2 * Math.pow(a, 2) * Math.pow(f, 2) * Math.pow(g, 2) -
+    2 * Math.pow(r1, 2) * Math.pow(f, 2) * Math.pow(g, 2) -
+    2 * Math.pow(r1, 2) * Math.pow(f, 2) * Math.pow(g, 2) -
+    6 * Math.pow(a, 2) * Math.pow(g, 4) +
+    2 * Math.pow(r2, 2) * Math.pow(g, 4) -
+    2 * Math.pow(f, 2) * Math.pow(h, 2) -
+    2 * Math.pow(g, 2) * Math.pow(h, 2);
+  const lambda4 =
+    4 * a * Math.pow(r1, 2) * Math.pow(f, 2) * Math.pow(g, 2) +
+    4 * Math.pow(a, 3) * Math.pow(g, 4) -
+    4 * a * Math.pow(r2, 2) * Math.pow(g, 4) +
+    4 * a * Math.pow(g, 2) * Math.pow(h, 2);
+  const lambda5 =
+    -Math.pow(r1, 4) * Math.pow(f, 4) -
+    2 * Math.pow(a, 2) * Math.pow(r1, 2) * Math.pow(f, 2) * Math.pow(g, 2) +
+    2 * Math.pow(r1, 2) * Math.pow(r2, 2) * Math.pow(f, 2) * Math.pow(g, 2) -
+    Math.pow(a, 4) * Math.pow(g, 4) +
+    2 * Math.pow(a, 2) * Math.pow(r2, 2) * Math.pow(g, 4) -
+    Math.pow(r2, 4) * Math.pow(g, 4) +
+    2 * Math.pow(r1, 2) * Math.pow(f, 2) * Math.pow(h, 2) -
+    2 * Math.pow(a, 2) * Math.pow(g, 2) * Math.pow(h, 2) +
+    2 * Math.pow(r2, 2) * Math.pow(g, 2) * Math.pow(h, 2) -
+    Math.pow(h, 4);
+
+  // Solve quartic equation for u
+  const solutions = quarticRoots(lambda1, lambda2, lambda3, lambda4, lambda5);
+
+  if (solutions.length === 2) {
+    if (
+      (solutions[0] >= a - Math.min(r1, r2) &&
+        solutions[0] <= a + Math.max(r1, r2)) ||
+      (solutions[1] >= a - Math.min(r1, r2) &&
+        solutions[1] <= a + Math.max(r1, r2))
+    ) {
+      if (
+        rectangleIntersection(
+          u,
+          w,
+          cylinder1,
+          cylinder2,
+          s1,
+          s2,
+          commonNormal,
+          r1,
+          r2
+        )
+      ) {
+        return true;
+      }
+    }
+  } else if (solutions.length === 1) {
+    if (
+      solutions[0] >= a - Math.min(r1, r2) &&
+      solutions[0] <= a + Math.max(r1, r2)
+    ) {
+      if (
+        rectangleIntersection(
+          u,
+          w,
+          cylinder1,
+          cylinder2,
+          s1,
+          s2,
+          commonNormal,
+          r1,
+          r2
+        )
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export function rectangleIntersection(
+  u: number,
+  w: number,
+  cylinder1: Cylinder,
+  cylinder2: Cylinder,
+  s1: number,
+  s2: number,
+  commonNormal: Vector3,
+  r1: number,
+  r2: number
+): boolean {
+  const cylinder1Position = cylinder1.getCenter();
+  const cylinder2Position = cylinder2.getCenter();
+
+  const Circle1Center1 = cylinder1Position.add(cylinder1.forward().scale(s1));
+  const Circle2Center1 = cylinder1Position.subtract(
+    cylinder1.forward().scale(s1)
+  );
+  const Circle1Center2 = cylinder2Position.add(cylinder2.forward().scale(s2));
+  const Circle2Center2 = cylinder2Position.subtract(
+    cylinder2.forward().scale(s2)
+  );
+  const PlanePosition1 = cylinder1Position.add(commonNormal.scale(u));
+  const PlanePosition2 = cylinder2Position.add(commonNormal.scale(w));
+
+  const point1 = FindIntersectionPoints(
+    PlanePosition1,
+    commonNormal,
+    Circle1Center1,
+    cylinder1.forward(),
+    r1
+  );
+  const point2 = FindIntersectionPoints(
+    PlanePosition1,
+    commonNormal,
+    Circle2Center1,
+    cylinder1.forward(),
+    r1
+  );
+  const point3 = FindIntersectionPoints(
+    PlanePosition2,
+    commonNormal,
+    Circle1Center2,
+    cylinder2.forward(),
+    r2
+  );
+  const point4 = FindIntersectionPoints(
+    PlanePosition2,
+    commonNormal,
+    Circle2Center2,
+    cylinder2.forward(),
+    r2
+  );
+
+  if (
+    point1 &&
+    point1.length === 2 &&
+    point2 &&
+    point2.length === 2 &&
+    point3 &&
+    point3.length === 2 &&
+    point4 &&
+    point4.length === 2
+  ) {
+    const Q1Vertices: Vector3[] = [];
+    if (point1[1].distanceTo(point2[0]) < point1[1].distanceTo(point2[1])) {
+      Q1Vertices.push(point1[0], point1[1], point2[0], point2[1]);
+    } else {
+      Q1Vertices.push(point1[0], point1[1], point2[1], point2[0]);
+    }
+
+    const Q2Vertices: Vector3[] = [];
+    if (point3[1].distanceTo(point4[0]) < point3[1].distanceTo(point4[1])) {
+      Q2Vertices.push(point3[0], point3[1], point4[0], point4[1]);
+    } else {
+      Q2Vertices.push(point3[0], point3[1], point4[1], point4[0]);
+    }
+
+    // Separating Axis Test (SAT) in Vertex Edge Test - Check for overlap along each axis of Q1 and Q2
+    if (RectanglesIntersect(Q1Vertices, Q2Vertices)) {
+      console.log("Intersection detected by SAT in Vertex Edge Test");
+      return true;
+    }
+  }
+  return false;
+}
+
+export function VertexEdgeTestFunction(
+  s1: number,
+  s2: number,
+  r1: number,
+  r2: number,
+  a: number,
+  b: number,
+  c: number,
+  alpha: number,
+  cylinder1: Cylinder,
+  cylinder2: Cylinder,
+  commonNormal: Vector3
+): boolean {
+  const cylinder1Vertices: Vector2[] = [
+    new Vector2(1, 1),
+    new Vector2(-1, 1),
+    new Vector2(-1, -1),
+    new Vector2(1, -1),
+  ];
+  const cylinder2Vertices: Vector2[] = [
+    new Vector2(1, 1),
+    new Vector2(-1, 1),
+    new Vector2(-1, -1),
+    new Vector2(1, -1),
+  ];
+
+  let vertexCylinder1 = 0;
+  let vertexCylinder2 = 0;
+
+  for (const cylinder1Vertex of cylinder1Vertices) {
+    for (const cylinder2Vertex of cylinder2Vertices) {
+      const v1AndV2 = ApplyTransformation(
+        cylinder1Vertex,
+        cylinder2Vertex,
+        s1,
+        s2,
+        b,
+        c,
+        alpha * (Math.PI / 180)
+      );
+      const u1 =
+        a + Math.sqrt(Math.abs(Math.pow(r2, 2) - Math.pow(v1AndV2.y, 2)));
+      const u2 =
+        a - Math.sqrt(Math.abs(Math.pow(r2, 2) - Math.pow(v1AndV2.y, 2)));
+      const w1 = u1 - a;
+      const w2 = u2 - a;
+      const v1 = v1AndV2.x;
+      const v2 = v1AndV2.y;
+
+      if (!isNaN(u1)) {
+        if (u1 >= a - Math.min(r1, r2) && u1 <= Math.max(r1, r2)) {
+          if (
+            checkVertices(
+              vertexCylinder1,
+              vertexCylinder2,
+              u1,
+              w1,
+              v1,
+              v2,
+              s1,
+              s2,
+              r1,
+              r2,
+              a,
+              b,
+              c,
+              alpha,
+              cylinder1,
+              cylinder2,
+              commonNormal
+            )
+          ) {
+            return true;
+          }
+        }
+      }
+
+      if (!isNaN(u2)) {
+        if (u2 >= a - Math.min(r1, r2) && u2 <= Math.max(r1, r2)) {
+          if (
+            checkVertices(
+              vertexCylinder1,
+              vertexCylinder2,
+              u2,
+              w2,
+              v1,
+              v2,
+              s1,
+              s2,
+              r1,
+              r2,
+              a,
+              b,
+              c,
+              alpha,
+              cylinder1,
+              cylinder2,
+              commonNormal
+            )
+          ) {
+            return true;
+          }
+        }
+      }
+
+      vertexCylinder2++;
+    }
+    vertexCylinder1++;
+    vertexCylinder2 = 0;
+  }
+
+  return false;
+}
+
+export function ApplyTransformation(
+  v1Ands1Signs: Vector2,
+  v2Ands2Signs: Vector2,
+  s1: number,
+  s2: number,
+  b: number,
+  c: number,
+  alpha: number
+): Vector2 {
+  const actualS1 = v1Ands1Signs.y * s1;
+  const actualS2 = v2Ands2Signs.y * s2;
+
+  // (s1 - b - (c - s2) cos alpha) / sin alpha
+  const v2 =
+    v2Ands2Signs.x *
+    ((actualS1 - b - c * Math.cos(alpha) - actualS2 * Math.cos(alpha)) /
+      Math.sin(alpha));
+
+  // (s1 - b - (c - s2) cos alpha) / sin alpha
+  const v1 =
+    v1Ands1Signs.x *
+    (v2 * Math.cos(alpha) - actualS2 * Math.sin(alpha) - c * Math.sin(alpha));
+
+  return new Vector2(v1, v2);
+}
+
+export function DescartesLawOfSignsFourthDegreePolynomial(
+  a4: number,
+  a3: number,
+  a2: number,
+  a1: number,
+  a0: number
+): boolean {
+  const pattern1to18 =
+    (a4 < 0 && a3 > 0 && a2 > 0 && a1 > 0 && a0 < 0) ||
+    (a4 < 0 && a3 < 0 && a2 > 0 && a1 < 0 && a0 < 0) ||
+    (a4 < 0 && a3 < 0 && a2 > 0 && a1 > 0 && a0 < 0) ||
+    (a4 < 0 && a3 < 0 && a2 < 0 && a1 > 0 && a0 < 0) ||
+    (a4 < 0 && a3 > 0 && a2 < 0 && a1 < 0 && a0 < 0) ||
+    (a4 < 0 && a3 > 0 && a2 > 0 && a1 < 0 && a0 < 0) ||
+    (a4 < 0 && a3 > 0 && a2 === 0 && a1 < 0 && a0 < 0) ||
+    (a4 < 0 && a3 === 0 && a2 > 0 && a1 < 0 && a0 < 0) ||
+    (a4 < 0 && a3 > 0 && a2 < 0 && a1 === 0 && a0 < 0) ||
+    (a4 < 0 && a3 < 0 && a2 === 0 && a1 > 0 && a0 < 0) ||
+    (a4 < 0 && a3 < 0 && a2 > 0 && a1 === 0 && a0 < 0) ||
+    (a4 < 0 && a3 === 0 && a2 < 0 && a1 > 0 && a0 < 0) ||
+    (a4 < 0 && a3 > 0 && a2 === 0 && a1 === 0 && a0 < 0) ||
+    (a4 < 0 && a3 === 0 && a2 > 0 && a1 === 0 && a0 < 0) ||
+    (a4 < 0 && a3 === 0 && a2 === 0 && a1 > 0 && a0 < 0) ||
+    (a4 < 0 && a3 > 0 && a2 === 0 && a1 > 0 && a0 < 0) ||
+    (a4 < 0 && a3 > 0 && a2 > 0 && a1 === 0 && a0 < 0) ||
+    (a4 < 0 && a3 === 0 && a2 > 0 && a1 > 0 && a0 < 0);
+
+  return pattern1to18;
 }

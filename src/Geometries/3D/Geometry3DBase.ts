@@ -41,7 +41,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
   }
 
   public LocalSpaceToWorldSpace(point: Vector3): Vector3 {
-    // Step 1: Rotate point by ellipsoid rotation
+    // Step 1: Rotate point by geometry rotation
     const cosX = Math.cos(this.rotation.x);
     const sinX = Math.sin(this.rotation.x);
     const cosY = Math.cos(this.rotation.y);
@@ -72,12 +72,12 @@ export abstract class Geometry3DBase implements IGeometry3D {
     );
   }
   public WorldSpaceToLocalSpace(point: Vector3): Vector3 {
-    // Step 1: Translate point to ellipsoid's center
+    // Step 1: Translate point to geometry center
     const translatedX = point.x - this.center.x;
     const translatedY = point.y - this.center.y;
     const translatedZ = point.z - this.center.z;
 
-    // Step 2: Rotate point by negative ellipsoid rotation
+    // Step 2: Rotate point by negative geometry rotation
     const cosX = Math.cos(-this.rotation.x);
     const sinX = Math.sin(-this.rotation.x);
     const cosY = Math.cos(-this.rotation.y);
@@ -104,7 +104,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
   }
 
   public TransformDirection(direction: Vector3): Vector3 {
-    // Step 1: Rotate direction by ellipsoid rotation
+    // Step 1: Rotate direction by geometry rotation
     const cosX = Math.cos(this.rotation.x);
     const sinX = Math.sin(this.rotation.x);
     const cosY = Math.cos(this.rotation.y);
@@ -131,7 +131,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
   }
 
   public InverseTransformDirection(direction: Vector3): Vector3 {
-    // Step 1: Rotate direction by negative ellipsoid rotation
+    // Step 1: Rotate direction by negative geometry rotation
     const cosX = Math.cos(-this.rotation.x);
     const sinX = Math.sin(-this.rotation.x);
     const cosY = Math.cos(-this.rotation.y);

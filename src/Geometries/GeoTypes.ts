@@ -16,6 +16,8 @@ export enum GeometryType3D {
   Cone = "Cone",
   Cube = "Cube",
   Superellipsoid = "Superellipsoid",
+  EllipticParaboloid = "EllipticParaboloid",
+  Hyperboloid = "Hyperboloid",
 }
 
 export function isGeometryType2D(type: any): type is GeometryType2D {
