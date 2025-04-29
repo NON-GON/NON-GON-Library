@@ -84,7 +84,12 @@ export class GeometryManager {
   ): any {
     switch (type) {
       case GeometryType3D.Sphere:
-        geometry = new Sphere(params.center, params.radius, params.segments);
+        geometry = new Sphere(
+          params.center,
+          params.radius,
+          params.rotation,
+          params.segments
+        );
         break;
       case GeometryType3D.Ellipsoid:
         geometry = new Ellipsoid(
@@ -92,6 +97,7 @@ export class GeometryManager {
           params.xradius,
           params.yradius,
           params.zradius,
+          params.rotation,
           params.segments
         );
         break;
@@ -189,7 +195,11 @@ export class GeometryManager {
     let geometry1 = this.getGeometry(id1);
     let geometry2 = this.getGeometry(id2);
     let distance = geometry1.MinimumDistance(geometry2);
-    console.log(`Minimum distance between ${id1} and ${id2}: ${distance[0].distanceTo(distance[1])}`);
+    console.log(
+      `Minimum distance between ${id1} and ${id2}: ${distance[0].distanceTo(
+        distance[1]
+      )}`
+    );
     return distance;
   }
 }

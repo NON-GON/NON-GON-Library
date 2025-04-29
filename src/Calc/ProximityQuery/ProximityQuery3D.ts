@@ -182,7 +182,7 @@ export class ProximityQuery3D {
       closestPointAxisCylinder1
     );
 
-    let b: number, theta: number, a: number, alpha: number, c: number;
+    let b: number, a: number, alpha: number, c: number;
 
     if (
       closestPointAxisCylinder1.equal(cylinder1Position) &&
