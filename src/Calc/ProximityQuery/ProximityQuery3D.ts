@@ -1,5 +1,6 @@
 import { Cylinder } from "../../Geometries/3D/Cylinder";
 import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
+import { EllipticParaboloid } from "../../Geometries/3D/Ellipticparaboloid";
 import {
   calDetMatrix4x4,
   DescartesLawOfSignsFourthDegreePolynomial,
@@ -963,5 +964,288 @@ export class ProximityQuery3D {
     const a0 = characteristicPolynomialValues[4];
     return !DescartesLawOfSignsFourthDegreePolynomial(a4, a3, a2, a1, a0);
   }
-  
+
+  public static characteristicPolynomialEllipsoidEllipticParaboloid(
+    ellipsoid: Ellipsoid,
+    ellipticParaboloid: EllipticParaboloid
+  ): number[] {
+    const xradiusEllipsoid = ellipsoid.xradius;
+    const yradiusEllipsoid = ellipsoid.yradius;
+    const zradiusEllipsoid = ellipsoid.zradius;
+    const xEllipsoid = ellipsoid.getCenter().x;
+    const yEllipsoid = ellipsoid.getCenter().y;
+    const zEllipsoid = ellipsoid.getCenter().z;
+    const alphaEllipsoid = ellipsoid.getRotation().x * (Math.PI / 180);
+    const betaEllipsoid = ellipsoid.getRotation().y * (Math.PI / 180);
+    const phiEllipsoid = ellipsoid.getRotation().z * (Math.PI / 180);
+    const sinAlphaEllipsoid = Math.sin(alphaEllipsoid);
+    const sinBetaEllipsoid = Math.sin(betaEllipsoid);
+    const sinPhiEllipsoid = Math.sin(phiEllipsoid);
+    const cosAlphaEllipsoid = Math.cos(alphaEllipsoid);
+    const cosBetaEllipsoid = Math.cos(betaEllipsoid);
+    const cosPhiEllipsoid = Math.cos(phiEllipsoid);
+
+    const xradiusEllipticParaboloid = ellipticParaboloid.xradius;
+    const yradiusEllipticParaboloid = ellipticParaboloid.yradius;
+    const xEllipticParaboloid = ellipticParaboloid.getCenter().x;
+    const yEllipticParaboloid = ellipticParaboloid.getCenter().y;
+    const alphaEllipticParaboloid =
+      ellipticParaboloid.getRotation().x * (Math.PI / 180);
+    const betaEllipticParaboloid =
+      ellipticParaboloid.getRotation().y * (Math.PI / 180);
+    const phiEllipticParaboloid =
+      ellipticParaboloid.getRotation().z * (Math.PI / 180);
+    const sinAlphaEllipticParaboloid = Math.sin(alphaEllipticParaboloid);
+    const sinBetaEllipticParaboloid = Math.sin(betaEllipticParaboloid);
+    const sinPhiEllipticParaboloid = Math.sin(phiEllipticParaboloid);
+    const cosAlphaEllipticParaboloid = Math.cos(alphaEllipticParaboloid);
+    const cosBetaEllipticParaboloid = Math.cos(betaEllipticParaboloid);
+    const cosPhiEllipticParaboloid = Math.cos(phiEllipticParaboloid);
+
+    const matrixA: number[][] = Array(4)
+      .fill(0)
+      .map(() => Array(4).fill(0));
+    const matrixB: number[][] = Array(4)
+      .fill(0)
+      .map(() => Array(4).fill(0));
+
+    const aa1 = xradiusEllipsoid ** 2;
+    const bb1 = yradiusEllipsoid ** 2;
+    const cc1 = zradiusEllipsoid ** 2;
+
+    const aa2 = xradiusEllipticParaboloid ** 2;
+    const bb2 = yradiusEllipticParaboloid ** 2;
+
+    const A1 =
+      cosBetaEllipsoid ** 2 * cosPhiEllipsoid ** 2 * bb1 * cc1 +
+      cosBetaEllipsoid ** 2 * sinPhiEllipsoid ** 2 * aa1 * cc1 +
+      sinBetaEllipsoid ** 2 * aa1 * bb1;
+    const B1 =
+      (sinBetaEllipsoid * sinAlphaEllipsoid * cosPhiEllipsoid +
+        sinPhiEllipsoid * cosAlphaEllipsoid) **
+        2 *
+        bb1 *
+        cc1 +
+      (sinPhiEllipsoid * sinBetaEllipsoid * sinAlphaEllipsoid +
+        cosAlphaEllipsoid * cosPhiEllipsoid) **
+        2 *
+        aa1 *
+        cc1 +
+      (sinAlphaEllipsoid * cosBetaEllipsoid) ** 2 * aa1 * bb1;
+    const C1 =
+      (-sinBetaEllipsoid * cosAlphaEllipsoid * cosPhiEllipsoid +
+        sinAlphaEllipsoid * sinPhiEllipsoid) **
+        2 *
+        bb1 *
+        cc1 +
+      (sinBetaEllipsoid * cosAlphaEllipsoid * sinPhiEllipsoid +
+        cosPhiEllipsoid * sinAlphaEllipsoid) **
+        2 *
+        aa1 *
+        cc1 +
+      cosBetaEllipsoid ** 2 * cosAlphaEllipsoid ** 2 * aa1 * bb1;
+    const D1 =
+      (sinBetaEllipsoid *
+        sinAlphaEllipsoid *
+        cosPhiEllipsoid *
+        cosBetaEllipsoid *
+        cosPhiEllipsoid +
+        sinPhiEllipsoid *
+          cosAlphaEllipsoid *
+          cosBetaEllipsoid *
+          cosPhiEllipsoid) *
+        bb1 *
+        cc1 +
+      (sinPhiEllipsoid *
+        sinBetaEllipsoid *
+        sinAlphaEllipsoid *
+        cosBetaEllipsoid *
+        sinPhiEllipsoid -
+        cosAlphaEllipsoid *
+          cosPhiEllipsoid *
+          cosBetaEllipsoid *
+          sinPhiEllipsoid) *
+        aa1 *
+        cc1 +
+      -sinAlphaEllipsoid * cosBetaEllipsoid * sinBetaEllipsoid * aa1 * bb1;
+    const E1 =
+      (-sinBetaEllipsoid * cosAlphaEllipsoid * cosPhiEllipsoid +
+        sinAlphaEllipsoid * sinPhiEllipsoid) *
+        (sinBetaEllipsoid * sinAlphaEllipsoid * cosPhiEllipsoid +
+          sinPhiEllipsoid * cosAlphaEllipsoid) *
+        bb1 *
+        cc1 +
+      (sinBetaEllipsoid * cosAlphaEllipsoid * sinPhiEllipsoid +
+        cosPhiEllipsoid * sinAlphaEllipsoid) *
+        (-sinPhiEllipsoid * sinBetaEllipsoid * sinAlphaEllipsoid +
+          cosAlphaEllipsoid * cosPhiEllipsoid) *
+        aa1 *
+        cc1 +
+      -cosBetaEllipsoid *
+        cosAlphaEllipsoid *
+        cosBetaEllipsoid *
+        sinAlphaEllipsoid *
+        aa1 *
+        bb1;
+    const F1 =
+      (-sinBetaEllipsoid *
+        cosAlphaEllipsoid *
+        cosPhiEllipsoid *
+        cosBetaEllipsoid *
+        cosPhiEllipsoid +
+        sinAlphaEllipsoid *
+          sinPhiEllipsoid *
+          cosBetaEllipsoid *
+          cosPhiEllipsoid) *
+        bb1 *
+        cc1 +
+      (-sinBetaEllipsoid +
+        cosAlphaEllipsoid *
+          sinPhiEllipsoid *
+          cosBetaEllipsoid *
+          sinPhiEllipsoid -
+        cosPhiEllipsoid *
+          sinAlphaEllipsoid *
+          cosBetaEllipsoid *
+          sinPhiEllipsoid) *
+        aa1 *
+        cc1 +
+      cosBetaEllipsoid * cosAlphaEllipsoid * sinBetaEllipsoid * aa1 * bb1;
+
+    const G1 = -xEllipsoid * A1 - yEllipsoid * D1 - zEllipsoid * F1;
+    const H1 = -xEllipsoid * D1 - yEllipsoid * B1 - zEllipsoid * E1;
+    const I1 = -xEllipsoid * F1 - yEllipsoid * E1 - zEllipsoid * C1;
+    const J1 =
+      xEllipsoid ** 2 * A1 +
+      xEllipsoid * yEllipsoid * 2 * D1 +
+      xEllipsoid * zEllipsoid * 2 * F1 +
+      yEllipsoid ** 2 * B1 +
+      yEllipsoid * zEllipsoid * 2 * E1 +
+      zEllipsoid ** 2 * C1 -
+      aa1 * bb1 * cc1;
+
+    matrixA[0][0] = A1;
+    matrixA[0][1] = D1;
+    matrixA[0][2] = F1;
+    matrixA[0][3] = G1;
+    matrixA[1][0] = D1;
+    matrixA[1][1] = B1;
+    matrixA[1][2] = E1;
+    matrixA[1][3] = H1;
+    matrixA[2][0] = F1;
+    matrixA[2][1] = E1;
+    matrixA[2][2] = C1;
+    matrixA[2][3] = I1;
+    matrixA[3][0] = G1;
+    matrixA[3][1] = H1;
+    matrixA[3][2] = I1;
+    matrixA[3][3] = J1;
+
+    const A2 =
+      cosBetaEllipticParaboloid ** 2 * cosPhiEllipticParaboloid ** 2 * bb2 +
+      cosBetaEllipticParaboloid ** 2 * sinPhiEllipticParaboloid ** 2 * aa2;
+    const B2 =
+      (sinBetaEllipticParaboloid *
+        sinAlphaEllipticParaboloid *
+        cosPhiEllipticParaboloid +
+        sinPhiEllipticParaboloid * cosAlphaEllipticParaboloid) **
+        2 *
+        bb2 +
+      (sinPhiEllipticParaboloid *
+        sinBetaEllipticParaboloid *
+        sinAlphaEllipticParaboloid +
+        cosAlphaEllipticParaboloid * cosPhiEllipticParaboloid) **
+        2 *
+        aa2;
+    const C2 = 0;
+    const D2 = 0;
+    const E2 = 0;
+    const F2 = 0;
+
+    const G2 = -xEllipticParaboloid * A2;
+    const H2 = -yEllipticParaboloid * B2;
+    const I2 = -1;
+    const J2 = xEllipticParaboloid ** 2 * A2 + yEllipticParaboloid ** 2 * B2;
+
+    matrixB[0][0] = A2;
+    matrixB[0][1] = D2;
+    matrixB[0][2] = F2;
+    matrixB[0][3] = G2;
+    matrixB[1][0] = D2;
+    matrixB[1][1] = B2;
+    matrixB[1][2] = E2;
+    matrixB[1][3] = H2;
+    matrixB[2][0] = F2;
+    matrixB[2][1] = E2;
+    matrixB[2][2] = C2;
+    matrixB[2][3] = I2;
+    matrixB[3][0] = G2;
+    matrixB[3][1] = H2;
+    matrixB[3][2] = I2;
+    matrixB[3][3] = J2;
+
+    return this.calcCharacteristicPolynomial(
+      matrixA,
+      matrixB,
+      A1,
+      B1,
+      C1,
+      D1,
+      E1,
+      F1,
+      G1,
+      H1,
+      I1,
+      J1,
+      A2,
+      B2,
+      C2,
+      D2,
+      E2,
+      F2,
+      G2,
+      H2,
+      I2,
+      J2
+    );
+  }
+
+  public static Ellipsoid_EllipticParaboloid_Brozos(
+    Ellipsoid: Ellipsoid,
+    ellipticParaboloid: EllipticParaboloid
+  ): boolean {
+    const characteristicPolynomialValues = this.characteristicPolynomialEllipsoidEllipticParaboloid(
+      Ellipsoid,
+      ellipticParaboloid
+    );
+
+    const a4 = characteristicPolynomialValues[0];
+    const a3 = characteristicPolynomialValues[1];
+    const a2 = characteristicPolynomialValues[2];
+    const a1 = characteristicPolynomialValues[3];
+    const a0 = characteristicPolynomialValues[4];
+    let discriminant =
+      256 * a0 * a0 * a0 * a4 * a4 * a4 -
+      192 * a0 * a0 * a1 * a3 * a4 * a4 -
+      128 * a0 * a0 * a2 * a2 * a4 * a4 +
+      144 * a0 * a0 * a2 * a3 * a3 * a4 -
+      27 * a0 * a0 * a3 * a3 * a3 * a3 +
+      144 * a0 * a1 * a1 * a2 * a4 * a4 -
+      6 * a0 * a1 * a1 * a3 * a3 * a4 -
+      80 * a0 * a1 * a2 * a2 * a3 * a4 +
+      18 * a0 * a1 * a2 * a3 * a3 * a3 +
+      16 * a0 * a2 * a2 * a2 * a2 * a4 -
+      4 * a0 * a2 * a2 * a2 * a3 * a3 -
+      27 * a1 * a1 * a1 * a1 * a4 * a4 +
+      18 * a1 * a1 * a1 * a2 * a3 * a4 -
+      4 * a1 * a1 * a1 * a3 * a3 * a3 -
+      4 * a1 * a1 * a2 * a2 * a2 * a4 +
+      a1 * a1 * a2 * a2 * a3 * a3;
+
+    //Debug.Log(discriminant);
+    if (discriminant < 0) {
+      return true;
+    }
+    return false;
+  }
 }
