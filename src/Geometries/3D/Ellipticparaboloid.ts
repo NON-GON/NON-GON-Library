@@ -4,6 +4,8 @@ import { IGeometry3D } from "./IGeometry3D";
 import { IGeometry2D } from "../2D/IGeometry2D";
 import { GeometryType3D } from "../GeoTypes";
 import { Geometry3DBase } from "./Geometry3DBase";
+import { ProximityQuery3D } from "../../Calc/ProximityQuery/ProximityQuery3D";
+import { Ellipsoid } from "./Ellipsoid";
 
 export class EllipticParaboloid extends Geometry3DBase implements IGeometry3D {
   readonly xradius: number;
@@ -30,6 +32,23 @@ export class EllipticParaboloid extends Geometry3DBase implements IGeometry3D {
 
   MinimumDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     throw new Error("Minimum distance not implemented for this geometry type.");
+  }
+  ProximityQuery(
+    geometry: IGeometry3D | IGeometry2D,
+    method?: string
+  ): boolean {
+    if (geometry.type === GeometryType3D.Ellipsoid) {
+      if (method === undefined || method === "Brozos") {
+        return ProximityQuery3D.Ellipsoid_EllipticParaboloid_Brozos(
+          geometry as Ellipsoid,
+          this
+        );
+      }
+      throw new Error("Proximity query not implemented for this method.");
+    }
+    throw new Error(
+      "Proximity query not implemented for this pair of geometries."
+    );
   }
 
   public getGeometry(): any {

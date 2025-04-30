@@ -8,6 +8,7 @@ import { isGeometryType2D, isGeometryType3D } from "../GeoTypes";
 import { Point } from "./Point";
 import { Geometry2DBase } from "./Geometry2DBase";
 import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+import { ProximityQuery2D } from "../../Calc/ProximityQuery/ProximityQuery2D";
 
 export class Ellipse extends Geometry2DBase implements IGeometry2D {
   readonly xradius: number;
@@ -19,7 +20,7 @@ export class Ellipse extends Geometry2DBase implements IGeometry2D {
     xradius: number,
     yradius: number,
     rotation: Vector3 | Vector2,
-    segments: number,
+    segments: number
   ) {
     super();
     this.center =
@@ -90,5 +91,37 @@ export class Ellipse extends Geometry2DBase implements IGeometry2D {
       res = this.MinimumDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
+  }
+  ProximityQuery(
+    geometry: IGeometry3D | IGeometry2D,
+    method?: string
+  ): boolean {
+    if (method === undefined) {
+      method = "Caravantes";
+    }
+    if (isGeometryType3D(geometry.type)) {
+      throw new Error(
+        "Proximity query 3D not implemented for this geometry type."
+      );
+    } else if (isGeometryType2D(geometry.type)) {
+      return this.ProximityQuery2D(geometry as IGeometry2D, method);
+    }
+    return false;
+  }
+  ProximityQuery2D(geometry: IGeometry2D, method: string): boolean {
+    if (method === "Caravantes") {
+      return ProximityQuery2D.Ellipse_Ellipse_Caravantes(
+        this,
+        geometry as Ellipse
+      );
+    } else if (method === "Alberich") {
+      return ProximityQuery2D.Ellipse_Ellipse_Alberich(
+        this,
+        geometry as Ellipse
+      );
+    }
+    throw new Error(
+      `Proximity query not implemented for this method ${method}.`
+    );
   }
 }

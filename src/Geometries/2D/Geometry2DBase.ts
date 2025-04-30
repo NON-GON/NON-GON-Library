@@ -39,6 +39,12 @@ export abstract class Geometry2DBase implements IGeometry2D {
   MinimumDistance(geometry: IGeometry2D | IGeometry3D): [Vector3, Vector3] {
     throw new Error("Method not implemented.");
   }
+  ProximityQuery(
+    geometry: IGeometry2D | IGeometry3D,
+    method?: string
+  ): boolean {
+    throw new Error("Method not implemented for this geometry.");
+  }
 
   public LocalSpaceToWorldSpace(point: Vector3): Vector3 {
     // Step 1: Rotate point by ellipsoid rotation

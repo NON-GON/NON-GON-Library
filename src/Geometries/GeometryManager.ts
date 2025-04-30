@@ -236,7 +236,15 @@ export class GeometryManager {
     );
     return distance;
   }
-  public calculateProximityQuery(id1: string, id2: string) {
-    throw new Error("Method not implemented yet.");
+  public calculateProximityQuery(
+    id1: string,
+    id2: string,
+    method?: string
+  ): boolean {
+    let geometry1 = this.getGeometry(id1);
+    let geometry2 = this.getGeometry(id2);
+    let result = geometry1.ProximityQuery(geometry2, method);
+    console.log(`Proximity query between ${id1} and ${id2}: ${result}`);
+    return result;
   }
 }

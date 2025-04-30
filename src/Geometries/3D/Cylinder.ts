@@ -4,6 +4,7 @@ import { IGeometry3D } from "./IGeometry3D";
 import { IGeometry2D } from "../2D/IGeometry2D";
 import { GeometryType3D } from "../GeoTypes";
 import { Geometry3DBase } from "./Geometry3DBase";
+import { ProximityQuery3D } from "../../Calc/ProximityQuery/ProximityQuery3D";
 
 export class Cylinder extends Geometry3DBase implements IGeometry3D {
   readonly xradius: number;
@@ -31,7 +32,24 @@ export class Cylinder extends Geometry3DBase implements IGeometry3D {
   MinimumDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     throw new Error("Minimum distance not implemented for this geometry type.");
   }
-
+  ProximityQuery(
+    geometry: IGeometry3D | IGeometry2D,
+    method?: string
+  ): boolean {
+    if (method == "Chittawadigi" && geometry.type == GeometryType3D.Cylinder) {
+      return ProximityQuery3D.Cylinder_Cylinder_Chittawadigi(
+        this,
+        geometry as Cylinder
+      );
+    } else {
+      if (geometry.type != GeometryType3D.Cylinder) {
+        throw new Error(
+          "Proximity query not implemented for this pair of geometry type."
+        );
+      }
+      throw new Error("Proximity query not implemented for this method.");
+    }
+  }
   public forward(): Vector3 {
     const x = Math.cos(this.rotation.y) * Math.cos(this.rotation.x);
     const y = Math.sin(this.rotation.x);

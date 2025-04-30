@@ -1,6 +1,8 @@
+import { Plane } from "../../Geometries/2D/Plane";
 import { Cylinder } from "../../Geometries/3D/Cylinder";
 import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 import { EllipticParaboloid } from "../../Geometries/3D/Ellipticparaboloid";
+import { Hyperboloid } from "../../Geometries/3D/Hyperboloid";
 import {
   calDetMatrix4x4,
   DescartesLawOfSignsFourthDegreePolynomial,
@@ -1248,4 +1250,5 @@ export class ProximityQuery3D {
     }
     return false;
   }
+
 }

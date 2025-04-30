@@ -14,4 +14,5 @@ export interface IGeometry3D {
   getType(): GeometryType3D;
   getSegments(): number;
   MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3];
+  ProximityQuery(geometry: IGeometry3D | IGeometry2D, method?: string): boolean;
 }

@@ -11,6 +11,8 @@ import {
 } from "../GeoTypes";
 import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 import { Geometry3DBase } from "./Geometry3DBase";
+import { ProximityQuery3D } from "../../Calc/ProximityQuery/ProximityQuery3D";
+import { EllipticParaboloid } from "./Ellipticparaboloid";
 
 export class Ellipsoid extends Geometry3DBase implements IGeometry3D {
   readonly xradius: number;
@@ -78,6 +80,37 @@ export class Ellipsoid extends Geometry3DBase implements IGeometry3D {
       res = this.MinimumDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
+  }
+  ProximityQuery(
+    geometry: IGeometry3D | IGeometry2D,
+    method?: string
+  ): boolean {
+    if (geometry.type === GeometryType3D.Ellipsoid) {
+      return this.ProximityQueryEllipsoid(
+        geometry as Ellipsoid,
+        method === undefined ? "Caravantes" : method
+      );
+    } else if (geometry.type === GeometryType3D.EllipticParaboloid) {
+      if (method === undefined || method === "Brozos") {
+        return ProximityQuery3D.Ellipsoid_EllipticParaboloid_Brozos(
+          this,
+          geometry as EllipticParaboloid
+        );
+      }
+      throw new Error("Proximity query not implemented for this method.");
+    }
+    throw new Error(
+      "Proximity query not implemented for this pair of geometries."
+    );
+  }
+  ProximityQueryEllipsoid(geometry: IGeometry3D, method?: string): boolean {
+    if (method == "Caravantes" || method == undefined) {
+      return ProximityQuery3D.Ellipsoid_Ellipsoid_Caravantes(
+        this,
+        geometry as Ellipsoid
+      );
+    }
+    throw new Error("Proximity query not implemented for this method.");
   }
   public getGeometry(): any {
     if (this.geometry !== null && this.geometry !== undefined) {
