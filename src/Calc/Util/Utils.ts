@@ -1702,3 +1702,11 @@ export function DescartesLawOfSignsFourthDegreePolynomial(
 
   return pattern1to18;
 }
+
+export function ApproximatlyEqual(
+  a: number,
+  b: number,
+  epsilon: number = 0.001
+): boolean {
+  return Math.abs(a - b) < epsilon;
+}

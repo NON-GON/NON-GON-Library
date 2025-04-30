@@ -34,6 +34,13 @@ export class Hyperboloid extends Geometry3DBase implements IGeometry3D {
     throw new Error("Minimum distance for Hyperboloid is not implemented yet.");
   }
 
+  public forward(): Vector3 {
+    const x = Math.cos(this.rotation.y) * Math.cos(this.rotation.x);
+    const y = Math.sin(this.rotation.x);
+    const z = Math.sin(this.rotation.y) * Math.cos(this.rotation.x);
+    return new Vector3(x, y, z).normalize();
+  }
+
   public getGeometry(): any {
     if (this.geometry !== null && this.geometry !== undefined) {
       return this.geometry;

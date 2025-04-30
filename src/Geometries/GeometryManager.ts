@@ -27,15 +27,14 @@ export class GeometryManager {
     return this._geometries[id];
   }
 
-  public getGeometryMesh(id: string): any {
+  public getGeometryMesh(id: string, color: number): any {
     let geometry = this._geometries[id];
     if (geometry) {
-      let material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+      let material = new THREE.LineBasicMaterial({ color: color });
       let line = new THREE.Line(geometry.getGeometry(), material);
       return line;
     } else {
       throw new Error(`Geometry with id ${id} not found.`);
-      return null;
     }
   }
 

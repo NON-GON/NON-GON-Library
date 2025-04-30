@@ -75,7 +75,6 @@ export class Sphere extends Geometry3DBase implements IGeometry3D {
     }
     return [res[0], res[1]];
   }
-
   public getGeometry(): any {
     if (this.geometry !== null && this.geometry !== undefined) {
       return this.geometry;

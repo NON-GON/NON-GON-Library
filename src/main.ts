@@ -7,7 +7,7 @@ const scene = new THREE.Scene();
 let geometryManager = new GeometryManager();
 
 let angle = 0; // Add a variable to track the rotation angle
-
+let hex = 0x00ff00; // Green color for the line
 initialization();
 function initialization() {
   const camera = new THREE.PerspectiveCamera(
@@ -36,7 +36,7 @@ function animate(renderer: any, scene: any, camera: any) {
   renderer.render(scene, camera);
 }
 
-function pointEllipseTest() {
+function pointEllipseMDTest() {
   let params0 = {
     center: new Vector2(20, 0),
   };
@@ -51,14 +51,14 @@ function pointEllipseTest() {
   };
   geometryManager.createGeometry(GeometryType2D.Ellipse, "geo1", params1);
 
-  scene.add(geometryManager.getGeometryMesh("geo1"));
-  scene.add(geometryManager.getGeometryMesh("geo0"));
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
 
   let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
   drawMinimumDistance(points[0], points[1]);
 }
 
-function ellipseEllipseTest() {
+function ellipseEllipseMDTest() {
   let params0 = {
     center: new Vector2(0, 2),
     xradius: 5,
@@ -77,14 +77,14 @@ function ellipseEllipseTest() {
   };
   geometryManager.createGeometry(GeometryType2D.Ellipse, "geo1", params1);
 
-  scene.add(geometryManager.getGeometryMesh("geo1"));
-  scene.add(geometryManager.getGeometryMesh("geo0"));
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
 
   let points = geometryManager.calculateMinimumDistance("geo1", "geo0");
   drawMinimumDistance(points[0], points[1]);
 }
 
-function superellipseLineTest() {
+function superellipseLineMDTest() {
   let params0 = {
     center: new Vector2(0, 0),
     xradius: 5,
@@ -100,14 +100,14 @@ function superellipseLineTest() {
   };
   geometryManager.createGeometry(GeometryType2D.Supperellipse, "geo0", params0);
   geometryManager.createGeometry(GeometryType2D.Line, "geo1", params1);
-  scene.add(geometryManager.getGeometryMesh("geo1"));
-  scene.add(geometryManager.getGeometryMesh("geo0"));
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
   let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
 
   drawMinimumDistance(points[0], points[1]);
 }
 
-function pointEllipsoidTest() {
+function pointEllipsoidMDTest() {
   let params0 = {
     center: new Vector2(0, 0),
   };
@@ -120,13 +120,13 @@ function pointEllipsoidTest() {
     segments: 100,
   };
   geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo1", params1);
-  scene.add(geometryManager.getGeometryMesh("geo1"));
-  scene.add(geometryManager.getGeometryMesh("geo0"));
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
   let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
   drawMinimumDistance(points[0], points[1]);
 }
 
-function EllipsoidEllipsoidTest() {
+function EllipsoidEllipsoidMDTest() {
   let params0 = {
     center: new Vector3(-10, 0, 0),
     xradius: 10,
@@ -145,13 +145,13 @@ function EllipsoidEllipsoidTest() {
     segments: 100,
   };
   geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo1", params1);
-  scene.add(geometryManager.getGeometryMesh("geo1"));
-  scene.add(geometryManager.getGeometryMesh("geo0"));
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
   let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
   drawMinimumDistance(points[0], points[1]);
 }
 
-function SuperellipsoidPlaneTest() {
+function SuperellipsoidPlaneMDTest() {
   let params0 = {
     center: new Vector3(0, 20, 0),
     xradius: 5,
@@ -174,10 +174,161 @@ function SuperellipsoidPlaneTest() {
     params0
   );
   geometryManager.createGeometry(GeometryType2D.Plane, "geo1", params1);
-  scene.add(geometryManager.getGeometryMesh("geo1"));
-  scene.add(geometryManager.getGeometryMesh("geo0"));
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
   let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
   drawMinimumDistance(points[0], points[1]);
+}
+
+function ellipseEllipsePQTest() {
+  const paramsEllipse0 = {
+    center: new Vector2(0, 8),
+    xradius: 5,
+    yradius: 2,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  const paramsEllipse1 = {
+    center: new Vector2(0, 0),
+    xradius: 4,
+    yradius: 2,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  geometryManager.createGeometry(
+    GeometryType2D.Ellipse,
+    "geo0",
+    paramsEllipse0
+  );
+  geometryManager.createGeometry(
+    GeometryType2D.Ellipse,
+    "geo1",
+    paramsEllipse1
+  );
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
+  const resultAlberich = geometryManager.calculateProximityQuery(
+    "geo0",
+    "geo1",
+    "Alberich"
+  );
+  const resultCaravantes = geometryManager.calculateProximityQuery(
+    "geo0",
+    "geo1",
+    "Caravantes"
+  );
+  console.log("Alberich Result:", resultAlberich);
+  console.log("Bishop Result:", resultCaravantes);
+}
+
+function cylinderCylinderPQTest() {
+  const paramsCylinder0 = {
+    center: new Vector3(0, 5, 0),
+    xradius: 5,
+    yradius: 5,
+    height: 10,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  const paramsCylinder1 = {
+    center: new Vector3(0, 0, 0),
+    xradius: 5,
+    yradius: 5,
+    height: 10,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  geometryManager.createGeometry(
+    GeometryType3D.Cylinder,
+    "geo0",
+    paramsCylinder0
+  );
+  geometryManager.createGeometry(
+    GeometryType3D.Cylinder,
+    "geo1",
+    paramsCylinder1
+  );
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
+  const resultChittawadigi = geometryManager.calculateProximityQuery(
+    "geo0",
+    "geo1",
+    "Chittawadigi"
+  );
+  console.log("Chittawadigi Result:", resultChittawadigi);
+}
+
+function ellipsoidEllipsoidPQTest() {
+  const paramsEllipsoid0 = {
+    center: new Vector3(0, 5, 0),
+    xradius: 5,
+    yradius: 5,
+    zradius: 5,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  const paramsEllipsoid1 = {
+    center: new Vector3(0, 0, 0),
+    xradius: 5,
+    yradius: 5,
+    zradius: 5,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  geometryManager.createGeometry(
+    GeometryType3D.Ellipsoid,
+    "geo0",
+    paramsEllipsoid0
+  );
+  geometryManager.createGeometry(
+    GeometryType3D.Ellipsoid,
+    "geo1",
+    paramsEllipsoid1
+  );
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
+  const resultCaravantes = geometryManager.calculateProximityQuery(
+    "geo0",
+    "geo1",
+    "Caravantes"
+  );
+  console.log("Caravantes Result:", resultCaravantes);
+}
+
+function ellipsoidEllipticParaboloidPQTest() {
+  const paramsEllipsoid = {
+    center: new Vector3(0, 5, 0),
+    xradius: 5,
+    yradius: 5,
+    zradius: 5,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  const paramsEllipticParaboloid = {
+    center: new Vector3(0, 0, 0),
+    xradius: 5,
+    yradius: 5,
+    height: 10,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  geometryManager.createGeometry(
+    GeometryType3D.Ellipsoid,
+    "geo0",
+    paramsEllipsoid
+  );
+  geometryManager.createGeometry(
+    GeometryType3D.EllipticParaboloid,
+    "geo1",
+    paramsEllipticParaboloid
+  );
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
+  const resultCaravantes = geometryManager.calculateProximityQuery(
+    "geo0",
+    "geo1"
+  );
+  console.log("Caravantes Result:", resultCaravantes);
 }
 
 function drawMinimumDistance(
@@ -202,4 +353,4 @@ function drawMinimumDistance(
   scene.add(line);
 }
 
-EllipsoidEllipsoidTest();
+ellipsoidEllipticParaboloidPQTest();

@@ -81,6 +81,7 @@ export class Ellipsoid extends Geometry3DBase implements IGeometry3D {
     }
     return [res[0], res[1]];
   }
+
   ProximityQuery(
     geometry: IGeometry3D | IGeometry2D,
     method?: string

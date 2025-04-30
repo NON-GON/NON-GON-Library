@@ -344,8 +344,8 @@ export class ProximityQuery3D {
   }
 
   public static characteristicPolynomialEllipsoid(
-    ellipsoid1: any,
-    ellipsoid2: any
+    ellipsoid1: Ellipsoid,
+    ellipsoid2: Ellipsoid
   ): number[] {
     const xradius1 = ellipsoid1.xradius;
     const yradius1 = ellipsoid1.yradius;
@@ -1250,5 +1250,4 @@ export class ProximityQuery3D {
     }
     return false;
   }
-
 }

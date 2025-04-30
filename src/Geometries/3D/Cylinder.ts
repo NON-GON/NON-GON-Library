@@ -36,6 +36,9 @@ export class Cylinder extends Geometry3DBase implements IGeometry3D {
     geometry: IGeometry3D | IGeometry2D,
     method?: string
   ): boolean {
+    if (method == null || method == undefined) {
+      method = "Chittawadigi";
+    }
     if (method == "Chittawadigi" && geometry.type == GeometryType3D.Cylinder) {
       return ProximityQuery3D.Cylinder_Cylinder_Chittawadigi(
         this,
