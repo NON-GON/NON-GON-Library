@@ -34,7 +34,7 @@ export class GeometryManager {
       let line = new THREE.Line(geometry.getGeometry(), material);
       return line;
     } else {
-      console.error(`Geometry with id ${id} not found.`);
+      throw new Error(`Geometry with id ${id} not found.`);
       return null;
     }
   }
@@ -75,7 +75,7 @@ export class GeometryManager {
     } else if (isGeometryType3D(type)) {
       return this.createGeometry3D(type, id, params, geometry);
     } else {
-      console.error(`Invalid geometry type: ${type}`);
+      throw new Error(`Invalid geometry type: ${type}`);
     }
   }
 
@@ -148,7 +148,7 @@ export class GeometryManager {
         );
         break;
       default:
-        console.error(`Invalid parameters for geometry type: ${type}`);
+        throw new Error(`Invalid parameters geometry type: ${type}`);
         break;
     }
     if (geometry) {
@@ -157,7 +157,7 @@ export class GeometryManager {
       let mesh = new THREE.Mesh(geometry.getGeometry(), material);
       return mesh;
     } else {
-      console.error(`Invalid parameters for geometry type: ${type}`);
+      throw new Error(`Invalid parameters for geometry type: ${type}`);
     }
   }
 
@@ -218,7 +218,7 @@ export class GeometryManager {
       let line = new THREE.Line(geometry.getGeometry(), material);
       return line;
     } else {
-      console.error(`Invalid parameters for geometry type: ${type}`);
+      throw new Error(`Invalid parameters for geometry type: ${type}`);
     }
   }
 
