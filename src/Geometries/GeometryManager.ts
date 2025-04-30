@@ -11,27 +11,30 @@ import { Superellipsoid } from "./3D/Superellipsoid";
 import { Line } from "./2D/Line";
 import { Point } from "./2D/Point";
 import { Plane } from "./2D/Plane";
+import { Cylinder } from "./3D/Cylinder";
+import { EllipticParaboloid } from "./3D/Ellipticparaboloid";
+import { Hyperboloid } from "./3D/Hyperboloid";
 
 export class GeometryManager {
   private static _instance: GeometryManager;
   private _geometries: { [key: string]: any } = {};
 
-  public addGeometry(name: string, geometry: any): void {
-    this._geometries[name] = geometry;
+  private addGeometry(id: string, geometry: any): void {
+    this._geometries[id] = geometry;
   }
 
-  public getGeometry(name: string): any {
-    return this._geometries[name];
+  public getGeometry(id: string): any {
+    return this._geometries[id];
   }
 
-  public getGeometryMesh(name: string): any {
-    let geometry = this._geometries[name];
+  public getGeometryMesh(id: string): any {
+    let geometry = this._geometries[id];
     if (geometry) {
       let material = new THREE.LineBasicMaterial({ color: 0x0000ff });
       let line = new THREE.Line(geometry.getGeometry(), material);
       return line;
     } else {
-      console.error(`Geometry with name ${name} not found.`);
+      console.error(`Geometry with id ${id} not found.`);
       return null;
     }
   }
@@ -76,17 +79,19 @@ export class GeometryManager {
     }
   }
 
-  public createGeometry3D(
+  private createGeometry3D(
     type: GeometryType3D,
     id: string,
     params: any,
     geometry: any
   ): any {
     switch (type) {
-      case GeometryType3D.Sphere:
-        geometry = new Sphere(
+      case GeometryType3D.Cylinder:
+        geometry = new Cylinder(
           params.center,
-          params.radius,
+          params.xradius,
+          params.yradius,
+          params.height,
           params.rotation,
           params.segments
         );
@@ -101,6 +106,35 @@ export class GeometryManager {
           params.segments
         );
         break;
+      case GeometryType3D.EllipticParaboloid:
+        geometry = new EllipticParaboloid(
+          params.center,
+          params.xradius,
+          params.yradius,
+          params.height,
+          params.rotation,
+          params.segments
+        );
+        break;
+      case GeometryType3D.Hyperboloid:
+        geometry = new Hyperboloid(
+          params.center,
+          params.xradius,
+          params.yradius,
+          params.zfactor,
+          params.height,
+          params.rotation,
+          params.segments
+        );
+        break;
+      case GeometryType3D.Sphere:
+        geometry = new Sphere(
+          params.center,
+          params.radius,
+          params.rotation,
+          params.segments
+        );
+        break;
       case GeometryType3D.Superellipsoid:
         geometry = new Superellipsoid(
           params.center,
@@ -109,6 +143,7 @@ export class GeometryManager {
           params.zradius,
           params.e1,
           params.e2,
+          params.rotation,
           params.segments
         );
         break;
@@ -126,7 +161,7 @@ export class GeometryManager {
     }
   }
 
-  public createGeometry2D(
+  private createGeometry2D(
     type: GeometryType2D,
     id: string,
     params: any,
@@ -142,6 +177,21 @@ export class GeometryManager {
           params.segments
         );
         break;
+      case GeometryType2D.Line:
+        geometry = new Line(params.start, params.end, params.rotation);
+        break;
+      case GeometryType2D.Plane:
+        geometry = new Plane(
+          params.center,
+          params.rotation,
+          params.width,
+          params.height,
+          params.segments
+        );
+        break;
+      case GeometryType2D.Point:
+        geometry = new Point(params.center);
+        break;
       case GeometryType2D.Supperellipse:
         geometry = new Superellipse(
           params.center,
@@ -152,9 +202,6 @@ export class GeometryManager {
           params.segments
         );
         break;
-      case GeometryType2D.Line:
-        geometry = new Line(params.start, params.end, params.rotation);
-        break;
       case GeometryType2D.Circle:
         geometry = new Ellipse(
           params.center,
@@ -163,19 +210,6 @@ export class GeometryManager {
           params.rotation,
           params.segments
         );
-        break;
-      case GeometryType2D.Point:
-        geometry = new Point(params.center);
-        break;
-      case GeometryType2D.Plane:
-        geometry = new Plane(
-          params.center,
-          params.rotation,
-          params.width,
-          params.height,
-          params.segments
-        );
-
         break;
     }
     if (geometry) {
@@ -201,5 +235,8 @@ export class GeometryManager {
       )}`
     );
     return distance;
+  }
+  public calculateProximityQuery(id1: string, id2: string) {
+    throw new Error("Method not implemented yet.");
   }
 }

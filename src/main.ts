@@ -94,8 +94,8 @@ function superellipseLineTest() {
     segments: 100,
   };
   let params1 = {
-    start: new Vector3(0, 5,0),
-    end: new Vector3(0, 7,0),
+    start: new Vector3(0, 5, 0),
+    end: new Vector3(0, 7, 0),
     rotation: new Vector3(0, 0, 0),
   };
   geometryManager.createGeometry(GeometryType2D.Supperellipse, "geo0", params0);
@@ -132,6 +132,7 @@ function EllipsoidEllipsoidTest() {
     xradius: 10,
     yradius: 5,
     zradius: 5,
+    rotation: new Vector3(0, 0, 0),
     segments: 100,
   };
   geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo0", params0);
@@ -140,6 +141,7 @@ function EllipsoidEllipsoidTest() {
     xradius: 10,
     yradius: 5,
     zradius: 5,
+    rotation: new Vector3(0, 0, 0),
     segments: 100,
   };
   geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo1", params1);
@@ -200,4 +202,4 @@ function drawMinimumDistance(
   scene.add(line);
 }
 
-superellipseLineTest();
+EllipsoidEllipsoidTest();
