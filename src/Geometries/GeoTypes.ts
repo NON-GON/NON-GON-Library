@@ -1,23 +1,18 @@
 export enum GeometryType2D {
   Ellipse = "Ellipse",
-  Supperellipse = "Supperellipse",
   Line = "Line",
-  Circle = "Circle",
-  Convex_Line = "Convex_Line",
-  Convex_Circle = "Convex_Circle",
-  Point = "Point",
   Plane = "Plane",
+  Point = "Point",
+  Supperellipse = "Supperellipse",
 }
 
 export enum GeometryType3D {
-  Sphere = "Sphere",
-  Ellipsoid = "Ellipsoid",
   Cylinder = "Cylinder",
-  Cone = "Cone",
-  Cube = "Cube",
-  Superellipsoid = "Superellipsoid",
+  Ellipsoid = "Ellipsoid",
   EllipticParaboloid = "EllipticParaboloid",
   Hyperboloid = "Hyperboloid",
+  Sphere = "Sphere",
+  Superellipsoid = "Superellipsoid",
 }
 
 export function isGeometryType2D(type: any): type is GeometryType2D {

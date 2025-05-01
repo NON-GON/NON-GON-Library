@@ -1710,3 +1710,16 @@ export function ApproximatlyEqual(
 ): boolean {
   return Math.abs(a - b) < epsilon;
 }
+
+export function IsPlaneBetween(
+  plane1Center: Vector3,
+  middlePlaneCenter: Vector3,
+  plane2Center: Vector3
+): boolean {
+  const axis = plane2Center.subtract(plane1Center).normalize();
+  const toMiddle = middlePlaneCenter.subtract(plane1Center);
+
+  const projection = toMiddle.dot(axis);
+
+  return projection > 0 && projection < plane1Center.distanceTo(plane2Center);
+}

@@ -4,10 +4,12 @@ import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 import { EllipticParaboloid } from "../../Geometries/3D/Ellipticparaboloid";
 import { Hyperboloid } from "../../Geometries/3D/Hyperboloid";
 import {
+  ApproximatlyEqual,
   calDetMatrix4x4,
   DescartesLawOfSignsFourthDegreePolynomial,
   FindClosestPoints,
   FindIntersectionPoints,
+  IsPlaneBetween,
   overlaps,
   RectanglesIntersect,
   SAT,
@@ -1249,5 +1251,41 @@ export class ProximityQuery3D {
       return true;
     }
     return false;
+  }
+
+  public static Hyperboloid_Plane(
+    hyperboloid: Hyperboloid,
+    plane: Plane
+  ): boolean {
+    const planeNormal = plane.getNormal().normalize();
+    const hyperboloidForward = hyperboloid.forward().normalize();
+    const c = hyperboloid.zfactor;
+
+    const center = hyperboloid.getCenter();
+    const forwardScaled = hyperboloidForward.scale(c);
+    const top = center.add(forwardScaled);
+    const bottom = center.subtract(forwardScaled);
+
+    const isAligned =
+      ApproximatlyEqual(planeNormal.dot(hyperboloidForward), 1) ||
+      ApproximatlyEqual(planeNormal.dot(hyperboloidForward), -1);
+
+    const isPlaneBetween = IsPlaneBetween(top, plane.getCenter(), bottom);
+
+    if (isAligned) {
+      return !isPlaneBetween;
+    }
+
+    if (isPlaneBetween) {
+      let angle = planeNormal.angleTo(hyperboloidForward);
+      angle = angle > 90 ? 180 - angle : angle;
+
+      const distance = center.distanceTo(plane.getCenter());
+      const threshold = distance >= 1 ? distance * c : c;
+
+      return angle > 40 / threshold;
+    }
+
+    return true;
   }
 }

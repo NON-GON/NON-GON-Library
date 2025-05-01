@@ -2,12 +2,15 @@ import { Vector2, Vector3 } from "../../Calc/Util/Utils";
 import { GeometryType2D } from "../GeoTypes";
 import { IGeometry2D } from "./IGeometry2D";
 import { IGeometry3D } from "../3D/IGeometry3D";
-import { GeometryType3D, isGeometryType3D, isGeometryType2D } from "../GeoTypes";
+import {
+  GeometryType3D,
+  isGeometryType3D,
+  isGeometryType2D,
+} from "../GeoTypes";
 import * as THREE from "three";
 import { Superellipsoid } from "../3D/Superellipsoid";
 import { Geometry2DBase } from "./Geometry2DBase";
 import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
-
 
 export class Plane extends Geometry2DBase implements IGeometry2D {
   type: GeometryType2D = GeometryType2D.Plane;
@@ -23,8 +26,8 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
   ) {
     super();
     this.center =
-      center instanceof Vector2 ? new Vector3(center.x, center.y, 0) : center;  
-    this.rotation = rotation;  
+      center instanceof Vector2 ? new Vector3(center.x, center.y, 0) : center;
+    this.rotation = rotation;
     this.segments = segments;
     this.rotation = rotation;
     this.width = width;
@@ -36,8 +39,7 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
     if (isGeometryType3D(geometry.type)) {
       res = this.MinimumDistance3D(geometry as IGeometry3D);
     } else if (isGeometryType2D(geometry.type)) {
-      throw new Error(
-        "Minimum distance not implemented for 2D geometries.");
+      throw new Error("Minimum distance not implemented for 2D geometries.");
     }
     return [res[0], res[1]];
   }
@@ -45,7 +47,10 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
   MinimumDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType3D.Superellipsoid:
-        let res = MinimumDistance3D.superellipsoidPlane(this, geometry as Superellipsoid);
+        let res = MinimumDistance3D.superellipsoidPlane(
+          this,
+          geometry as Superellipsoid
+        );
         return [res[0], res[1]];
       default:
         throw new Error(
@@ -69,5 +74,13 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
     }
     this.normalizeGeometry();
     return this.geometry;
+  }
+
+  public getNormal(): Vector3 {
+    const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
+      new THREE.Euler(this.rotation.x, this.rotation.y, this.rotation.z)
+    );
+    const normal = new THREE.Vector3(0, 0, 1).applyMatrix4(rotationMatrix);
+    return new Vector3(normal.x, normal.y, normal.z);
   }
 }
