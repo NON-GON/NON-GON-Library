@@ -2,12 +2,52 @@ import * as THREE from "three";
 import { GeometryManager } from "./Geometries/GeometryManager";
 import { GeometryType2D, GeometryType3D } from "./Geometries/GeoTypes";
 import { Vector3, Vector2 } from "./Calc/Util/Utils";
+import { SVGRenderer } from "three/examples/jsm/renderers/SVGRenderer";
 
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xfffafa);
 let geometryManager = new GeometryManager();
 
 let angle = 0; // Add a variable to track the rotation angle
 let hex = 0x00ff00; // Green color for the line
+
+function createCustomAxes(size: number, x?: number, y?: number, z?: number) {
+  const axesGroup = new THREE.Group();
+
+  const createAxis = (start: any, end: any, color: number) => {
+    const material = new THREE.LineBasicMaterial({ color });
+    const geometry = new THREE.BufferGeometry().setFromPoints([start, end]);
+    return new THREE.Line(geometry, material);
+  };
+
+  // X-axis (red)
+  axesGroup.add(
+    createAxis(
+      new THREE.Vector3(x, y, z),
+      new THREE.Vector3(x! + size, y, z),
+      0xff0000
+    )
+  );
+  // Y-axis (green)
+  axesGroup.add(
+    createAxis(
+      new THREE.Vector3(x, y, z),
+      new THREE.Vector3(x, y! + size, z),
+      0x00ff00
+    )
+  );
+  // Z-axis (blue)
+  axesGroup.add(
+    createAxis(
+      new THREE.Vector3(x, y, z),
+      new THREE.Vector3(x, y, z! + size),
+      0x0000ff
+    )
+  );
+
+  return axesGroup;
+}
+
 initialization();
 function initialization() {
   const camera = new THREE.PerspectiveCamera(
@@ -20,6 +60,26 @@ function initialization() {
   renderer.setSize(window.innerWidth - 15, window.innerHeight - 20);
   document.body.appendChild(renderer.domElement);
   camera.position.z = 50;
+
+  const svgRenderer = new SVGRenderer(); // Create an SVG renderer
+  svgRenderer.setSize(window.innerWidth - 15, window.innerHeight - 20);
+  document.body.appendChild(svgRenderer.domElement); // Append SVG renderer to the DOM
+
+  scene.userData.renderer = renderer; // Store the renderer in scene's userData
+  scene.userData.svgRenderer = svgRenderer; // Store the SVG renderer in scene's userData
+  scene.userData.camera = camera; // Store the camera in scene's userData
+
+  // Replace AxesHelper with custom axes
+  const customAxes1 = createCustomAxes(5, -10, 15, 5);
+  const customAxes2 = createCustomAxes(5, 15, 6, 0);
+  scene.add(customAxes1);
+  scene.add(customAxes2);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key.toLowerCase() === "p") {
+      exportSceneToSVG(); // Call the export function when "P" is pressed
+    }
+  });
 
   animate(renderer, scene, camera);
 }
@@ -34,6 +94,29 @@ function animate(renderer: any, scene: any, camera: any) {
   camera.lookAt(0, 0, 0); // Ensure the camera always looks at the center of the scene
 
   renderer.render(scene, camera);
+}
+
+function exportSceneToSVG() {
+  const svgRenderer = scene.userData.svgRenderer;
+  const camera = scene.userData.camera; // Retrieve the camera from userData
+  if (!svgRenderer || !camera) {
+    console.error("SVGRenderer or Camera is not initialized.");
+    return;
+  }
+
+  svgRenderer.render(scene, camera); // Render the scene to SVG using the correct camera
+  const svgElement = svgRenderer.domElement;
+  const svgData = new XMLSerializer().serializeToString(svgElement);
+
+  const blob = new Blob([svgData], { type: "image/svg+xml" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "scene.svg";
+  link.click();
+
+  URL.revokeObjectURL(url); // Clean up the URL object
 }
 
 function pointEllipseMDTest() {
@@ -127,26 +210,27 @@ function pointEllipsoidMDTest() {
 }
 
 function EllipsoidEllipsoidMDTest() {
+  let geometryManager = new GeometryManager();
   let params0 = {
-    center: new Vector3(-10, 0, 0),
-    xradius: 10,
-    yradius: 5,
-    zradius: 5,
+    center: new Vector3(-10, 15, 5),
+    xradius: 4,
+    yradius: 12,
+    zradius: 8,
     rotation: new Vector3(0, 0, 0),
-    segments: 100,
+    segments: 15,
   };
   geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo0", params0);
   let params1 = {
-    center: new Vector3(15, 0, 0),
-    xradius: 10,
+    center: new Vector3(15, 6, 0),
+    xradius: 7,
     yradius: 5,
-    zradius: 5,
+    zradius: 3,
     rotation: new Vector3(0, 0, 0),
-    segments: 100,
+    segments: 15,
   };
   geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo1", params1);
-  scene.add(geometryManager.getGeometryMesh("geo1", hex));
-  scene.add(geometryManager.getGeometryMesh("geo0", hex));
+  scene.add(geometryManager.getGeometryMesh("geo1", 0xf08080));
+  scene.add(geometryManager.getGeometryMesh("geo0", 0xb0c4de));
   let points = geometryManager.calculateMinimumDistance("geo0", "geo1");
   drawMinimumDistance(points[0], points[1]);
 }
@@ -335,7 +419,7 @@ function drawMinimumDistance(
   point1: Vector3 | Vector2,
   point2: Vector3 | Vector2
 ) {
-  const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffff00 });
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0x080808 });
   const lineGeometry = new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector3(
       parseFloat(point1.x.toFixed(3)),
@@ -353,4 +437,4 @@ function drawMinimumDistance(
   scene.add(line);
 }
 
-ellipsoidEllipticParaboloidPQTest();
+EllipsoidEllipsoidMDTest();
