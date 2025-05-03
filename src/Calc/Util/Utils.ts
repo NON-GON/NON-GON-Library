@@ -12,6 +12,15 @@ export class Vector2 {
   public toVector3(): Vector3 {
     return new Vector3(this.x, this.y, 0);
   }
+  public toVector2(): Vector2 {
+    return new Vector2(this.x, this.y);
+  }
+
+  public signedAngle(v2: Vector2): number {
+    const angle = Math.acos(this.dot(v2) / (this.magnitude() * v2.magnitude()));
+    const sign = Math.sign(this.x * v2.y - this.y * v2.x);
+    return sign * angle;
+  }
 
   public clone(): Vector2 {
     return new Vector2(this.x, this.y);
@@ -69,10 +78,31 @@ export class Vector3 {
     this.z = z;
   }
 
-  public clone(): Vector3 {
+  public projectOnPlane(planeNormal: Vector3): Vector3 {
+    const dotProduct = this.dot(planeNormal);
+    return new Vector3(
+      this.x - dotProduct * planeNormal.x,
+      this.y - dotProduct * planeNormal.y,
+      this.z - dotProduct * planeNormal.z
+    );
+  }
+
+  public signedAngle(to: Vector3, axis: Vector3): number {
+    const num1 = this.angleTo(to);
+    const num2 = this.y * to.z - this.z * to.y;
+    const num3 = this.z * to.x - this.x * to.z;
+    const num4 = this.x * to.y - this.y * to.x;
+    const num5 = Math.sign(axis.x * num2 + axis.y * num3 + axis.z * num4);
+    return num1 * num5;
+  }
+
+  public toVector3(): Vector3 {
     return new Vector3(this.x, this.y, this.z);
   }
-  public toVector3(): Vector3 {
+  public toVector2(): Vector2 {
+    return new Vector2(this.x, this.y);
+  }
+  public clone(): Vector3 {
     return new Vector3(this.x, this.y, this.z);
   }
   static Zero(): Vector3 {

@@ -1,0 +1,179 @@
+import { Vector3, Vector2 } from "../../Calc/Util/Utils";
+import { GeometryType3D } from "../GeoTypes";
+import { Geometry3DBase } from "./Geometry3DBase";
+import { IGeometry3D } from "./IGeometry3D";
+import * as THREE from "three";
+
+export class Convex extends Geometry3DBase implements IGeometry3D {
+  readonly segments: number;
+  public type: GeometryType3D = GeometryType3D.Convex;
+  private phi = -Math.PI;
+  private theta = Math.PI / 2;
+  constructor(
+    rotation: Vector3 | Vector2,
+    center: Vector3 | Vector2,
+    segments: number
+  ) {
+    super();
+    this.center =
+      center instanceof Vector2 ? new Vector3(center.x, center.y, 0) : center;
+    this.rotation =
+      rotation instanceof Vector2
+        ? new Vector3(rotation.x, rotation.y, 0)
+        : rotation;
+    this.segments = segments;
+  }
+  getGeometry() {
+    if (this.geometry !== null && this.geometry !== undefined) {
+      return this.geometry;
+    } else {
+      const points: Vector3[] = [];
+      for (let i = 0; i <= this.segments + 1; i++) {
+        let point = Vector3.Zero();
+
+        let ephi = new Vector3(
+          Math.cos(this.phi) * Math.cos(this.theta),
+          Math.cos(this.phi) * Math.sin(this.theta),
+          -Math.sin(this.phi)
+        ).normalize();
+        let etheta = new Vector3(
+          -Math.sin(this.theta),
+          Math.cos(this.theta),
+          0
+        ).normalize();
+        let en = new Vector3(
+          Math.sin(this.phi) * Math.cos(this.theta),
+          Math.sin(this.phi) * Math.sin(this.theta),
+          Math.cos(this.phi)
+        ).normalize();
+        if (this.phi > 0 && this.phi < Math.PI) {
+          point = ephi
+            .scale(this.fda(this.phi, this.theta))
+            .add(
+              etheta.scale(this.fdb(this.phi, this.theta) / Math.sin(this.phi))
+            )
+            .add(en.scale(this.f(this.phi, this.theta)));
+        } else {
+          if (this.phi === 0 || this.phi === Math.PI) {
+            point = ephi
+              .scale(this.fda(this.phi, this.theta))
+              .add(
+                etheta.scale(
+                  this.fdd(this.phi, this.theta) / Math.cos(this.phi)
+                )
+              )
+              .add(en.scale(this.f(this.phi, this.theta)));
+          }
+        }
+        points.push(new THREE.Vector3(point.x, point.y, point.z));
+      }
+      this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      this.geometry.normalizeGeometry();
+      return this.geometry;
+    }
+  }
+  public point(theta: number, phi: number): Vector3 {
+    let res = Vector3.Zero();
+
+    let ephi = new Vector3(
+      Math.cos(phi) * Math.cos(theta),
+      Math.cos(phi) * Math.sin(theta),
+      -Math.sin(phi)
+    ).normalize();
+
+    let etheta = new Vector3(-Math.sin(theta), Math.cos(theta), 0).normalize();
+
+    let en = new Vector3(
+      Math.sin(phi) * Math.cos(theta),
+      Math.sin(phi) * Math.sin(theta),
+      Math.cos(phi)
+    ).normalize();
+
+    if (phi > 0 && phi < Math.PI) {
+      res = ephi
+        .scale(this.fda(phi, theta))
+        .add(etheta.scale(this.fdb(phi, theta) / Math.sin(phi)))
+        .add(en.scale(this.f(phi, theta)));
+    } else if (phi === 0 || phi === Math.PI) {
+      res = ephi
+        .scale(this.fda(phi, theta))
+        .add(etheta.scale(this.fdd(phi, theta) / Math.cos(phi)))
+        .add(en.scale(this.f(phi, theta)));
+    }
+
+    return res;
+  }
+  private f(alpha: number, beta: number): number {
+    let sina = Math.sin(alpha);
+    let cosa = Math.cos(alpha);
+    let sinb = Math.sin(beta);
+    let cosb = Math.cos(beta);
+    let res = Math.sqrt(
+      100 * sina ** 2 * cosb ** 2 +
+        900 * sina ** 2 * sinb ** 2 +
+        400 * cosa ** 2
+    );
+    return res;
+  }
+  private fda(alpha: number, beta: number): number {
+    let sina = Math.sin(alpha);
+    let cosa = Math.cos(alpha);
+    let sinb = Math.sin(beta);
+    let cosb = Math.cos(beta);
+    let res =
+      ((900 * sinb * sinb + 100 * cosb * cosb - 400) * cosa * sina) /
+      Math.sqrt(
+        900 * sinb * sinb * sina * sina +
+          100 * cosb * cosb * sina * sina +
+          400 * cosa * cosa
+      );
+    return res;
+  }
+  private fdb(alpha: number, beta: number): number {
+    let sina = Math.sin(alpha);
+    let cosa = Math.cos(alpha);
+    let sinb = Math.sin(beta);
+    let cosb = Math.cos(beta);
+    let res =
+      (800 * sina * sina * cosb * sinb) /
+      Math.sqrt(
+        900 * sinb * sinb * sina * sina +
+          100 * cosb * cosb * sina * sina +
+          400 * cosa * cosa
+      );
+    return res;
+  }
+  private fdd(alpha: number, beta: number): number {
+    let sina = Math.sin(alpha);
+    let cosa = Math.cos(alpha);
+    let sinb = Math.sin(beta);
+    let cosb = Math.cos(beta);
+    let res =
+      (-800 * sina * sina * sinb * sinb) /
+        Math.sqrt(
+          900 * sinb * sinb * sina * sina +
+            100 * cosb * cosb * sina * sina +
+            400 * cosa * cosa
+        ) +
+      (800 * sina * sina * cosb * cosb) /
+        Math.sqrt(
+          900 * sina * sina * sinb * sinb +
+            100 * sina * sina * cosb * cosb +
+            400 * cosa * cosa
+        ) -
+      (800 *
+        sina *
+        sina *
+        cosb *
+        sinb *
+        (1800 * sina * sina * cosb * sinb - 200 * sina * sina * cosb * sinb)) /
+        (2 *
+          Math.pow(
+            900 * sina * sina * sinb * sinb +
+              100 * sina * sina * cosb * cosb +
+              400 * cosa * cosa,
+            3 / 2
+          ));
+    return res;
+  }
+}

@@ -1,4 +1,6 @@
 export enum GeometryType2D {
+  ConvexCircle = "ConvexCircle",
+  ConvexLine = "ConvexLine",
   Ellipse = "Ellipse",
   Line = "Line",
   Plane = "Plane",
@@ -7,6 +9,7 @@ export enum GeometryType2D {
 }
 
 export enum GeometryType3D {
+  Convex = "Convex",
   Cylinder = "Cylinder",
   Ellipsoid = "Ellipsoid",
   EllipticParaboloid = "EllipticParaboloid",

@@ -1,7 +1,10 @@
+import { Circle } from "../../Geometries/2D/Circle";
+import { Convexcircle } from "../../Geometries/2D/Convexcircle";
+import { ConvexLine } from "../../Geometries/2D/Convexline";
 import { Ellipse } from "../../Geometries/2D/Ellipse";
 import { Line } from "../../Geometries/2D/Line";
 import { Superellipse } from "../../Geometries/2D/Superellipse";
-import { Distance, quarticRoots, Vector2, Vector3 } from "../Util/Utils";
+import { quarticRoots, Vector2, Vector3 } from "../Util/Utils";
 
 export class MinimumDistance2D {
   static pointEllipseObj(
@@ -110,25 +113,24 @@ export class MinimumDistance2D {
     let T: Vector2[] = [new Vector2(0, 0), new Vector2(0, 0)];
     let p1 = ellipse1.getCenter();
     let p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1];
-
-    let dist = Distance(p1, p2);
+    let dist = p1.distanceTo(p2);
 
     while (true) {
       p1 = MinimumDistance2D.pointEllipseObj(p2, ellipse1)[1];
-      let dist_ = Distance(p1, p2);
+      let dist_ = p2.distanceTo(p1);
       if (Math.abs(dist - dist_) < tol) {
         break;
       }
       dist = dist_;
       p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1];
-      dist_ = Distance(p1, p2);
+      dist_ = p2.distanceTo(p1);
       if (Math.abs(dist - dist_) < tol) {
         break;
       }
       dist = dist_;
     }
-    T[0] = p1;
-    T[1] = p2;
+    T[0] = p1.toVector2();
+    T[1] = p2.toVector2();
     return [T[0], T[1]];
   }
 
@@ -159,8 +161,8 @@ export class MinimumDistance2D {
     );
     let Ti = T.clone().scale(-1);
 
-    T = superellipse.TransformPoint(T.toVector3());
-    Ti = superellipse.TransformPoint(Ti.toVector3());
+    T = superellipse.TransformPoint(T.toVector3()).toVector2();
+    Ti = superellipse.TransformPoint(Ti.toVector3()).toVector2();
 
     let T_ = line.InverseTransformPoint(T.toVector3());
     let Ti_ = line.InverseTransformPoint(Ti.toVector3());
@@ -172,5 +174,50 @@ export class MinimumDistance2D {
     let L = line.TransformPoint(new Vector3(T_.x, 0, 0));
 
     return [L, T.toVector3()];
+  }
+  static ConvexLine_Line(line: Line, convex: ConvexLine): [Vector3, Vector3] {
+    let center = convex.getCenter();
+    let center_ = line.InverseTransformPoint(center);
+    let y_ = Vector3.Zero();
+    if (center_.y > 0) {
+      y_ = convex.TransformDirection(new Vector3(0, 1, 0));
+    } else {
+      y_ = convex.TransformDirection(new Vector3(0, -1, 0));
+    }
+    y_ = line.InverseTransformDirection(y_);
+    let alpha = (Math.PI / 180) * y_.toVector2().signedAngle(new Vector2(0, 1));
+
+    let f = convex.f(alpha);
+    let fd = convex.fd(alpha);
+    let r = Math.sqrt(f ** 2 + fd ** 2);
+    let phi = alpha + Math.atan(fd / f) - Math.PI / 2;
+
+    let rpc = new Vector2(Math.cos(phi), Math.sin(phi)).scale(r);
+    rpc = convex.TransformPoint(rpc.toVector3()).toVector2();
+
+    let rpc_ = line.InverseTransformPoint(rpc.toVector3());
+    let l: Vector2;
+
+    if (center_.y > 0) {
+      l = line.TransformPoint(new Vector3(rpc_.x, 0, 0)).toVector2();
+    } else {
+      l = line.TransformPoint(new Vector3(-rpc_.x, 0, 0)).toVector2();
+    }
+    return [l.toVector3(), rpc.toVector3()];
+  }
+
+  static ConvexCircle_Circle(convexCircle: Convexcircle, circle: Circle) {
+    let center_convex = convexCircle.getCenter();
+    let R_c = circle.getRadius();
+    let center_circle = circle.getCenter();
+    let cc = center_convex.add(center_circle.scale(-1));
+    let y_ = convexCircle.TransformDirection(new Vector3(-1, 0, 0));
+    let alpha = (Math.PI / 180) * y_.toVector2().signedAngle(cc.toVector2());
+    let rpc = convexCircle.point(alpha, R_c);
+    let convex_point = convexCircle.TransformPoint(rpc.toVector3());
+    let l = circle.InverseTransformPoint(convex_point);
+    l = l.normalize().scale(R_c);
+    l = circle.TransformPoint(l.toVector3());
+    return [l.toVector3(), convex_point];
   }
 }

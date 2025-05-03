@@ -4,6 +4,7 @@ import { Sphere } from "../../Geometries/3D/Sphere";
 import { Plane } from "../../Geometries/2D/Plane";
 import { Superellipsoid } from "../../Geometries/3D/Superellipsoid";
 import { MinimumDistance2D } from "./Minimum_Distance_2D";
+import { Convex } from "../../Geometries/3D/Convex";
 export class MinimumDistance3D {
   static point_Ellipsoid(
     point: Vector3,
@@ -296,5 +297,25 @@ export class MinimumDistance3D {
     }
 
     return sol;
+  }
+  static AlmostConvexGeometryPlane(
+    plane: Plane,
+    geometry: Convex
+  ): [Vector3, Vector3] {
+    let n = plane.TransformDirection(new Vector3(0, 1, 0));
+    n = geometry.InverseTransformDirection(n).scale(-1);
+
+    let theta =
+      (Math.PI / 180) *
+      n
+        .projectOnPlane(new Vector3(0, 0, 1))
+        .signedAngle(new Vector3(1, 0, 0), new Vector3(0, 0, -1));
+    let phi = (Math.PI / 180) * n.angleTo(new Vector3(0, 1, 0));
+    let point = geometry.point(theta, phi);
+    point = geometry.TransformPoint(point);
+    let point_ = plane.InverseTransformPoint(point);
+    point_ = new Vector3(point_.x, 0, point_.z);
+    point_ = plane.TransformPoint(point_);
+    return [point_, point];
   }
 }

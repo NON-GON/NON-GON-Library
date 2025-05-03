@@ -1,0 +1,88 @@
+import { Vector2, Vector3 } from "../../Calc/Util/Utils";
+import { GeometryType2D } from "../GeoTypes";
+import { Geometry2DBase } from "./Geometry2DBase";
+import { IGeometry2D } from "./IGeometry2D";
+import * as THREE from "three";
+export class Convexcircle extends Geometry2DBase implements IGeometry2D {
+  private angle: number = -Math.PI / 2;
+  readonly segments: number;
+  readonly radius: number;
+  public type: GeometryType2D = GeometryType2D.ConvexLine;
+  constructor(
+    radius: number,
+    rotation: Vector3 | Vector2,
+    center: Vector3 | Vector2,
+    segments: number
+  ) {
+    super();
+    this.center =
+      center instanceof Vector2 ? new Vector3(center.x, center.y, 0) : center;
+    this.rotation =
+      rotation instanceof Vector2
+        ? new Vector3(rotation.x, rotation.y, 0)
+        : rotation;
+    this.radius = radius;
+    this.segments = segments;
+  }
+  public getGeometry(): any {
+    if (this.geometry !== null && this.geometry !== undefined) {
+      return this.geometry;
+    } else {
+      const points: Vector2[] = [];
+      for (let i = 0; i <= this.segments + 1; i++) {
+        let f = this.f_c(this.angle, this.radius);
+        let fd = this.fd_c(this.angle, this.radius);
+        let xpc = (fd * this.radius) / Math.sqrt(f * f + fd * fd);
+        let zpc = (f * this.radius) / Math.sqrt(f * f + fd * fd) - f;
+        let r = Math.sqrt(xpc ** 2 + zpc ** 2);
+        let phi = this.angle - Math.atan(xpc / zpc);
+        let pos = new Vector2(Math.cos(phi), Math.sin(phi));
+        points.push(new THREE.Vector2(pos.x * r, pos.y * r));
+        this.angle += (2 * Math.PI) / this.segments;
+      }
+      this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      this.geometry.normalizeGeometry();
+      return this.geometry;
+    }
+  }
+  public point(angle: number, radius: number): Vector2 {
+    let f = this.f_c(angle, radius);
+    let fd = this.fd_c(angle, radius);
+    let xpc = (fd * radius) / Math.sqrt(f * f + fd * fd);
+    let zpc = (f * radius) / Math.sqrt(f * f + fd * fd) - f;
+    let r = Math.sqrt(xpc ** 2 + zpc ** 2);
+    let phi = angle - Math.atan(xpc / zpc);
+    return new Vector2(Math.cos(phi), Math.sin(phi)).scale(r);
+  }
+  private f_c(alpha: number, r: number): number {
+    let res: number;
+    if (alpha > 0 && alpha < (2 / 3) * Math.PI) {
+      res =
+        2 * r +
+        (1 / 3) *
+          Math.pow(alpha, 3) *
+          Math.pow((2 / 3) * Math.PI - alpha, 4) *
+          r;
+    } else {
+      res = 2 * r;
+    }
+    return res;
+  }
+  public getAngle(): number {
+    return this.angle;
+  }
+  private fd_c(alpha: number, r: number): number {
+    let res: number;
+    if (alpha > 0 && alpha < (2 / 3) * Math.PI) {
+      res =
+        (Math.pow(alpha, 2) * Math.pow((2 / 3) * Math.PI - alpha, 4) -
+          (4 / 3) *
+            Math.pow((2 / 3) * Math.PI - alpha, 3) *
+            Math.pow(alpha, 3)) *
+        r;
+    } else {
+      res = 0;
+    }
+    return res;
+  }
+}
