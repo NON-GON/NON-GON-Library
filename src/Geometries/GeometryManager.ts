@@ -19,18 +19,38 @@ import { Convexcircle } from "./2D/Convexcircle";
 import { ConvexLine } from "./2D/Convexline";
 import { Convex } from "./3D/Convex";
 
+/**
+ * Singleton class to manage creation, storage, and operations on geometries.
+ */
 export class GeometryManager {
   private static _instance: GeometryManager;
   private _geometries: { [key: string]: any } = {};
 
+  /**
+   * Adds a geometry object to the internal dictionary.
+   * @param id Unique identifier for the geometry.
+   * @param geometry Geometry instance to store.
+   */
   private addGeometry(id: string, geometry: any): void {
     this._geometries[id] = geometry;
   }
 
+  /**
+   * Retrieves a geometry by ID.
+   * @param id Identifier of the geometry to retrieve.
+   * @returns The geometry object or undefined if not found.
+   */
   public getGeometry(id: string): any {
     return this._geometries[id];
   }
 
+  /**
+   * Generates a THREE.Line mesh for a geometry with the given ID.
+   * @param id Identifier of the geometry.
+   * @param color Color of the line material.
+   * @returns A THREE.Line object representing the geometry.
+   * @throws If the geometry is not found.
+   */
   public getGeometryMesh(id: string, color: number): any {
     let geometry = this._geometries[id];
     if (geometry) {
@@ -42,10 +62,17 @@ export class GeometryManager {
     }
   }
 
+  /**
+   * Returns all stored geometries.
+   * @returns An object containing all geometries keyed by their IDs.
+   */
   public getAllGeometries(): { [key: string]: any } {
     return this._geometries;
   }
 
+  /**
+   * Clears all stored geometries.
+   */
   public clearGeometries(): void {
     this._geometries = {};
   }
@@ -67,6 +94,13 @@ export class GeometryManager {
   public createGeometry(type: GeometryType2D, id: string, params: any): void;
   public createGeometry(type: GeometryType3D, id: string, params: any): void;
 
+  /**
+   * Creates a geometry based on type and parameters, stores it and returns its mesh.
+   * @param type The type of geometry (2D or 3D).
+   * @param id Unique identifier for the geometry.
+   * @param params Parameters for the geometry construction.
+   * @returns A THREE.Mesh or THREE.Line object representing the geometry.
+   */
   public createGeometry(
     type: GeometryType2D | GeometryType3D,
     id: string,
@@ -245,6 +279,12 @@ export class GeometryManager {
     }
   }
 
+  /**
+   * Calculates and logs the minimum distance between two geometries.
+   * @param id1 ID of the first geometry.
+   * @param id2 ID of the second geometry.
+   * @returns A tuple of the closest two points ([point1, point2]).
+   */
   public calculateMinimumDistance(
     id1: string,
     id2: string
@@ -259,6 +299,14 @@ export class GeometryManager {
     );
     return distance;
   }
+
+  /**
+   * Performs a proximity query between two geometries using the specified method.
+   * @param id1 ID of the first geometry.
+   * @param id2 ID of the second geometry.
+   * @param method Optional method string to define query type.
+   * @returns Boolean result of the proximity query.
+   */
   public calculateProximityQuery(
     id1: string,
     id2: string,
