@@ -6,6 +6,12 @@ import { Superellipsoid } from "../../Geometries/3D/Superellipsoid";
 import { MinimumDistance2D } from "./Minimum_Distance_2D";
 import { Convex } from "../../Geometries/3D/Convex";
 export class MinimumDistance3D {
+  /**
+   * Find the contact points between a point and an ellipsoid.
+   * @param point
+   * @param ellipsoid
+   * @returns A tuple of two points: the original point and the closest point on the ellipsoid.
+   */
   static point_Ellipsoid(
     point: Vector3,
     ellipsoid: Ellipsoid | Sphere
@@ -140,7 +146,12 @@ export class MinimumDistance3D {
     sol[1] = pop;
     return sol;
   }
-
+  /**
+   * Find the contact points between two ellipsoids.
+   * @param ellipsoid1
+   * @param ellipsoid2
+   * @returns A tuple of two points: the closest point of the ellipsoid1 and the closest point of the ellipsoid2.
+   */
   static ellipsoidEllipsoid(
     ellipsoid1: Ellipsoid | Sphere,
     ellipsoid2: Ellipsoid | Sphere
@@ -178,6 +189,12 @@ export class MinimumDistance3D {
     return sol;
   }
 
+  /**
+   * Find the contact points between a plane and a superellipsoid.
+   * @param plane
+   * @param superellipsoid
+   * @returns A tuple of two points: the closest point of the plane and the closest point of the superellipsoid.
+   */
   static superellipsoidPlane(
     plane: Plane,
     superellipsoid: Superellipsoid
@@ -298,9 +315,15 @@ export class MinimumDistance3D {
 
     return sol;
   }
+  /**
+   * Find the contact points between a convex and a plane.
+   * @param geometry
+   * @param plane
+   * @returns A tuple of two points: the closest point of the convex and the closest point of the plane.
+   */
   static AlmostConvexGeometryPlane(
-    plane: Plane,
-    geometry: Convex
+    geometry: Convex,
+    plane: Plane
   ): [Vector3, Vector3] {
     let n = plane.TransformDirection(new Vector3(0, 1, 0));
     n = geometry.InverseTransformDirection(n).scale(-1);

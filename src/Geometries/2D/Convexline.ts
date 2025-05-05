@@ -1,16 +1,24 @@
 import { Vector2, Vector3 } from "../../Calc/Util/Utils";
-import { GeometryType2D } from "../GeoTypes";
+import {
+  GeometryType2D,
+  isGeometryType2D,
+  isGeometryType3D,
+} from "../GeoTypes";
 import { Geometry2DBase } from "./Geometry2DBase";
 import { IGeometry2D } from "./IGeometry2D";
+import { IGeometry3D } from "../3D/IGeometry3D";
+
 import * as THREE from "three";
+import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+import { Line } from "./Line";
 export class ConvexLine extends Geometry2DBase implements IGeometry2D {
   private angle: number = -Math.PI / 2;
   readonly segments: number;
   public type: GeometryType2D = GeometryType2D.ConvexLine;
   constructor(
-    rotation: Vector3 | Vector2,
     center: Vector3 | Vector2,
-    segments: number,
+    rotation: Vector3 | Vector2,
+    segments: number
   ) {
     super();
     this.center =
@@ -68,5 +76,34 @@ export class ConvexLine extends Geometry2DBase implements IGeometry2D {
       res = 0;
     }
     return res;
+  }
+
+  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+    switch (geometry.type) {
+      case GeometryType2D.ConvexCircle:
+        let line = geometry as Line;
+        let res = MinimumDistance2D.ConvexLine_Line(this, line);
+        return [
+          new Vector3(res[0].x, res[0].y, 0),
+          new Vector3(res[1].x, res[1].y, 0),
+        ];
+      default:
+        throw new Error(
+          "Minimum distance not implemented for this geometry type."
+        );
+    }
+  }
+
+  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+    let res = [Vector3.Zero(), Vector3.Zero()];
+
+    if (isGeometryType3D(geometry.type)) {
+      throw new Error(
+        "Minimum distance 3D not implemented for this geometry type."
+      );
+    } else if (isGeometryType2D(geometry.type)) {
+      res = this.MinimumDistance2D(geometry as IGeometry2D);
+    }
+    return [res[0], res[1]];
   }
 }

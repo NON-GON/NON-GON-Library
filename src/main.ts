@@ -415,6 +415,74 @@ function ellipsoidEllipticParaboloidPQTest() {
   console.log("Caravantes Result:", resultCaravantes);
 }
 
+function almostConvexGeometryPlaneMDTest() {
+  const paramsConvex = {
+    center: new Vector3(0, 10, 0),
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  const paramsPlane = {
+    center: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    width: 10,
+    height: 10,
+    segments: 100,
+  };
+  geometryManager.createGeometry(GeometryType3D.Convex, "geo0", paramsConvex);
+  geometryManager.createGeometry(GeometryType2D.Plane, "geo1", paramsPlane);
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
+  const points = geometryManager.calculateMinimumDistance("geo0", "geo1");
+  drawMinimumDistance(points[0], points[1]);
+}
+
+function convexLineLineMDTest() {
+  const paramsConvexLine = {
+    center: new Vector3(0, 10, 0),
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  const paramsLine = {
+    start: new Vector3(0, 5, 0),
+    end: new Vector3(0, 7, 0),
+    rotation: new Vector3(0, 0, 0),
+  };
+  geometryManager.createGeometry(
+    GeometryType2D.ConvexLine,
+    "geo0",
+    paramsConvexLine
+  );
+  geometryManager.createGeometry(GeometryType2D.Line, "geo1", paramsLine);
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
+  const points = geometryManager.calculateMinimumDistance("geo0", "geo1");
+  drawMinimumDistance(points[0], points[1]);
+}
+function convexCircleCircleMD() {
+  const paramsConvexCircle = {
+    center: new Vector3(0, 10, 0),
+    radius: 5,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  const paramsCircle = {
+    center: new Vector3(0, 0, 0),
+    radius: 5,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
+  };
+  geometryManager.createGeometry(
+    GeometryType2D.ConvexCircle,
+    "geo0",
+    paramsConvexCircle
+  );
+  geometryManager.createGeometry(GeometryType2D.Circle, "geo1", paramsCircle);
+  scene.add(geometryManager.getGeometryMesh("geo1", hex));
+  scene.add(geometryManager.getGeometryMesh("geo0", hex));
+  const points = geometryManager.calculateMinimumDistance("geo0", "geo1");
+  drawMinimumDistance(points[0], points[1]);
+}
+
 function drawMinimumDistance(
   point1: Vector3 | Vector2,
   point2: Vector3 | Vector2
@@ -437,4 +505,4 @@ function drawMinimumDistance(
   scene.add(line);
 }
 
-EllipsoidEllipsoidMDTest();
+

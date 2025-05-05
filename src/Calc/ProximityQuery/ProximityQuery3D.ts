@@ -18,6 +18,13 @@ import {
 } from "../Util/Utils";
 
 export class ProximityQuery3D {
+  /**
+   * Checks if a point is inside a sphere in 3D space.
+   * @param positionPoint
+   * @param positionSphere
+   * @param sphereRadius
+   * @returns  True if the point is inside the sphere, false otherwise.
+   */
   public static PointSphere3D(
     positionPoint: Vector3,
     positionSphere: Vector3,
@@ -35,7 +42,15 @@ export class ProximityQuery3D {
     );
     return distance < sphereRadius;
   }
-
+  /**
+   * Checks if a 3D point lies within a 3D Axis-Aligned Bounding Box (AABB).
+   * @param positionPoint - The point's 3D position.
+   * @param positionAABB - The center position of the AABB.
+   * @param lengthAABB - Length of the AABB along the X-axis.
+   * @param heightAABB - Height of the AABB along the Z-axis.
+   * @param widthAABB - Width of the AABB along the Y-axis.
+   * @returns True if the point lies inside the AABB, false otherwise.
+   */
   public static Point_AABB3D(
     positionPoint: Vector3,
     positionAABB: Vector3,
@@ -62,7 +77,16 @@ export class ProximityQuery3D {
       pZ <= maxZ
     );
   }
-
+  /**
+   * Checks if a sphere intersects with a 3D AABB.
+   * @param positionAABB - The center position of the AABB.
+   * @param lengthAABB - Length of the AABB along the X-axis.
+   * @param heightAABB - Height of the AABB along the Z-axis.
+   * @param widthAABB - Width of the AABB along the Y-axis.
+   * @param positionSphere - The center position of the sphere.
+   * @param sphereRadius - Radius of the sphere.
+   * @returns True if the sphere intersects the AABB, false otherwise.
+   */
   public static Sphere_AABB3D(
     positionAABB: Vector3,
     lengthAABB: number,
@@ -90,6 +114,14 @@ export class ProximityQuery3D {
     return distance < sphereRadius;
   }
 
+  /**
+   * Determines whether two spheres in 3D space intersect.
+   * @param positionSphere1 - Center position of the first sphere.
+   * @param positionSphere2 - Center position of the second sphere.
+   * @param sphereRadius1 - Radius of the first sphere.
+   * @param sphereRadius2 - Radius of the second sphere.
+   * @returns True if the spheres intersect, false otherwise.
+   */
   public static SphereSphere3D(
     positionSphere1: Vector3,
     positionSphere2: Vector3,
@@ -109,6 +141,18 @@ export class ProximityQuery3D {
     return distance < sphereRadius1 + sphereRadius2;
   }
 
+  /**
+   * Checks for intersection between two 3D AABBs.
+   * @param positionAABB1 - Center position of the first AABB.
+   * @param positionAABB2 - Center position of the second AABB.
+   * @param length1 - Length of the first AABB along the X-axis.
+   * @param length2 - Length of the second AABB along the X-axis.
+   * @param width1 - Width of the first AABB along the Y-axis.
+   * @param width2 - Width of the second AABB along the Y-axis.
+   * @param height1 - Height of the first AABB along the Z-axis.
+   * @param height2 - Height of the second AABB along the Z-axis.
+   * @returns True if the AABBs intersect, false otherwise.
+   */
   public static AABB_AABB3D(
     positionAABB1: Vector3,
     positionAABB2: Vector3,
@@ -136,6 +180,13 @@ export class ProximityQuery3D {
     );
   }
 
+  /**
+   * Checks for intersection between two 3D Oriented Bounding Boxes (OBBs) using the Separating Axis Theorem (SAT).
+   * @param normals - Array of separating axis normals to test.
+   * @param corners1 - Vertices of the first OBB.
+   * @param corners2 - Vertices of the second OBB.
+   * @returns True if the OBBs intersect, false otherwise.
+   */
   public static OBB_OBB3D(
     normals: Vector3[],
     corners1: Vector3[],
@@ -155,6 +206,12 @@ export class ProximityQuery3D {
     return true;
   }
 
+  /**
+   * Checks if two cylinders intersect in 3D space using the Chittawadigi method.
+   * @param cylinder1 - The first cylinder.
+   * @param cylinder2 - The second cylinder.
+   * @returns True if the cylinders intersect, false otherwise.
+   */
   public static Cylinder_Cylinder_Chittawadigi(
     cylinder1: Cylinder,
     cylinder2: Cylinder
@@ -344,7 +401,12 @@ export class ProximityQuery3D {
       }
     }
   }
-
+  /**
+   * Calculates the characteristic polynomial of two ellipsoids.
+   * @param ellipsoid1 - The first ellipsoid.
+   * @param ellipsoid2 - The second ellipsoid.
+   * @returns The coefficients of the characteristic polynomial.
+   */
   public static characteristicPolynomialEllipsoid(
     ellipsoid1: Ellipsoid,
     ellipsoid2: Ellipsoid
@@ -579,7 +641,14 @@ export class ProximityQuery3D {
       J2
     );
   }
-
+  /**
+   * Calculates the coefficients of the characteristic polynomial of two ellipsoids.
+   * @param matrixA - Coefficients of the first ellipsoid's polynomial.
+   * @param matrixB - Coefficients of the second ellipsoid's polynomial.
+   * @param A1, B1, C1, D1, E1, F1, G1, H1, I1, J1 - Coefficients of the first ellipsoid.
+   * @param A2, B2, C2, D2, E2, F2, G2, H2, I2, J2 - Coefficients of the second ellipsoid.
+   * @returns The coefficients of the characteristic polynomial.
+   */
   private static calcCharacteristicPolynomial(
     matrixA: number[][],
     matrixB: number[][],
@@ -951,7 +1020,12 @@ export class ProximityQuery3D {
 
     return [a4, a3, a2, a1, a0];
   }
-
+  /**
+   * Checks if two ellipsoids intersect using the Caravantes method.
+   * @param Ellipsoid1 - The first ellipsoid.
+   * @param Ellipsoid2 - The second ellipsoid.
+   * @returns True if the ellipsoids intersect, false otherwise.
+   */
   public static Ellipsoid_Ellipsoid_Caravantes(
     Ellipsoid1: Ellipsoid,
     Ellipsoid2: Ellipsoid
@@ -968,7 +1042,12 @@ export class ProximityQuery3D {
     const a0 = characteristicPolynomialValues[4];
     return !DescartesLawOfSignsFourthDegreePolynomial(a4, a3, a2, a1, a0);
   }
-
+  /**
+   * Calculates the coefficients of the characteristic polynomial of an ellipsoid and an elliptic paraboloid.
+   * @param ellipsoid - The ellipsoid.
+   * @param ellipticParaboloid - The elliptic paraboloid.
+   * @returns The coefficients of the characteristic polynomial.
+   */
   public static characteristicPolynomialEllipsoidEllipticParaboloid(
     ellipsoid: Ellipsoid,
     ellipticParaboloid: EllipticParaboloid
@@ -1214,6 +1293,12 @@ export class ProximityQuery3D {
     );
   }
 
+  /**
+   * Checks if an ellipsoid and an elliptic paraboloid intersect using the Brozos method.
+   * @param Ellipsoid - The ellipsoid.
+   * @param ellipticParaboloid - The elliptic paraboloid.
+   * @returns True if the ellipsoid and elliptic paraboloid intersect, false otherwise.
+   */
   public static Ellipsoid_EllipticParaboloid_Brozos(
     Ellipsoid: Ellipsoid,
     ellipticParaboloid: EllipticParaboloid
@@ -1253,6 +1338,12 @@ export class ProximityQuery3D {
     return false;
   }
 
+  /**
+   * Checks if a hyperboloid and a plane intersect.
+   * @param hyperboloid - The hyperboloid.
+   * @param plane - The plane.
+   * @returns True if the hyperboloid and plane intersect, false otherwise.
+   */
   public static Hyperboloid_Plane(
     hyperboloid: Hyperboloid,
     plane: Plane

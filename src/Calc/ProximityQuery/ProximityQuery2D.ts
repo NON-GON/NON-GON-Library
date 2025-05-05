@@ -5,11 +5,24 @@ import {
   overlaps,
   SAT,
   Vector3,
+  Vector2,
 } from "../Util/Utils";
+
 export class ProximityQuery2D {
+  /**
+   * Checks if two axis-aligned bounding boxes (AABBs) overlap in 2D.
+   *
+   * @param positionAABB1 - Top-left position of the first AABB.
+   * @param positionAABB2 - Top-left position of the second AABB.
+   * @param length1 - Width of the first AABB.
+   * @param length2 - Width of the second AABB.
+   * @param height1 - Height of the first AABB.
+   * @param height2 - Height of the second AABB.
+   * @returns True if the AABBs intersect, false otherwise.
+   */
   public static AABB_AABB2D(
-    positionAABB1: { x: number; y: number },
-    positionAABB2: { x: number; y: number },
+    positionAABB1: Vector2,
+    positionAABB2: Vector2,
     length1: number,
     length2: number,
     height1: number,
@@ -27,7 +40,15 @@ export class ProximityQuery2D {
       y1 + height1 > y2
     );
   }
-
+  /**
+   * Checks if two oriented bounding boxes (OBBs) intersect using the Separating Axis Theorem (SAT).
+   *
+   * @param normals1 - Normals (axes) of the first OBB.
+   * @param normals2 - Normals (axes) of the second OBB.
+   * @param corners1 - Corner points of the first OBB.
+   * @param corners2 - Corner points of the second OBB.
+   * @returns True if the OBBs intersect, false otherwise.
+   */
   public static OBB_OBB2D(
     normals1: Vector3[],
     normals2: Vector3[],
@@ -61,6 +82,13 @@ export class ProximityQuery2D {
     return true;
   }
 
+  /**
+   * Computes the characteristic polynomial representing two ellipses for collision testing.
+   *
+   * @param Ellipse1 - The first ellipse.
+   * @param Ellipse2 - The second ellipse.
+   * @returns Array of polynomial coefficients [a3, a2, a1, a0].
+   */
   public static characteristicPolynomial(
     Ellipse1: Ellipse,
     Ellipse2: Ellipse
@@ -184,6 +212,13 @@ export class ProximityQuery2D {
     return [a3, a2, a1, a0];
   }
 
+  /**
+   * Determines if two ellipses intersect using the Caravantes method based on the sign of a specific scalar.
+   *
+   * @param Ellipse1 - The first ellipse.
+   * @param Ellipse2 - The second ellipse.
+   * @returns True if the ellipses intersect, false otherwise.
+   */
   public static Ellipse_Ellipse_Caravantes(
     Ellipse1: any,
     Ellipse2: any
@@ -212,7 +247,13 @@ export class ProximityQuery2D {
       return true;
     }
   }
-
+  /**
+   * Determines if two ellipses intersect using the Alberich method based on polynomial discriminants.
+   *
+   * @param Ellipse1 - The first ellipse.
+   * @param Ellipse2 - The second ellipse.
+   * @returns True if the ellipses intersect, false otherwise.
+   */
   public static Ellipse_Ellipse_Alberich(
     Ellipse1: Ellipse,
     Ellipse2: Ellipse

@@ -10,6 +10,7 @@ import {
 import { Superellipse } from "./Superellipse";
 import { Geometry2DBase } from "./Geometry2DBase";
 import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+import { ConvexLine } from "./Convexline";
 
 export class Line extends Geometry2DBase implements IGeometry2D {
   segments: number;
@@ -50,19 +51,30 @@ export class Line extends Geometry2DBase implements IGeometry2D {
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
       this.geometry.rotateX(this.rotation.x);
       this.geometry.rotateY(this.rotation.y);
-      this.geometry.rotateZ(this.rotation.z); 
+      this.geometry.rotateZ(this.rotation.z);
       return this.geometry;
     }
   }
 
-  MinimumDistance2D(geometry: IGeometry2D): [Vector2, Vector2] {
+  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+    let res = [Vector3.Zero(), Vector3.Zero()];
     switch (geometry.type) {
       case GeometryType2D.Supperellipse:
-        let res = MinimumDistance2D.superellipseLine(
+        res = MinimumDistance2D.superellipseLine(
           this,
           geometry as Superellipse
         );
-        return [res[0], res[1]];
+        return [
+          new Vector3(res[0].x, res[0].y, 0),
+          new Vector3(res[1].x, res[1].y, 0),
+        ];
+      case GeometryType2D.ConvexLine:
+        let convexline = geometry as ConvexLine;
+        res = MinimumDistance2D.ConvexLine_Line(convexline, this);
+        return [
+          new Vector3(res[0].x, res[0].y, 0),
+          new Vector3(res[1].x, res[1].y, 0),
+        ];
       default:
         throw new Error(
           "Minimum distance not implemented for this geometry type."

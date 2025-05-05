@@ -1,4 +1,5 @@
 export enum GeometryType2D {
+  Circle = "Circle",
   ConvexCircle = "ConvexCircle",
   ConvexLine = "ConvexLine",
   Ellipse = "Ellipse",

@@ -7,6 +7,12 @@ import { Superellipse } from "../../Geometries/2D/Superellipse";
 import { quarticRoots, Vector2, Vector3 } from "../Util/Utils";
 
 export class MinimumDistance2D {
+  /**
+   * Find the contact points between a point and an ellipse.
+   * @param point
+   * @param ellipse
+   * @returns A tuple of two points: the original point and the closest point on the ellipse.
+   */
   static pointEllipseObj(
     point: Vector3 | Vector2,
     ellipse: Ellipse
@@ -104,7 +110,12 @@ export class MinimumDistance2D {
     T.y = T.y * multy;
     return T;
   }
-
+  /**
+   * Find the contact points between two ellipses.
+   * @param ellipse1
+   * @param ellipse2
+   * @returns A tuple of two points: the closest point of the ellipse1 and the closest point of the ellipse2.
+   */
   static ellipseEllipse(
     ellipse1: Ellipse,
     ellipse2: Ellipse
@@ -133,7 +144,12 @@ export class MinimumDistance2D {
     T[1] = p2.toVector2();
     return [T[0], T[1]];
   }
-
+  /**
+   * Find the contact points between a line and an ellipse.
+   * @param line
+   * @param superellipse
+   * @returns A tuple of two points: the closest point of the line and the closest point of the superellipse.
+   */
   static superellipseLine(
     line: Line,
     superellipse: Superellipse
@@ -175,7 +191,14 @@ export class MinimumDistance2D {
 
     return [L, T.toVector3()];
   }
-  static ConvexLine_Line(line: Line, convex: ConvexLine): [Vector3, Vector3] {
+
+  /**
+   * Find the contact points between a Convexline and a line.
+   * @param convex
+   * @param line
+   * @returns A tuple of two points: the closest point of the Convexline and the closest point of the line.
+   */
+  static ConvexLine_Line(convex: ConvexLine, line: Line): [Vector3, Vector3] {
     let center = convex.getCenter();
     let center_ = line.InverseTransformPoint(center);
     let y_ = Vector3.Zero();
@@ -206,6 +229,12 @@ export class MinimumDistance2D {
     return [l.toVector3(), rpc.toVector3()];
   }
 
+  /**
+   * Find the contact points between a Convexcircle and a line.
+   * @param convexCircle
+   * @param line
+   * @returns A tuple of two points: the closest point of the Convexcircle and the closest point of the line.
+   */
   static ConvexCircle_Circle(convexCircle: Convexcircle, circle: Circle) {
     let center_convex = convexCircle.getCenter();
     let R_c = circle.getRadius();

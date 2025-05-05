@@ -1,17 +1,24 @@
 import { Vector2, Vector3 } from "../../Calc/Util/Utils";
-import { GeometryType2D } from "../GeoTypes";
+import {
+  GeometryType2D,
+  isGeometryType2D,
+  isGeometryType3D,
+} from "../GeoTypes";
 import { Geometry2DBase } from "./Geometry2DBase";
 import { IGeometry2D } from "./IGeometry2D";
+import { IGeometry3D } from "../3D/IGeometry3D";
 import * as THREE from "three";
+import { Circle } from "./Circle";
+import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
 export class Convexcircle extends Geometry2DBase implements IGeometry2D {
   private angle: number = -Math.PI / 2;
   readonly segments: number;
   readonly radius: number;
   public type: GeometryType2D = GeometryType2D.ConvexLine;
   constructor(
+    center: Vector3 | Vector2,
     radius: number,
     rotation: Vector3 | Vector2,
-    center: Vector3 | Vector2,
     segments: number
   ) {
     super();
@@ -24,6 +31,7 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
     this.radius = radius;
     this.segments = segments;
   }
+
   public getGeometry(): any {
     if (this.geometry !== null && this.geometry !== undefined) {
       return this.geometry;
@@ -45,6 +53,7 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
       return this.geometry;
     }
   }
+  
   public point(angle: number, radius: number): Vector2 {
     let f = this.f_c(angle, radius);
     let fd = this.fd_c(angle, radius);
@@ -84,5 +93,31 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
       res = 0;
     }
     return res;
+  }
+  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+    switch (geometry.type) {
+      case GeometryType2D.Circle:
+        let circle = geometry as Circle;
+        let res = MinimumDistance2D.ConvexCircle_Circle(this, circle);
+        return [
+          new Vector3(res[0].x, res[0].y, 0),
+          new Vector3(res[1].x, res[1].y, 0),
+        ];
+      default:
+        throw new Error(
+          "Minimum distance not implemented for this geometry type."
+        );
+    }
+  }
+  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+    let res = [Vector3.Zero(), Vector3.Zero()];
+    if (isGeometryType3D(geometry.type)) {
+      throw new Error(
+        "Minimum distance 3D not implemented for this geometry type."
+      );
+    } else if (isGeometryType2D(geometry.type)) {
+      res = this.MinimumDistance2D(geometry as IGeometry2D);
+    }
+    return [res[0], res[1]];
   }
 }

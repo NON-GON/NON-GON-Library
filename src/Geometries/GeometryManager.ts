@@ -14,6 +14,10 @@ import { Plane } from "./2D/Plane";
 import { Cylinder } from "./3D/Cylinder";
 import { EllipticParaboloid } from "./3D/Ellipticparaboloid";
 import { Hyperboloid } from "./3D/Hyperboloid";
+import { Circle } from "./2D/Circle";
+import { Convexcircle } from "./2D/Convexcircle";
+import { ConvexLine } from "./2D/Convexline";
+import { Convex } from "./3D/Convex";
 
 export class GeometryManager {
   private static _instance: GeometryManager;
@@ -146,6 +150,9 @@ export class GeometryManager {
           params.segments
         );
         break;
+      case GeometryType3D.Convex:
+        geometry = new Convex(params.center, params.rotation, params.segments);
+        break;
       default:
         throw new Error(`Invalid parameters geometry type: ${type}`);
         break;
@@ -202,13 +209,30 @@ export class GeometryManager {
         );
         break;
       case GeometryType2D.Circle:
-        geometry = new Ellipse(
+        geometry = new Circle(
           params.center,
-          params.radius,
           params.radius,
           params.rotation,
           params.segments
         );
+        break;
+      case GeometryType2D.ConvexCircle:
+        geometry = new Convexcircle(
+          params.center,
+          params.radius,
+          params.rotation,
+          params.segments
+        );
+        break;
+      case GeometryType2D.ConvexLine:
+        geometry = new ConvexLine(
+          params.center,
+          params.rotation,
+          params.segments
+        );
+        break;
+      default:
+        throw new Error(`Invalid geometry type: ${type}`);
         break;
     }
     if (geometry) {

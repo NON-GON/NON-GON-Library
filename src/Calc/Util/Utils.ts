@@ -203,6 +203,14 @@ export class Vector3 {
   }
 }
 
+/**
+ * Finds the closest points between two lines in 3D space.
+ * @param A1 - Start point of line A.
+ * @param A2 - End point of line A.
+ * @param B1 - Start point of line B.
+ * @param B2 - End point of line B.
+ * @returns The closest points on each line.
+ */
 export function FindClosestPoints(
   A1: Vector3,
   A2: Vector3,
@@ -237,10 +245,25 @@ export function FindClosestPoints(
   return { closestPointLineA, closestPointLineB };
 }
 
+/**
+ * Computes the Euclidean distance between two 2D points.
+ * @param point1 - First 2D point.
+ * @param point2 - Second 2D point.
+ * @returns The distance between the two points.
+ */
 export function Distance(point1: Vector2, point2: Vector2): number {
   return point1.distanceTo(point2);
 }
 
+/**
+ * Solves a quartic equation ax⁴ + bx³ + cx² + dx + e = 0 and returns real roots.
+ * @param a - Coefficient of x⁴.
+ * @param b - Coefficient of x³.
+ * @param c - Coefficient of x².
+ * @param d - Coefficient of x.
+ * @param e - Constant term.
+ * @returns An array of real roots.
+ */
 export function quarticRoots(
   a: number,
   b: number,
@@ -284,7 +307,14 @@ export function quarticRoots(
   return [...quad1, ...quad2].map((root) => root + offset);
 }
 
-// Solve cubic using Cardano's method
+/**
+ * Solves a cubic equation of the form ax³ + bx² + cx + d = 0 using Cardano's method.
+ * @param a - Coefficient of x³ (must not be zero).
+ * @param b - Coefficient of x².
+ * @param c - Coefficient of x.
+ * @param d - Constant term.
+ * @returns An array of real roots of the cubic equation.
+ */
 function solveCubic(a: number, b: number, c: number, d: number): number[] {
   const p = (3 * a * c - b ** 2) / (3 * a ** 2);
   const q = (2 * b ** 3 - 9 * a * b * c + 27 * a ** 2 * d) / (27 * a ** 3);
@@ -308,7 +338,13 @@ function solveCubic(a: number, b: number, c: number, d: number): number[] {
   return roots;
 }
 
-// Solve quadratic ax² + bx + c = 0
+/**
+ * Solves a quadratic equation of the form ax² + bx + c = 0.
+ * @param a - Coefficient of x².
+ * @param b - Coefficient of x.
+ * @param c - Constant term.
+ * @returns An array containing the two real roots, or [NaN, NaN] if roots are complex.
+ */
 function solveQuadratic(a: number, b: number, c: number): number[] {
   const discriminant = b ** 2 - 4 * a * c;
   if (discriminant >= 0) {
@@ -320,6 +356,18 @@ function solveQuadratic(a: number, b: number, c: number): number[] {
   }
 }
 
+/**
+ * Solves for a root using a numerical method with constraints.
+ * @param r0 - Radius in x-dimension.
+ * @param r1 - Radius in y-dimension.
+ * @param r2 - Radius in z-dimension.
+ * @param z0 - Component of vector in x-dimension.
+ * @param z1 - Component of vector in y-dimension.
+ * @param z2 - Component of vector in z-dimension.
+ * @param g - Initial guess or constraint variable.
+ * @param maxIterations - Maximum number of iterations for convergence.
+ * @returns The computed root.
+ */
 export function getRoot(
   r0: number,
   r1: number,
@@ -376,6 +424,15 @@ export function getRoot(
   return t;
 }
 
+/**
+ * Projects corners of a shape onto an axis and returns the min and max projections.
+ * Used in the Separating Axis Theorem (SAT).
+ * @param axis - The axis to project onto.
+ * @param corners - An array of corner points (vertices) of the shape.
+ * @param minAlong - Variable to store minimum projection (overwritten).
+ * @param maxAlong - Variable to store maximum projection (overwritten).
+ * @returns An array with the min and max projected values.
+ */
 export function SAT(
   axis: Vector3,
   corners: Vector3[],
@@ -394,6 +451,14 @@ export function SAT(
   return [minAlong, maxAlong];
 }
 
+/**
+ * Determines whether two scalar projection intervals overlap.
+ * @param min1 - Minimum of the first interval.
+ * @param max1 - Maximum of the first interval.
+ * @param min2 - Minimum of the second interval.
+ * @param max2 - Maximum of the second interval.
+ * @returns True if the intervals overlap, false otherwise.
+ */
 export function overlaps(
   min1: number,
   max1: number,
@@ -405,6 +470,13 @@ export function overlaps(
   );
 }
 
+/**
+ * Checks if a value is within the specified bounds (inclusive).
+ * @param val - The value to check.
+ * @param lowerBound - The lower bound.
+ * @param upperBound - The upper bound.
+ * @returns True if val is between lowerBound and upperBound.
+ */
 export function isBetweenOrdered(
   val: number,
   lowerBound: number,
@@ -413,6 +485,12 @@ export function isBetweenOrdered(
   return lowerBound <= val && val <= upperBound;
 }
 
+/**
+ * Calculates the determinant of a 3x3 matrix.
+ * @param matrix - A 3x3 array of numbers.
+ * @returns The determinant of the matrix.
+ * @throws Error if the input is not a 3x3 matrix.
+ */
 export function calDetMatrix3x3(matrix: number[][]): number {
   if (matrix.length !== 3 || matrix.some((row) => row.length !== 3)) {
     throw new Error("Input must be a 3x3 matrix.");
@@ -428,6 +506,12 @@ export function calDetMatrix3x3(matrix: number[][]): number {
   return det;
 }
 
+/**
+ * Calculates the determinant of a 4x4 matrix.
+ * @param matrix - A 4x4 array of numbers.
+ * @returns The determinant of the matrix.
+ * @throws Error if the input is not a 4x4 matrix.
+ */
 export function calDetMatrix4x4(matrix: number[][]): number {
   if (matrix.length !== 4 || matrix.some((row) => row.length !== 4)) {
     throw new Error("Input must be a 4x4 matrix.");
@@ -451,6 +535,14 @@ export function calDetMatrix4x4(matrix: number[][]): number {
   return det;
 }
 
+/**
+ * Uses Descartes' Rule of Signs to check if a third-degree polynomial may have a negative root.
+ * @param a3 - Coefficient of x³.
+ * @param a2 - Coefficient of x².
+ * @param a1 - Coefficient of x¹.
+ * @param a0 - Constant term.
+ * @returns True if the sign pattern suggests at least one positive real root.
+ */
 export function descartesLawOfSignsThirdDegreePolynomial(
   a3: number,
   a2: number,
@@ -466,6 +558,15 @@ export function descartesLawOfSignsThirdDegreePolynomial(
   );
 }
 
+/**
+ * Finds the intersection points between a plane and a circle that lies in another plane.
+ * @param planePoint - A point on the intersecting plane.
+ * @param planeNormal - The normal vector of the intersecting plane.
+ * @param circleCenter - Center of the circle.
+ * @param circleNormal - Normal of the plane in which the circle lies.
+ * @param radius - Radius of the circle.
+ * @returns An array of 0, 1, or 2 intersection points; null if the planes are not perpendicular.
+ */
 export function FindIntersectionPoints(
   planePoint: Vector3,
   planeNormal: Vector3,
@@ -512,6 +613,12 @@ export function FindIntersectionPoints(
   }
 }
 
+/**
+ * Checks whether any of the sides of two rectangles intersect.
+ * @param rect1Points - Array of 4 Vector3 points defining rectangle 1 (ordered in a loop).
+ * @param rect2Points - Array of 4 Vector3 points defining rectangle 2 (ordered in a loop).
+ * @returns True if any edges intersect; false otherwise.
+ */
 export function RectanglesIntersect(
   rect1Points: Vector3[],
   rect2Points: Vector3[]
@@ -616,6 +723,14 @@ export function RectanglesIntersect(
   );
 }
 
+/**
+ * Checks if two lines in 3D space intersect.
+ * @param A1 - Start point of line A.
+ * @param A2 - End point of line A.
+ * @param B1 - Start point of line B.
+ * @param B2 - End point of line B.
+ * @returns True if the lines intersect; false otherwise.
+ */
 export function DoLinesIntersect(
   A1: Vector3,
   A2: Vector3,
@@ -658,6 +773,33 @@ export function DoLinesIntersect(
   return closestPointLineA.equal(closestPointLineB);
 }
 
+/**
+ * Checks whether a pair of vertices from two cylinders intersect or overlap
+ * using either rectangle intersection or side verification logic.
+ *
+ * The method dynamically evaluates vertex-cylinder combinations and applies
+ * the appropriate geometric verification based on predefined configurations.
+ *
+ * @param {number} vertexCylinder1 - Index of the first cylinder's vertex (0–3).
+ * @param {number} vertexCylinder2 - Index of the second cylinder's vertex (0, 1, 2, or 3).
+ * @param {number} u - A parameter vector component used in geometric calculations.
+ * @param {number} w - Another vector parameter used in geometric calculations.
+ * @param {number} v1 - Index of the first vertex (not used in logic, kept for compatibility).
+ * @param {number} v2 - Index of the second vertex (not used in logic, kept for compatibility).
+ * @param {number} s1 - Half-height of the first cylinder.
+ * @param {number} s2 - Half-height of the second cylinder.
+ * @param {number} r1 - Radius of the first cylinder.
+ * @param {number} r2 - Radius of the second cylinder.
+ * @param {number} a - A geometric parameter related to the cylinder axis.
+ * @param {number} b - A geometric parameter (unused here).
+ * @param {number} c - Offset along the axis used in side projection.
+ * @param {number} alpha - Angle between the axes of the cylinders (in radians).
+ * @param {Cylinder} cylinder1 - The first cylinder object.
+ * @param {Cylinder} cylinder2 - The second cylinder object.
+ * @param {Vector3} commonNormal - The vector representing the shortest path between axes.
+ *
+ * @returns {boolean} True if the vertex pair configuration intersects; otherwise false.
+ */
 export function checkVertices(
   vertexCylinder1: number,
   vertexCylinder2: number,
@@ -1379,6 +1521,27 @@ export function checkVertices(
   return false;
 }
 
+/**
+ * Performs a side verification check between two cylinders to determine if they intersect.
+ * This method evaluates the geometric relationship between the sides of the cylinders
+ * using a quartic equation and rectangle intersection logic.
+ *
+ * @param {number} f - A geometric parameter related to the orientation of the cylinder.
+ * @param {number} g - A cosine-based parameter derived from the angle between the cylinders.
+ * @param {number} h - An offset parameter along the axis used in the side projection.
+ * @param {number} u - A parameter vector component used in geometric calculations.
+ * @param {number} w - Another vector parameter used in geometric calculations.
+ * @param {number} a - A geometric parameter related to the cylinder axis.
+ * @param {number} r1 - Radius of the first cylinder.
+ * @param {number} r2 - Radius of the second cylinder.
+ * @param {Cylinder} cylinder1 - The first cylinder object.
+ * @param {Cylinder} cylinder2 - The second cylinder object.
+ * @param {number} s1 - Half-height of the first cylinder.
+ * @param {number} s2 - Half-height of the second cylinder.
+ * @param {Vector3} commonNormal - The vector representing the shortest path between the axes of the cylinders.
+ *
+ * @returns {boolean} True if the sides of the cylinders intersect; otherwise, false.
+ */
 export function SideVerification(
   f: number,
   g: number,
@@ -1476,6 +1639,31 @@ export function SideVerification(
   return false;
 }
 
+/**
+ * Determines whether the rectangular projections of the end caps of two cylinders
+ * intersect in the plane defined by a common normal. This function applies a
+ * Separating Axis Theorem (SAT) based test using computed intersection points.
+ *
+ * The rectangles are formed by slicing each cylinder with a plane perpendicular to the
+ * shortest vector between their axes and checking whether the resulting cross-sections overlap.
+ *
+ * @param {number} u - Distance along the common normal from cylinder1's center to its slicing plane.
+ * @param {number} w - Distance along the common normal from cylinder2's center to its slicing plane.
+ * @param {Cylinder} cylinder1 - The first cylinder object.
+ * @param {Cylinder} cylinder2 - The second cylinder object.
+ * @param {number} s1 - Half-height of the first cylinder.
+ * @param {number} s2 - Half-height of the second cylinder.
+ * @param {Vector3} commonNormal - The shortest vector between the axes of the two cylinders.
+ * @param {number} r1 - Radius of the first cylinder.
+ * @param {number} r2 - Radius of the second cylinder.
+ *
+ * @returns {boolean} True if the projected rectangles intersect, false otherwise.
+ *
+ * @remarks
+ * - Uses `FindIntersectionPoints` to compute intersections between planes and cylinder end-caps.
+ * - Applies Separating Axis Test (SAT) via `RectanglesIntersect` to determine overlap.
+ * - Returns false if any of the intersection point sets are invalid or incomplete.
+ */
 export function rectangleIntersection(
   u: number,
   w: number,
@@ -1563,6 +1751,33 @@ export function rectangleIntersection(
   return false;
 }
 
+/**
+ * Performs a Vertex-Edge test as part of a collision detection algorithm between two cylinders.
+ *
+ * The function transforms 2D representations of the vertices of two cylinders' cross-sections and
+ * calculates potential intersection points in the transformed space. It then validates those
+ * points via a helper function (`checkVertices`) to determine whether a vertex-edge intersection occurs.
+ *
+ * @param {number} s1 - Half-height of the first cylinder.
+ * @param {number} s2 - Half-height of the second cylinder.
+ * @param {number} r1 - Radius of the first cylinder.
+ * @param {number} r2 - Radius of the second cylinder.
+ * @param {number} a - Scalar parameter used in geometric transformation (commonly center-to-center distance).
+ * @param {number} b - Scalar offset parameter used in transformation.
+ * @param {number} c - Scalar offset parameter used in transformation.
+ * @param {number} alpha - Angle (in degrees) between the cylinder axes projected in 2D.
+ * @param {Cylinder} cylinder1 - The first cylinder object.
+ * @param {Cylinder} cylinder2 - The second cylinder object.
+ * @param {Vector3} commonNormal - The shortest vector between the axes of the two cylinders.
+ *
+ * @returns {boolean} True if a vertex-edge intersection is detected; false otherwise.
+ *
+ * @remarks
+ * - Uses `ApplyTransformation` to convert local vertex coordinates into a shared frame.
+ * - Checks two possible roots (`u1`, `u2`) from solving the cylinder-circle intersection equation.
+ * - Delegates detailed geometric checks to `checkVertices`.
+ * - Assumes the use of a coordinate space where both cylinders have simplified square cross-sections.
+ */
 export function VertexEdgeTestFunction(
   s1: number,
   s2: number,
@@ -1677,6 +1892,28 @@ export function VertexEdgeTestFunction(
   return false;
 }
 
+/**
+ * Applies a 2D geometric transformation based on the spatial relationship between two cylinders.
+ *
+ * This function computes the transformed 2D coordinates (`v1`, `v2`) for a given vertex pair,
+ * factoring in the relative cylinder heights (`s1`, `s2`), offsets (`b`, `c`), and angle `alpha`.
+ * The result is used to simulate the projection of 3D geometry into a 2D plane for collision analysis.
+ *
+ * @param {Vector2} v1Ands1Signs - Sign multipliers for x and y components of the first cylinder vertex and its height (`s1`).
+ * @param {Vector2} v2Ands2Signs - Sign multipliers for x and y components of the second cylinder vertex and its height (`s2`).
+ * @param {number} s1 - Half-height of the first cylinder.
+ * @param {number} s2 - Half-height of the second cylinder.
+ * @param {number} b - Scalar offset along the common normal.
+ * @param {number} c - Additional scalar shift in the coordinate system.
+ * @param {number} alpha - Angle (in radians) between the projected axes of the two cylinders in 2D.
+ *
+ * @returns {Vector2} The transformed 2D coordinates corresponding to the input vertex pair.
+ *
+ * @remarks
+ * - Converts signs and scaling information into actual spatial positions.
+ * - Projects and rotates those positions based on the angle between axes (`alpha`).
+ * - Typically used in Vertex-Edge collision tests between cylinders.
+ */
 export function ApplyTransformation(
   v1Ands1Signs: Vector2,
   v2Ands2Signs: Vector2,
@@ -1703,6 +1940,25 @@ export function ApplyTransformation(
   return new Vector2(v1, v2);
 }
 
+/**
+ * Checks whether the coefficients of a 4th-degree polynomial match any known sign-change patterns
+ * consistent with Descartes' Rule of Signs for indicating positive real roots.
+ *
+ * This is a pattern-matching approach and not a general rule-checker.
+ *
+ * @param {number} a4 - Coefficient of x⁴
+ * @param {number} a3 - Coefficient of x³
+ * @param {number} a2 - Coefficient of x²
+ * @param {number} a1 - Coefficient of x
+ * @param {number} a0 - Constant term
+ *
+ * @returns {boolean} True if the pattern matches one of the known sign variations
+ * indicating a possible positive real root.
+ *
+ * @remarks
+ * - Based on manually encoded patterns (1 to 18).
+ * - Used in specialized geometric or algebraic heuristics rather than general polynomial solving.
+ */
 export function DescartesLawOfSignsFourthDegreePolynomial(
   a4: number,
   a3: number,
@@ -1733,6 +1989,16 @@ export function DescartesLawOfSignsFourthDegreePolynomial(
   return pattern1to18;
 }
 
+/**
+ * Checks whether two numeric values are approximately equal within a specified margin (epsilon).
+ *
+ * Useful for comparing floating-point values where exact equality is unreliable.
+ *
+ * @param {number} a - The first number to compare.
+ * @param {number} b - The second number to compare.
+ * @param {number} [epsilon=0.001] - The maximum allowed difference for the values to be considered equal.
+ * @returns {boolean} True if the values are approximately equal; otherwise, false.
+ */
 export function ApproximatlyEqual(
   a: number,
   b: number,
@@ -1741,6 +2007,17 @@ export function ApproximatlyEqual(
   return Math.abs(a - b) < epsilon;
 }
 
+/**
+ * Determines whether a plane (represented by its center) lies between two other planes in 3D space.
+ *
+ * It uses vector projection to determine if the middle plane lies along the axis defined by the
+ * line segment connecting the first and second plane centers.
+ *
+ * @param {Vector3} plane1Center - Center of the first plane.
+ * @param {Vector3} middlePlaneCenter - Center of the plane to check.
+ * @param {Vector3} plane2Center - Center of the second plane.
+ * @returns {boolean} True if the middle plane is located between plane1 and plane2; otherwise, false.
+ */
 export function IsPlaneBetween(
   plane1Center: Vector3,
   middlePlaneCenter: Vector3,

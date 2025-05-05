@@ -11,6 +11,7 @@ import * as THREE from "three";
 import { Superellipsoid } from "../3D/Superellipsoid";
 import { Geometry2DBase } from "./Geometry2DBase";
 import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
+import { Convex } from "../3D/Convex";
 
 export class Plane extends Geometry2DBase implements IGeometry2D {
   type: GeometryType2D = GeometryType2D.Plane;
@@ -45,12 +46,17 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
   }
 
   MinimumDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
+    let res = [Vector3.Zero(), Vector3.Zero()];
     switch (geometry.type) {
       case GeometryType3D.Superellipsoid:
-        let res = MinimumDistance3D.superellipsoidPlane(
+        res = MinimumDistance3D.superellipsoidPlane(
           this,
           geometry as Superellipsoid
         );
+        return [res[0], res[1]];
+      case GeometryType3D.Convex:
+        let convex = geometry as Convex;
+        res = MinimumDistance3D.AlmostConvexGeometryPlane(convex, this);
         return [res[0], res[1]];
       default:
         throw new Error(

@@ -1,8 +1,16 @@
 import { Vector3, Vector2 } from "../../Calc/Util/Utils";
-import { GeometryType3D } from "../GeoTypes";
+import {
+  GeometryType2D,
+  GeometryType3D,
+  isGeometryType2D,
+  isGeometryType3D,
+} from "../GeoTypes";
 import { Geometry3DBase } from "./Geometry3DBase";
 import { IGeometry3D } from "./IGeometry3D";
+import { IGeometry2D } from "../2D/IGeometry2D";
 import * as THREE from "three";
+import { Plane } from "../2D/Plane";
+import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 
 export class Convex extends Geometry3DBase implements IGeometry3D {
   readonly segments: number;
@@ -10,8 +18,8 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
   private phi = -Math.PI;
   private theta = Math.PI / 2;
   constructor(
-    rotation: Vector3 | Vector2,
     center: Vector3 | Vector2,
+    rotation: Vector3 | Vector2,
     segments: number
   ) {
     super();
@@ -175,5 +183,29 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
             3 / 2
           ));
     return res;
+  }
+
+  
+  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+    switch (geometry.type) {
+      case GeometryType2D.Plane:
+        let plane = geometry as Plane;
+        const res = MinimumDistance3D.AlmostConvexGeometryPlane(this, plane);
+        return [res[0], res[1]];
+      default:
+        throw new Error(
+          "Minimum distance not implemented for this geometry type."
+        );
+    }
+  }
+
+  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+    let res = [Vector3.Zero(), Vector3.Zero()];
+    if (isGeometryType3D(geometry.type)) {
+      throw new Error("Not MinimumDistance3D for this geometry type");
+    } else if (isGeometryType2D(geometry.type)) {
+      throw new Error();
+    }
+    return [res[0], res[1]];
   }
 }
