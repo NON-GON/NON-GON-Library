@@ -74,9 +74,10 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
           }
         }
         points.push(new THREE.Vector3(point.x, point.y, point.z));
+        this.theta = this.theta + 2 * Math.PI / (this.segments + 1);
       }
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-      this.geometry.normalizeGeometry();
+      this.normalizeGeometry();
       return this.geometry;
     }
   }

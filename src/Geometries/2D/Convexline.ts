@@ -44,9 +44,10 @@ export class ConvexLine extends Geometry2DBase implements IGeometry2D {
           Math.PI / 2;
         let pos = new Vector2(Math.cos(phi), Math.sin(phi));
         points.push(new THREE.Vector2(pos.x * r, pos.y * r));
+        this.angle += (2 * Math.PI) / this.segments;
       }
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-      this.geometry.normalizeGeometry();
+      this.normalizeGeometry();
       return this.geometry;
     }
   }
@@ -80,9 +81,9 @@ export class ConvexLine extends Geometry2DBase implements IGeometry2D {
 
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
-      case GeometryType2D.ConvexCircle:
+      case GeometryType2D.Line:
         let line = geometry as Line;
-        let res = MinimumDistance2D.ConvexLine_Line(this, line);
+        let res = MinimumDistance2D.Convex_Line(this, line);
         return [
           new Vector3(res[0].x, res[0].y, 0),
           new Vector3(res[1].x, res[1].y, 0),

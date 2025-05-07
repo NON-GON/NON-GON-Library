@@ -5,6 +5,7 @@ import { Ellipse } from "../../Geometries/2D/Ellipse";
 import { Line } from "../../Geometries/2D/Line";
 import { Superellipse } from "../../Geometries/2D/Superellipse";
 import { quarticRoots, Vector2, Vector3 } from "../Util/Utils";
+import * as THREE from "three";
 
 export class MinimumDistance2D {
   /**
@@ -198,17 +199,20 @@ export class MinimumDistance2D {
    * @param line
    * @returns A tuple of two points: the closest point of the Convexline and the closest point of the line.
    */
-  static ConvexLine_Line(convex: ConvexLine, line: Line): [Vector3, Vector3] {
-    let center = convex.getCenter();
-    let center_ = line.InverseTransformPoint(center);
-    let y_ = Vector3.Zero();
+  static Convex_Line(convex: ConvexLine, line: Line): [Vector3, Vector3] {
+    let center = convex.getCenter().toVector2();
+    let center_ = line.InverseTransformPoint(center.toVector3()).toVector2();
+    let p: [Vector3, Vector3];
+    let y_: Vector2;
+
     if (center_.y > 0) {
-      y_ = convex.TransformDirection(new Vector3(0, 1, 0));
+      y_ = convex.TransformDirection(new Vector3(0, 1, 0)).toVector2();
     } else {
-      y_ = convex.TransformDirection(new Vector3(0, -1, 0));
+      y_ = convex.TransformDirection(new Vector3(0, -1, 0)).toVector2();
     }
-    y_ = line.InverseTransformDirection(y_);
-    let alpha = (Math.PI / 180) * y_.toVector2().signedAngle(new Vector2(0, 1));
+
+    y_ = line.InverseTransformDirection(y_.toVector3()).toVector2();
+    let alpha = THREE.MathUtils.degToRad(y_.signedAngle(new Vector2(0, 1)));
 
     let f = convex.f(alpha);
     let fd = convex.fd(alpha);
@@ -218,7 +222,7 @@ export class MinimumDistance2D {
     let rpc = new Vector2(Math.cos(phi), Math.sin(phi)).scale(r);
     rpc = convex.TransformPoint(rpc.toVector3()).toVector2();
 
-    let rpc_ = line.InverseTransformPoint(rpc.toVector3());
+    let rpc_ = line.InverseTransformPoint(rpc.toVector3()).toVector2();
     let l: Vector2;
 
     if (center_.y > 0) {
@@ -226,7 +230,9 @@ export class MinimumDistance2D {
     } else {
       l = line.TransformPoint(new Vector3(-rpc_.x, 0, 0)).toVector2();
     }
-    return [l.toVector3(), rpc.toVector3()];
+
+    p = [l.toVector3(), rpc.toVector3()];
+    return p;
   }
 
   /**

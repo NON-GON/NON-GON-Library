@@ -70,7 +70,7 @@ export class Line extends Geometry2DBase implements IGeometry2D {
         ];
       case GeometryType2D.ConvexLine:
         let convexline = geometry as ConvexLine;
-        res = MinimumDistance2D.ConvexLine_Line(convexline, this);
+        res = MinimumDistance2D.Convex_Line(convexline, this);
         return [
           new Vector3(res[0].x, res[0].y, 0),
           new Vector3(res[1].x, res[1].y, 0),

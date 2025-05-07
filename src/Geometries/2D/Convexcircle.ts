@@ -49,11 +49,11 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
         this.angle += (2 * Math.PI) / this.segments;
       }
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-      this.geometry.normalizeGeometry();
+      this.normalizeGeometry();
       return this.geometry;
     }
   }
-  
+
   public point(angle: number, radius: number): Vector2 {
     let f = this.f_c(angle, radius);
     let fd = this.fd_c(angle, radius);
