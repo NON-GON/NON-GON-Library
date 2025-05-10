@@ -36,54 +36,107 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
       return this.geometry;
     } else {
       const points: Vector3[] = [];
-      for (let i = 0; i <= this.segments + 1; i++) {
-        let point = Vector3.Zero();
+      let phi = -Math.PI;
+      let theta = -Math.PI;
+      const triangles: number[] = []; // Unused variable for now
 
-        let ephi = new Vector3(
-          Math.cos(this.phi) * Math.cos(this.theta),
-          Math.cos(this.phi) * Math.sin(this.theta),
-          -Math.sin(this.phi)
-        ).normalize();
-        let etheta = new Vector3(
-          -Math.sin(this.theta),
-          Math.cos(this.theta),
-          0
-        ).normalize();
-        let en = new Vector3(
-          Math.sin(this.phi) * Math.cos(this.theta),
-          Math.sin(this.phi) * Math.sin(this.theta),
-          Math.cos(this.phi)
-        ).normalize();
-        if (this.phi > 0 && this.phi < Math.PI) {
-          point = ephi
-            .scale(this.fda(this.phi, this.theta))
-            .add(
-              etheta.scale(this.fdb(this.phi, this.theta) / Math.sin(this.phi))
-            )
-            .add(en.scale(this.f(this.phi, this.theta)));
-        } else {
-          if (this.phi === 0 || this.phi === Math.PI) {
-            point = ephi
-              .scale(this.fda(this.phi, this.theta))
-              .add(
-                etheta.scale(
-                  this.fdd(this.phi, this.theta) / Math.cos(this.phi)
-                )
-              )
-              .add(en.scale(this.f(this.phi, this.theta)));
+      for (let i = 1; i < this.segments; i++) {
+        for (let j = 0; j < this.segments + 1; j++) {
+          const point = this.point(theta, phi);
+          points.push(point); // Add point to the array
+
+          if (i < this.segments - 1) {
+            if (j < this.segments) {
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  j * 6
+              ] = (i - 1) * (this.segments + 1) + j + 2;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  j * 6 +
+                  1
+              ] = i * (this.segments + 1) + j + 1;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  j * 6 +
+                  2
+              ] = (i - 1) * (this.segments + 1) + j + 1;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  j * 6 +
+                  3
+              ] = (i - 1) * (this.segments + 1) + j + 2;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  j * 6 +
+                  4
+              ] = i * (this.segments + 1) + j + 2;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  j * 6 +
+                  5
+              ] = i * (this.segments + 1) + j + 1;
+            } else {
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  this.segments * 6
+              ] = (i - 1) * (this.segments + 1) + 1;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  this.segments * 6 +
+                  1
+              ] = i * (this.segments + 1) + this.segments + 1;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  this.segments * 6 +
+                  2
+              ] = (i - 1) * (this.segments + 1) + this.segments + 1;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  this.segments * 6 +
+                  3
+              ] = (i - 1) * (this.segments + 1) + 1;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  this.segments * 6 +
+                  4
+              ] = i * (this.segments + 1) + 1;
+              triangles[
+                3 * (this.segments + 1) +
+                  (i - 1) * (this.segments + 1) * 6 +
+                  this.segments * 6 +
+                  5
+              ] = i * (this.segments + 1) + this.segments + 1;
+            }
           }
+
+          theta += (2 * Math.PI) / (this.segments + 1);
         }
-        points.push(new THREE.Vector3(point.x, point.y, point.z));
-        this.theta = this.theta + 2 * Math.PI / (this.segments + 1);
+        theta = -Math.PI; // Reset theta for the next row
+        phi += Math.PI / (this.segments + 1); // Increment phi
       }
+
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-      this.normalizeGeometry();
+      console.log(points);
+      //this.normalizeGeometry();
       return this.geometry;
     }
   }
   public point(theta: number, phi: number): Vector3 {
     let res = Vector3.Zero();
 
+    // Calculate ephi, etheta, and en
     let ephi = new Vector3(
       Math.cos(phi) * Math.cos(theta),
       Math.cos(phi) * Math.sin(theta),
@@ -98,6 +151,7 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
       Math.cos(phi)
     ).normalize();
 
+    // Calculate res based on phi
     if (phi > 0 && phi < Math.PI) {
       res = ephi
         .scale(this.fda(phi, theta))
@@ -186,7 +240,6 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
     return res;
   }
 
-  
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Plane:

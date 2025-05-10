@@ -91,7 +91,21 @@ export class GeometryManager {
     return GeometryManager._instance;
   }
 
+  /**
+   * Creates a geometry based on type and parameters, stores it and returns its mesh.
+   * @param type The type of geometry (2D).
+   * @param id Unique identifier for the geometry.
+   * @param params Parameters for the geometry construction.
+   * @returns A THREE.Mesh or THREE.Line object representing the geometry.
+   */
   public createGeometry(type: GeometryType2D, id: string, params: any): void;
+  /**
+   * Creates a geometry based on type and parameters, stores it and returns its mesh.
+   * @param type The type of geometry (3D).
+   * @param id Unique identifier for the geometry.
+   * @param params Parameters for the geometry construction.
+   * @returns A THREE.Mesh or THREE.Line object representing the geometry.
+   */
   public createGeometry(type: GeometryType3D, id: string, params: any): void;
 
   /**

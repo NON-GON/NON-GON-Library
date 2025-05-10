@@ -2,8 +2,15 @@ import * as THREE from "three";
 import { Vector3 } from "../../Calc/Util/Utils";
 import { IGeometry3D } from "./IGeometry3D";
 import { IGeometry2D } from "../2D/IGeometry2D";
-import { GeometryType3D } from "../GeoTypes";
+import {
+  GeometryType2D,
+  GeometryType3D,
+  isGeometryType2D,
+  isGeometryType3D,
+} from "../GeoTypes";
 import { Geometry3DBase } from "./Geometry3DBase";
+import { Plane } from "../2D/Plane";
+import { ProximityQuery3D } from "../../Calc/ProximityQuery/ProximityQuery3D";
 
 export class Hyperboloid extends Geometry3DBase implements IGeometry3D {
   readonly xradius: number;
@@ -32,6 +39,29 @@ export class Hyperboloid extends Geometry3DBase implements IGeometry3D {
   }
   MinimumDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     throw new Error("Minimum distance for Hyperboloid is not implemented yet.");
+  }
+  ProximityQuery(
+    _geometry: IGeometry3D | IGeometry2D,
+    _method?: string
+  ): boolean {
+    if (isGeometryType3D(_geometry.type)) {
+      throw new Error(
+        "Proximity query 3D not implemented for this geometry type."
+      );
+    } else if (isGeometryType2D(_geometry.type)) {
+      return this.ProximityQuery2D(_geometry as IGeometry2D);
+    }
+    return false;
+  }
+
+  ProximityQuery2D(geometry: IGeometry2D): boolean {
+    if (geometry.type === GeometryType2D.Plane) {
+      return ProximityQuery3D.Hyperboloid_Plane(
+        this,
+        geometry as Plane
+      );
+    }
+    throw new Error("Proximity query not implemented for this geometry type.");
   }
 
   public forward(): Vector3 {

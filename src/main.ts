@@ -9,7 +9,6 @@ scene.background = new THREE.Color(0xfffafa);
 let geometryManager = new GeometryManager();
 
 let angle = 0; // Add a variable to track the rotation angle
-let hex = 0x00ff00;
 let hexBlue = 0xb0c4de;
 let hexRed = 0xf08080;
 
@@ -159,7 +158,8 @@ function pointEllipsoidMDTest() {
     xradius: 10,
     yradius: 5,
     zradius: 5,
-    segments: 100,
+    rotation: new Vector3(0, 0, 0),
+    segments: 15,
   };
   geometryManager.createGeometry(GeometryType3D.Ellipsoid, "geo1", params1);
   scene.add(geometryManager.getGeometryMesh("geo1", hexBlue));
@@ -200,16 +200,17 @@ function SuperellipsoidPlaneMDTest() {
     xradius: 5,
     yradius: 5,
     zradius: 5,
-    segments: 100,
     e1: 5,
     e2: 5,
+    rotation: new Vector3(0, 0, 0),
+    segments: 100,
   };
   let params1 = {
     center: new Vector2(0, 0),
-    segments: 100,
-    rotation: 0,
+    rotation: new Vector3(0, 0, 0),
     width: 10,
     height: 10,
+    segments: 100,
   };
   geometryManager.createGeometry(
     GeometryType3D.Superellipsoid,
@@ -225,7 +226,7 @@ function SuperellipsoidPlaneMDTest() {
 
 function ellipseEllipsePQTest() {
   const paramsEllipse0 = {
-    center: new Vector2(0, 8),
+    center: new Vector2(0, 1.5),
     xradius: 5,
     yradius: 2,
     rotation: new Vector3(0, 0, 0),
@@ -261,7 +262,7 @@ function ellipseEllipsePQTest() {
     "Caravantes"
   );
   console.log("Alberich Result:", resultAlberich);
-  console.log("Bishop Result:", resultCaravantes);
+  console.log("Caravantes Result:", resultCaravantes);
 }
 
 function cylinderCylinderPQTest() {
@@ -378,7 +379,7 @@ function almostConvexGeometryPlaneMDTest() {
   const paramsConvex = {
     center: new Vector3(0, 10, 0),
     rotation: new Vector3(0, 0, 0),
-    segments: 100,
+    segments: 30,
   };
   const paramsPlane = {
     center: new Vector3(0, 0, 0),
@@ -445,6 +446,36 @@ function convexCircleCircleMD() {
   drawMinimumDistance(points[0], points[1]);
 }
 
+function hyperboloidPlanePQTest() {
+  const paramsHyperboloid = {
+    center: new Vector3(4, 6, 0),
+    xradius: 4,
+    yradius: 2,
+    zradius: 2,
+    zfactor: 5,
+    height: 10,
+    rotation: new Vector3(90, 0, 0),
+    segments: 20,
+  };
+  const paramsPlane = {
+    center: new Vector2(4, 6),
+    rotation: new Vector3(90, 0, 0),
+    width: 20,
+    height: 20,
+    segments: 100,
+  };
+  geometryManager.createGeometry(
+    GeometryType3D.Hyperboloid,
+    "geo0",
+    paramsHyperboloid
+  );
+  geometryManager.createGeometry(GeometryType2D.Plane, "geo1", paramsPlane);
+  scene.add(geometryManager.getGeometryMesh("geo1", hexRed));
+  scene.add(geometryManager.getGeometryMesh("geo0", hexBlue));
+  const answer = geometryManager.calculateProximityQuery("geo1", "geo0");
+  console.log("Proximity Query Result:", answer);
+}
+
 function drawMinimumDistance(
   point1: Vector3 | Vector2,
   point2: Vector3 | Vector2
@@ -467,4 +498,4 @@ function drawMinimumDistance(
   scene.add(line);
 }
 
-EllipsoidEllipsoidMDTest();
+hyperboloidPlanePQTest();

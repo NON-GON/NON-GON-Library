@@ -1,3 +1,4 @@
+import { degToRad } from "three/src/math/MathUtils";
 import { Vector3 } from "../../Calc/Util/Utils";
 import { IGeometry3D } from "../3D/IGeometry3D";
 import { GeometryType2D } from "../GeoTypes";
@@ -30,9 +31,12 @@ export abstract class Geometry2DBase implements IGeometry2D {
   protected normalizeGeometry() {
     if (this.geometry !== null && this.geometry !== undefined) {
       this.geometry.translate(this.center.x, this.center.y, this.center.z);
-      this.geometry.rotateX(this.rotation.x);
-      this.geometry.rotateY(this.rotation.y);
-      this.geometry.rotateZ(this.rotation.z);
+      let radRotationX = degToRad(this.rotation.x);
+      let radRotationY = degToRad(this.rotation.y);
+      let radRotationZ = degToRad(this.rotation.z);
+      this.geometry.rotateX(radRotationX);
+      this.geometry.rotateY(radRotationY);
+      this.geometry.rotateZ(radRotationZ);
     }
   }
 

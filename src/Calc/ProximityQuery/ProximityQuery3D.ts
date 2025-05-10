@@ -1348,6 +1348,9 @@ export class ProximityQuery3D {
     hyperboloid: Hyperboloid,
     plane: Plane
   ): boolean {
+    if (hyperboloid.zfactor >= 0) {
+      return true;
+    }
     const planeNormal = plane.getNormal().normalize();
     const hyperboloidForward = hyperboloid.forward().normalize();
     const c = hyperboloid.zfactor;

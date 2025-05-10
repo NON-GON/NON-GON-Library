@@ -12,6 +12,8 @@ import { Superellipsoid } from "../3D/Superellipsoid";
 import { Geometry2DBase } from "./Geometry2DBase";
 import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
 import { Convex } from "../3D/Convex";
+import { ProximityQuery3D } from "../../Calc/ProximityQuery/ProximityQuery3D";
+import { Hyperboloid } from "../3D/Hyperboloid";
 
 export class Plane extends Geometry2DBase implements IGeometry2D {
   type: GeometryType2D = GeometryType2D.Plane;
@@ -63,6 +65,30 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
           "Minimum distance not implemented for this geometry type."
         );
     }
+  }
+
+  ProximityQuery(
+    _geometry: IGeometry2D | IGeometry3D,
+    _method?: string
+  ): boolean {
+    if (isGeometryType3D(_geometry.type)) {
+      return this.ProxmityQuery3D(_geometry as IGeometry3D);
+    } else if (isGeometryType2D(_geometry.type)) {
+      throw new Error(
+        "Proximity query 2D not implemented for this geometry type."
+      );
+    }
+    return false;
+  }
+
+  public ProxmityQuery3D(geometry: IGeometry3D): boolean {
+    if (geometry.type === GeometryType3D.Hyperboloid) {
+      return ProximityQuery3D.Hyperboloid_Plane(
+        geometry as Hyperboloid,
+        this as Plane
+      );
+    }
+    throw new Error("Proximity query not implemented for this geometry type.");
   }
 
   public getGeometry(): any {
