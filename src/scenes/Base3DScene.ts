@@ -8,20 +8,15 @@ const RED = 0xA32545;
 const GREEN = 0x5D803D;
 const BLUE = 0x6BA7C7;
 
-// Common Three.js environment (common to any other NON-GON scene)
-export abstract class BaseScene {
-
+export abstract class Base3DScene {
     protected renderer: THREE.WebGLRenderer;
     protected scene: THREE.Scene;
     protected camera: THREE.PerspectiveCamera;
     protected controls: OrbitControls;
 
-    constructor(protected readonly canvas: HTMLCanvasElement) {
-        // Bind Handler
-        this.onWindowResize = this.onWindowResize.bind(this);
-
+    constructor(protected canvas: HTMLCanvasElement) {
         // Renderer
-        this.renderer = new THREE.WebGLRenderer({antialias: true, canvas});
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
 
@@ -37,7 +32,6 @@ export abstract class BaseScene {
         // Scene & Light
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(DARK_BACKGROUND);
-
         const light = new THREE.DirectionalLight(WHITE, 3);
         light.position.set(-1, 2, 4);
         this.scene.add(light);
@@ -50,7 +44,6 @@ export abstract class BaseScene {
         this.controls.target.set(0, 0, 0);
         this.controls.minDistance = 10;
         this.controls.maxDistance = 300;
-
         this.controls.addEventListener('start', () => {
           canvas.style.cursor = 'grabbing';
         });     
@@ -59,7 +52,7 @@ export abstract class BaseScene {
         });
 
         // Resize Handler
-        window.addEventListener('resize', this.onWindowResize);
+        window.addEventListener('resize', this.onWindowResize.bind(this));
     }
 
     private makeGridAndAxes() {
@@ -123,15 +116,17 @@ export abstract class BaseScene {
           this.camera.updateProjectionMatrix();
         }
     }
-
-    // For each subclass to implement and add different geometries
-    protected abstract buildScene(): void;
-
-    protected clearScene(): void {
-        this.renderer.clear();
+    
+    public start(): void {
+        this.buildScene();
+        this.render();
     }
 
-    protected render() {
+    private render = (): void => {
+        this.controls.update();
         this.renderer.render(this.scene, this.camera);
+        requestAnimationFrame(this.render);
     }
+
+    protected abstract buildScene(): void;
 }

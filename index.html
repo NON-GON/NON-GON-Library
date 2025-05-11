@@ -5,12 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>NON-GON</title>
-
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="./src/style.css" />
-
-  <!-- Main -->
-  <script type="module" src="./src/main.ts" defer></script>
+  <link rel="stylesheet" href="/src/style_index.css"/>
+  <link rel="icon" href="/icons/favicon.ico"/>
+  <script type="module" src="/src/main.ts" defer></script>
 </head>
 
 <body>
@@ -36,7 +33,7 @@
         <h3>2D Shapes</h3>
         <div class="gallery-row" id="shapes-2D">
           <!-- Point -->
-          <a href="#" class="gallery-item" data-type="Point2D">
+          <a href="./point2D.html" class="gallery-item" data-type="Point2D">
             <img src="images/2D_point.png" alt="2D Point">
             <figcaption>Point</figcaption>
           </a>
@@ -88,7 +85,7 @@
           </a>
 
           <!-- Ellipsoid -->
-          <a href="#" class="gallery-item" data-type="Ellipsoid3D">
+          <a href="./ellipsoid3D.html" class="gallery-item" data-type="Ellipsoid3D">
             <img src="images/3D_ellipsoid.png" alt="3D Ellipsoid">
             <figcaption>Ellipsoid</figcaption>
           </a>
@@ -175,9 +172,5 @@
       </div>
     </section>
   </main>
-
-  <div id="three-container">
-    <canvas id="c"></canvas>
-  </div>
 </body>
 </html>

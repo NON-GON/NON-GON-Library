@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { BaseScene } from './BaseScene';
+import { BaseScene } from '../../BaseScene';
 
-export class StrictlyConvexShape3DScene extends BaseScene {
+export class EllipticParaboloid3DScene extends BaseScene {
 
   protected buildScene(): void {
     const radius = 2;

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { BaseScene } from './BaseScene';
+import { Base2DScene } from '@/scenes/Base2DScene';
 
-export class Cylinder3DScene extends BaseScene {
+export class Circle2D extends Base2DScene {
 
   protected buildScene(): void {
     const radius = 2;

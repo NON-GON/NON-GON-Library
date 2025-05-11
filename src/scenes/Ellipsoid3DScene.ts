@@ -1,27 +1,14 @@
-import * as THREE from 'three';
-import { BaseScene } from './BaseScene';
+import { Ellipsoid3D } from "./shapes/3D/Ellipsoid3D";
+import { Vector3 } from "../Calc/Util/Utils";
 
-export class Ellipsoid3DScene extends BaseScene {
-
-  protected buildScene(): void {
-    const radius = 2;
-    const widthSegments = 16;
-    const heightSegments = 16;
-    const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const pointMesh = new THREE.Mesh(geometry, material);
-
-    this.scene.add(pointMesh);
-  }
-
-  public start(): void {
-    this.buildScene();
-    this.renderLoop();
-  }
-
-  private renderLoop = (): void => {
-    this.controls.update();
-    this.render();
-    requestAnimationFrame(this.renderLoop);
-  }
-}
+window.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('c') as HTMLCanvasElement;
+    const center = new Vector3(-10, 15, 5);
+    const xradius = 4;
+    const yradius = 12;
+    const zradius = 8;
+    const rotation = new Vector3(0, 0, 0);
+    const segments = 15;
+    const scene = new Ellipsoid3D(canvas, center, xradius, yradius, zradius, rotation, segments);
+    scene.start();
+});

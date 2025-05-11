@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { BaseScene } from './BaseScene';
+import { BaseScene } from '../../BaseScene';
 
 export class Hyperboloid3DScene extends BaseScene {
 

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { BaseScene } from './BaseScene';
-import { GeometryManager } from "../Geometries/GeometryManager";
-import { GeometryType2D, GeometryType3D } from "../Geometries/GeoTypes";
-import { Vector3, Vector2 } from "../Calc/Util/Utils";
+import { BaseScene } from '../../BaseScene';
+import { GeometryManager } from "../../../Geometries/GeometryManager";
+import { GeometryType2D, GeometryType3D } from "../../../Geometries/GeoTypes";
+import { Vector3, Vector2 } from "../../../Calc/Util/Utils";
 
 const RED = 0xA32545;
 const GREEN = 0x5D803D;
