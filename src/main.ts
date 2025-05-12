@@ -85,8 +85,8 @@ function pointEllipseMDTest() {
 
   let params1 = {
     center: new Vector2(0, 0),
-    xradius: 10,
-    yradius: 5,
+    xradius: 30,
+    yradius: 20,
     rotation: new Vector3(0, 0, 0),
     segments: 100,
   };
@@ -498,3 +498,4 @@ function drawMinimumDistance(
   scene.add(line);
 }
 
+pointEllipseMDTest();

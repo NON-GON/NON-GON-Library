@@ -805,8 +805,6 @@ export function checkVertices(
   vertexCylinder2: number,
   u: number,
   w: number,
-  v1: number,
-  v2: number,
   s1: number,
   s2: number,
   r1: number,
@@ -1824,8 +1822,6 @@ export function VertexEdgeTestFunction(
         a - Math.sqrt(Math.abs(Math.pow(r2, 2) - Math.pow(v1AndV2.y, 2)));
       const w1 = u1 - a;
       const w2 = u2 - a;
-      const v1 = v1AndV2.x;
-      const v2 = v1AndV2.y;
 
       if (!isNaN(u1)) {
         if (u1 >= a - Math.min(r1, r2) && u1 <= Math.max(r1, r2)) {
@@ -1835,8 +1831,6 @@ export function VertexEdgeTestFunction(
               vertexCylinder2,
               u1,
               w1,
-              v1,
-              v2,
               s1,
               s2,
               r1,
@@ -1863,8 +1857,6 @@ export function VertexEdgeTestFunction(
               vertexCylinder2,
               u2,
               w2,
-              v1,
-              v2,
               s1,
               s2,
               r1,
