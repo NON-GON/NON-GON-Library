@@ -1,11 +1,11 @@
-import { Point2D } from "./shapes/2D/Point2D";
-import { Vector2 } from "../Calc/Util/Utils";
+import { Point3D } from "./shapes/3D/Point3D";
+import { Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
-    const center = new Vector2(-10, 15);
+    const center = new Vector3(-10, 15, 5);
     const color = Colors.MUSTARD;
-    const scene = new Point2D(canvas, center, color);
+    const scene = new Point3D(canvas, center, color);
     scene.start();
 });

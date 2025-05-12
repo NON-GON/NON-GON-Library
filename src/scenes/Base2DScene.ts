@@ -1,18 +1,12 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry';
-
-const DARK_BACKGROUND = 0x2F3336;
-const WHITE = 0xFFFFFF;
-const RED = 0xA32545;
-const GREEN = 0x5D803D;
-const BLUE = 0x6BA7C7;
+import { Colors } from '../colors';
+import { GeometryManager } from '../Geometries/GeometryManager';
 
 export abstract class Base2DScene {
+    protected geometryManager = new GeometryManager();
     protected renderer: THREE.WebGLRenderer;
     protected scene: THREE.Scene;
     protected camera: THREE.PerspectiveCamera;
-    protected controls: OrbitControls;
 
     constructor(protected canvas: HTMLCanvasElement) {
         // Renderer
@@ -26,53 +20,38 @@ export abstract class Base2DScene {
         const near = 0.1;
         const far = 1000;
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera.position.set(0, 0, 300);
+        this.camera.position.set(0, 0, 200);
         this.camera.lookAt(0, 0, 0);
 
         // Scene & Light
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(DARK_BACKGROUND);
-        const light = new THREE.DirectionalLight(WHITE, 3);
-        light.position.set(-1, 2, 4);
+        this.scene.background = new THREE.Color(Colors.BACKGROUND);
+
+        const light = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light.position.set(0, 0, 200);
+        light.lookAt(0, 0, 0);
         this.scene.add(light);
 
         // Grid & Axes
-        this.makeGridAndAxes();
-
-        // Controls
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.target.set(0, 0, 0);
-        this.controls.minDistance = 10;
-        this.controls.maxDistance = 300;
+        this.makeAxes();
 
         // Resize Handler
         window.addEventListener('resize', this.onWindowResize.bind(this));
     }
 
-    private makeGridAndAxes() {
-        // Bounding Grid
-        const gridSize = 200;
-        const segments = 100;
-        const gridGeometry = new BoxLineGeometry(gridSize, gridSize, gridSize, segments, segments, segments);
-        const gridMaterial = new THREE.LineBasicMaterial({color: WHITE, transparent: true, opacity: 0.05});
-        const grid = new THREE.LineSegments(gridGeometry, gridMaterial);
-        this.scene.add(grid)
-
+    private makeAxes() {
         // Cartesian Axes
-        const halfGridSize = gridSize / 2;
-        const xAxis = this.makeClippedAxis(new THREE.Vector3(1, 0, 0), halfGridSize, RED);
-        const xAxisNeg = this.makeClippedAxis(new THREE.Vector3(-1, 0, 0), halfGridSize, RED)        
-        const yAxis = this.makeClippedAxis(new THREE.Vector3(0, 1, 0), halfGridSize, BLUE);
-        const yAxisNeg = this.makeClippedAxis(new THREE.Vector3(0, -1, 0), halfGridSize, BLUE)       
-        const zAxis = this.makeClippedAxis(new THREE.Vector3(0, 0, 1), halfGridSize, GREEN);
-        const zAxisNeg = this.makeClippedAxis(new THREE.Vector3(0, 0, -1), halfGridSize, GREEN)      
-        this.scene.add(xAxis, xAxisNeg, yAxis, yAxisNeg, zAxis, zAxisNeg)
+        const halfGridSize = 100;
+        const xAxis = this.makeClippedAxis(new THREE.Vector3(1, 0, 0), halfGridSize, Colors.RED);
+        const xAxisNeg = this.makeClippedAxis(new THREE.Vector3(-1, 0, 0), halfGridSize, Colors.RED);
+        const yAxis = this.makeClippedAxis(new THREE.Vector3(0, 1, 0), halfGridSize, Colors.BLUE);
+        const yAxisNeg = this.makeClippedAxis(new THREE.Vector3(0, -1, 0), halfGridSize, Colors.BLUE);
+        this.scene.add(xAxis, xAxisNeg, yAxis, yAxisNeg);
 
         // Axes Arrowheads
-        const arrowX = this.makeArrowCone(new THREE.Vector3(1, 0, 0), halfGridSize, RED);
-        const arrowY = this.makeArrowCone(new THREE.Vector3(0, 1, 0), halfGridSize, BLUE);
-        const arrowZ = this.makeArrowCone(new THREE.Vector3(0, 0, 1), halfGridSize, GREEN);
-        this.scene.add(arrowX, arrowY, arrowZ);
+        const arrowX = this.makeArrowCone(new THREE.Vector3(1, 0, 0), halfGridSize, Colors.RED);
+        const arrowY = this.makeArrowCone(new THREE.Vector3(0, 1, 0), halfGridSize, Colors.BLUE);
+        this.scene.add(arrowX, arrowY);
     }
 
     private makeClippedAxis(dir: THREE.Vector3, length: number, color: number): THREE.Line {
@@ -110,16 +89,15 @@ export abstract class Base2DScene {
           this.camera.updateProjectionMatrix();
         }
     }
-
+    
     public start(): void {
         this.buildScene();
         this.render();
     }
 
-    private render() {
-        this.controls.update();
+    private render = (): void => {
         this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(this.render.bind(this));
+        requestAnimationFrame(this.render);
     }
 
     protected abstract buildScene(): void;

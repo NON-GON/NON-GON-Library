@@ -2,11 +2,12 @@ import { Base3DScene } from '../../Base3DScene';
 import { GeometryType3D } from "../../../Geometries/GeoTypes";
 import { Vector3 } from "../../../Calc/Util/Utils";
 
-export class Ellipsoid3D extends Base3DScene {
+export class Hyperboloid3D extends Base3DScene {
   private center: Vector3;
   private xradius: number;
   private yradius: number;
-  private zradius: number;
+  private zfactor: number;
+  private height: number;
   private rotation: Vector3;
   private segments: number;
   private color: number;
@@ -15,7 +16,8 @@ export class Ellipsoid3D extends Base3DScene {
               center: Vector3,
               xradius: number,
               yradius: number,
-              zradius: number,
+              zfactor: number,
+              height: number,
               rotation: Vector3,
               segments: number,
               color: number) {
@@ -23,7 +25,8 @@ export class Ellipsoid3D extends Base3DScene {
     this.center = center;
     this.xradius = xradius;
     this.yradius = yradius;
-    this.zradius = zradius;
+    this.zfactor = zfactor;
+    this.height = height;
     this.rotation = rotation;
     this.segments = segments;
     this.color = color;
@@ -34,12 +37,13 @@ export class Ellipsoid3D extends Base3DScene {
       center: this.center,
       xradius: this.xradius,
       yradius: this.yradius,
-      zradius: this.zradius,
+      zfactor: this.zfactor,
+      height: this.height,
       rotation: this.rotation,
       segments: this.segments
     }
-    this.geometryManager.createGeometry(GeometryType3D.Ellipsoid, 'Ellipsoid3D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Ellipsoid3D', this.color);
+    this.geometryManager.createGeometry(GeometryType3D.Hyperboloid, 'Hyperboloid3D', params);
+    const mesh = this.geometryManager.getGeometryMesh('Hyperboloid3D', this.color);
     this.scene.add(mesh);
   }
 }

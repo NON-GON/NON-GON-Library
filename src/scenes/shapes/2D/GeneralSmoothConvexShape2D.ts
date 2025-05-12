@@ -1,27 +1,37 @@
-import * as THREE from 'three';
-import { BaseScene } from './BaseScene';
+import { Base2DScene } from '../../Base2DScene';
+import { GeometryType2D } from "../../../Geometries/GeoTypes";
+import { Vector2 } from "../../../Calc/Util/Utils";
 
-export class GeneralSmoothConvexShape2DScene extends BaseScene {
+export class GeneralSmoothConvexShape2D extends Base2DScene {
+  private center: Vector2;
+  private xradius: number;
+  private yradius: number;
+  private rotation: Vector2;
+  private color: number;
+
+  constructor(canvas: HTMLCanvasElement,
+              center: Vector2,
+              xradius: number,
+              yradius: number,
+              rotation: Vector2,
+              color: number) {
+    super(canvas);
+    this.center = center;
+    this.xradius = xradius;
+    this.yradius = yradius;
+    this.rotation = rotation;
+    this.color = color;
+  }
 
   protected buildScene(): void {
-    const radius = 2;
-    const widthSegments = 16;
-    const heightSegments = 16;
-    const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const pointMesh = new THREE.Mesh(geometry, material);
-
-    this.scene.add(pointMesh);
-  }
-
-  public start(): void {
-    this.buildScene();
-    this.renderLoop();
-  }
-
-  private renderLoop = (): void => {
-    this.controls.update();
-    this.render();
-    requestAnimationFrame(this.renderLoop);
+    let params = { 
+      center: this.center,
+      xradius: this.xradius,
+      yradius: this.yradius,
+      rotation: this.rotation
+    };
+    this.geometryManager.createGeometry(GeometryType2D.Circle, 'Ellipse2D', params);
+    const mesh = this.geometryManager.getGeometryMesh('Ellipse2D', this.color);
+    this.scene.add(mesh);
   }
 }

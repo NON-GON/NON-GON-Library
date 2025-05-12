@@ -1,14 +1,11 @@
 import * as THREE from 'three';
+import { Colors } from '../colors';
+import { GeometryManager } from '../Geometries/GeometryManager';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry';
 
-const DARK_BACKGROUND = 0x2F3336;
-const WHITE = 0xFFFFFF;
-const RED = 0xA32545;
-const GREEN = 0x5D803D;
-const BLUE = 0x6BA7C7;
-
 export abstract class Base3DScene {
+    protected geometryManager = new GeometryManager();
     protected renderer: THREE.WebGLRenderer;
     protected scene: THREE.Scene;
     protected camera: THREE.PerspectiveCamera;
@@ -26,15 +23,52 @@ export abstract class Base3DScene {
         const near = 0.1;
         const far = 1000;
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera.position.set(-300, 300, 300);
+        this.camera.position.set(-200, 200, 200);
         this.camera.lookAt(0, 0, 0);
 
         // Scene & Light
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(DARK_BACKGROUND);
-        const light = new THREE.DirectionalLight(WHITE, 3);
-        light.position.set(-1, 2, 4);
-        this.scene.add(light);
+        this.scene.background = new THREE.Color(Colors.BACKGROUND);
+
+        const light1 = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light1.position.set(-100, 100, 100);
+        light1.lookAt(0, 0, 0);
+        this.scene.add(light1);
+
+        const light2 = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light2.position.set(-100, 100, -100);
+        light2.lookAt(0, 0, 0);
+        this.scene.add(light2);
+
+        const light3 = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light3.position.set(100, 100, -100);
+        light3.lookAt(0, 0, 0);
+        this.scene.add(light3);
+
+        const light4 = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light4.position.set(100, 100, 100);
+        light4.lookAt(0, 0, 0);
+        this.scene.add(light4);
+
+        const light5 = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light5.position.set(-100, -100, 100);
+        light5.lookAt(0, 0, 0);
+        this.scene.add(light5);
+
+        const light6 = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light6.position.set(-100, -100, -100);
+        light6.lookAt(0, 0, 0);
+        this.scene.add(light6);
+
+        const light7 = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light7.position.set(100, -100, -100);
+        light7.lookAt(0, 0, 0);
+        this.scene.add(light7);
+
+        const light8 = new THREE.DirectionalLight(Colors.WHITE, 3);
+        light8.position.set(100, -100, 100);
+        light8.lookAt(0, 0, 0);
+        this.scene.add(light8);
 
         // Grid & Axes
         this.makeGridAndAxes();
@@ -43,7 +77,7 @@ export abstract class Base3DScene {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.target.set(0, 0, 0);
         this.controls.minDistance = 10;
-        this.controls.maxDistance = 300;
+        this.controls.maxDistance = 200;
         this.controls.addEventListener('start', () => {
           canvas.style.cursor = 'grabbing';
         });     
@@ -58,26 +92,25 @@ export abstract class Base3DScene {
     private makeGridAndAxes() {
         // Bounding Grid
         const gridSize = 200;
-        const segments = 100;
-        const gridGeometry = new BoxLineGeometry(gridSize, gridSize, gridSize, segments, segments, segments);
-        const gridMaterial = new THREE.LineBasicMaterial({color: WHITE, transparent: true, opacity: 0.05});
-        const grid = new THREE.LineSegments(gridGeometry, gridMaterial);
-        this.scene.add(grid)
+        //const gridGeometry = new BoxLineGeometry(gridSize, gridSize, gridSize);
+        //const gridMaterial = new THREE.LineBasicMaterial({color: Colors.WHITE, transparent: true, opacity: 0.05});
+        //const grid = new THREE.LineSegments(gridGeometry, gridMaterial);
+        //this.scene.add(grid);
 
         // Cartesian Axes
         const halfGridSize = gridSize / 2;
-        const xAxis = this.makeClippedAxis(new THREE.Vector3(1, 0, 0), halfGridSize, RED);
-        const xAxisNeg = this.makeClippedAxis(new THREE.Vector3(-1, 0, 0), halfGridSize, RED)        
-        const yAxis = this.makeClippedAxis(new THREE.Vector3(0, 1, 0), halfGridSize, BLUE);
-        const yAxisNeg = this.makeClippedAxis(new THREE.Vector3(0, -1, 0), halfGridSize, BLUE)       
-        const zAxis = this.makeClippedAxis(new THREE.Vector3(0, 0, 1), halfGridSize, GREEN);
-        const zAxisNeg = this.makeClippedAxis(new THREE.Vector3(0, 0, -1), halfGridSize, GREEN)      
-        this.scene.add(xAxis, xAxisNeg, yAxis, yAxisNeg, zAxis, zAxisNeg)
+        const xAxis = this.makeClippedAxis(new THREE.Vector3(1, 0, 0), halfGridSize, Colors.RED);
+        const xAxisNeg = this.makeClippedAxis(new THREE.Vector3(-1, 0, 0), halfGridSize, Colors.RED);
+        const yAxis = this.makeClippedAxis(new THREE.Vector3(0, 1, 0), halfGridSize, Colors.BLUE);
+        const yAxisNeg = this.makeClippedAxis(new THREE.Vector3(0, -1, 0), halfGridSize, Colors.BLUE);
+        const zAxis = this.makeClippedAxis(new THREE.Vector3(0, 0, 1), halfGridSize, Colors.GREEN);
+        const zAxisNeg = this.makeClippedAxis(new THREE.Vector3(0, 0, -1), halfGridSize, Colors.GREEN);
+        this.scene.add(xAxis, xAxisNeg, yAxis, yAxisNeg, zAxis, zAxisNeg);
 
         // Axes Arrowheads
-        const arrowX = this.makeArrowCone(new THREE.Vector3(1, 0, 0), halfGridSize, RED);
-        const arrowY = this.makeArrowCone(new THREE.Vector3(0, 1, 0), halfGridSize, BLUE);
-        const arrowZ = this.makeArrowCone(new THREE.Vector3(0, 0, 1), halfGridSize, GREEN);
+        const arrowX = this.makeArrowCone(new THREE.Vector3(1, 0, 0), halfGridSize, Colors.RED);
+        const arrowY = this.makeArrowCone(new THREE.Vector3(0, 1, 0), halfGridSize, Colors.BLUE);
+        const arrowZ = this.makeArrowCone(new THREE.Vector3(0, 0, 1), halfGridSize, Colors.GREEN);
         this.scene.add(arrowX, arrowY, arrowZ);
     }
 
