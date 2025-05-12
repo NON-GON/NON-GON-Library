@@ -12,5 +12,5 @@ window.addEventListener('DOMContentLoaded', () => {
     const segments = 15;
     const color = Colors.MUSTARD;
     const scene = new Ellipsoid3D(canvas, center, xradius, yradius, zradius, rotation, segments, color);
-    scene.start();
+    scene.startAnimation();
 });

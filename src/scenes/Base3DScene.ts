@@ -92,10 +92,10 @@ export abstract class Base3DScene {
     private makeGridAndAxes() {
         // Bounding Grid
         const gridSize = 200;
-        //const gridGeometry = new BoxLineGeometry(gridSize, gridSize, gridSize);
-        //const gridMaterial = new THREE.LineBasicMaterial({color: Colors.WHITE, transparent: true, opacity: 0.05});
-        //const grid = new THREE.LineSegments(gridGeometry, gridMaterial);
-        //this.scene.add(grid);
+        const gridGeometry = new BoxLineGeometry(gridSize, gridSize, gridSize);
+        const gridMaterial = new THREE.LineBasicMaterial({color: Colors.WHITE, transparent: true, opacity: 0.05});
+        const grid = new THREE.LineSegments(gridGeometry, gridMaterial);
+        this.scene.add(grid);
 
         // Cartesian Axes
         const halfGridSize = gridSize / 2;
@@ -150,7 +150,7 @@ export abstract class Base3DScene {
         }
     }
     
-    public start(): void {
+    public startAnimation(): void {
         this.buildScene();
         this.render();
     }

@@ -11,5 +11,5 @@ window.addEventListener('DOMContentLoaded', () => {
     const segments = 15;
     const color = Colors.MUSTARD;
     const scene = new Plane3D(canvas, center, rotation, width, height, segments, color);
-    scene.start();
+    scene.startAnimation();
 });

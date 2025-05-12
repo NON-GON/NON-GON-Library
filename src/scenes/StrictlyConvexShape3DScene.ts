@@ -9,5 +9,5 @@ window.addEventListener('DOMContentLoaded', () => {
     const segments = 15;
     const color = Colors.MUSTARD;
     const scene = new StrictlyConvexShape3D(canvas, center, rotation, segments, color);
-    scene.start();
+    scene.startAnimation();
 });

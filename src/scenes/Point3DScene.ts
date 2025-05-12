@@ -7,5 +7,5 @@ window.addEventListener('DOMContentLoaded', () => {
     const center = new Vector3(-10, 15, 5);
     const color = Colors.MUSTARD;
     const scene = new Point3D(canvas, center, color);
-    scene.start();
+    scene.startAnimation();
 });

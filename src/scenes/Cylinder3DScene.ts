@@ -12,5 +12,5 @@ window.addEventListener('DOMContentLoaded', () => {
     const segments = 15;
     const color = Colors.MUSTARD;
     const scene = new Cylinder3D(canvas, center, xradius, yradius, height, rotation, segments, color);
-    scene.start();
+    scene.startAnimation();
 });

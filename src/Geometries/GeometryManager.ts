@@ -65,9 +65,12 @@ export class GeometryManager {
   public getGeometryMesh(id: string, color: number): any {
     let geometry = this._geometries[id];
     if (geometry) {
-      let material = new THREE.MeshPhongMaterial({ color: color });
-      let mesh = new THREE.Mesh(geometry.getGeometry(), material);
-      return mesh;
+      //let material = new THREE.MeshPhongMaterial({ color: color });
+      //let mesh = new THREE.Mesh(geometry.getGeometry(), material);
+      //return mesh;
+      let material = new THREE.LineBasicMaterial({ color: color });
+      let line = new THREE.Line(geometry.getGeometry(), material);
+      return line;
     } else {
       throw new Error(`Geometry with id ${id} not found.`);
     }

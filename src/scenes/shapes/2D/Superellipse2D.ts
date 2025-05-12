@@ -2,10 +2,11 @@ import { Base2DScene } from '../../Base2DScene';
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
 import { Vector2 } from "../../../Calc/Util/Utils";
 
-export class Ellipse2D extends Base2DScene {
+export class Superellipse2D extends Base2DScene {
   private center: Vector2;
   private xradius: number;
   private yradius: number;
+  private exponent: number;
   private rotation: Vector2;
   private segments: number;
   private color: number;
@@ -14,6 +15,7 @@ export class Ellipse2D extends Base2DScene {
               center: Vector2,
               xradius: number,
               yradius: number,
+              exponent: number,
               rotation: Vector2,
               segments: number,
               color: number) {
@@ -21,6 +23,7 @@ export class Ellipse2D extends Base2DScene {
     this.center = center;
     this.xradius = xradius;
     this.yradius = yradius;
+    this.exponent = exponent;
     this.rotation = rotation;
     this.segments = segments;
     this.color = color;
@@ -31,11 +34,12 @@ export class Ellipse2D extends Base2DScene {
       center: this.center,
       xradius: this.xradius,
       yradius: this.yradius,
+      exponent: this.exponent,
       rotation: this.rotation,
       segments: this.segments
     };
-    this.geometryManager.createGeometry(GeometryType2D.Ellipse, 'Ellipse2D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Ellipse2D', this.color);
+    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, 'Superellipse2D', params);
+    const mesh = this.geometryManager.getGeometryMesh('Superellipse2D', this.color);
     this.scene.add(mesh);
   }
 }

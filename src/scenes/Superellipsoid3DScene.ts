@@ -14,5 +14,5 @@ window.addEventListener('DOMContentLoaded', () => {
     const segments = 80;
     const color = Colors.MUSTARD;
     const scene = new Superellipsoid3D(canvas, center, xradius, yradius, zradius, e1, e2, rotation, segments, color);
-    scene.start();
+    scene.startAnimation();
 });

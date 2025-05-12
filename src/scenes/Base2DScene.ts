@@ -90,7 +90,7 @@ export abstract class Base2DScene {
         }
     }
     
-    public start(): void {
+    public startAnimation(): void {
         this.buildScene();
         this.render();
     }
