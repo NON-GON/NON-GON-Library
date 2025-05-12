@@ -452,7 +452,7 @@ function hyperboloidPlanePQTest() {
     xradius: 4,
     yradius: 2,
     zradius: 2,
-    zfactor: 5,
+    zfactor: -5,
     height: 10,
     rotation: new Vector3(90, 0, 0),
     segments: 20,
@@ -498,4 +498,3 @@ function drawMinimumDistance(
   scene.add(line);
 }
 
-hyperboloidPlanePQTest();

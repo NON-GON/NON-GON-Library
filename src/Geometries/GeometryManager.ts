@@ -121,89 +121,13 @@ export class GeometryManager {
     params: any
   ): any {
     let geometry: any = null;
+
     if (isGeometryType2D(type)) {
-      return this.createGeometry2D(type, id, params, geometry);
+      geometry = this.createGeometryByType2D(type, params);
     } else if (isGeometryType3D(type)) {
-      return this.createGeometry3D(type, id, params, geometry);
+      geometry = this.createGeometryByType3D(type, params);
     } else {
       throw new Error(`Invalid geometry type: ${type}`);
-    }
-  }
-
-  private createGeometry3D(
-    type: GeometryType3D,
-    id: string,
-    params: any,
-    geometry: any
-  ): any {
-    switch (type) {
-      case GeometryType3D.Cylinder:
-        geometry = new Cylinder(
-          params.center,
-          params.xradius,
-          params.yradius,
-          params.height,
-          params.rotation,
-          params.segments
-        );
-        break;
-      case GeometryType3D.Ellipsoid:
-        geometry = new Ellipsoid(
-          params.center,
-          params.xradius,
-          params.yradius,
-          params.zradius,
-          params.rotation,
-          params.segments
-        );
-        break;
-      case GeometryType3D.EllipticParaboloid:
-        geometry = new EllipticParaboloid(
-          params.center,
-          params.xradius,
-          params.yradius,
-          params.height,
-          params.rotation,
-          params.segments
-        );
-        break;
-      case GeometryType3D.Hyperboloid:
-        geometry = new Hyperboloid(
-          params.center,
-          params.xradius,
-          params.yradius,
-          params.zfactor,
-          params.height,
-          params.rotation,
-          params.segments
-        );
-        break;
-      case GeometryType3D.Sphere:
-        geometry = new Sphere(
-          params.center,
-          params.radius,
-          params.rotation,
-          params.segments
-        );
-        break;
-      case GeometryType3D.Superellipsoid:
-        geometry = new Superellipsoid(
-          params.center,
-          params.xradius,
-          params.yradius,
-          params.zradius,
-          params.e1,
-          params.e2,
-          params.rotation,
-          params.segments
-        );
-        break;
-      case GeometryType3D.Convex:
-        geometry = new Convex(params.center, params.rotation, params.segments);
-        break;
-      default:
-        throw new Error(`Invalid parameters geometry type: ${type}`);
-        break;
     }
     if (geometry) {
       this.addGeometry(id, geometry);
@@ -215,39 +139,109 @@ export class GeometryManager {
     }
   }
 
-  private createGeometry2D(
-    type: GeometryType2D,
-    id: string,
-    params: any,
-    geometry: any
-  ): any {
+  /**
+   * Creates a geometry based on type and parameters, stores it and returns its mesh.
+   * @param type The type of geometry (3D).
+   * @param id Unique identifier for the geometry.
+   * @param params Parameters for the geometry construction.
+   * @returns A THREE.Mesh or THREE.Line object representing the geometry.
+   */
+
+  private createGeometryByType3D(type: GeometryType3D, params: any): any {
+    switch (type) {
+      case GeometryType3D.Cylinder:
+        return new Cylinder(
+          params.center,
+          params.xradius,
+          params.yradius,
+          params.height,
+          params.rotation,
+          params.segments
+        );
+      case GeometryType3D.Ellipsoid:
+        return new Ellipsoid(
+          params.center,
+          params.xradius,
+          params.yradius,
+          params.zradius,
+          params.rotation,
+          params.segments
+        );
+      case GeometryType3D.EllipticParaboloid:
+        return new EllipticParaboloid(
+          params.center,
+          params.xradius,
+          params.yradius,
+          params.height,
+          params.rotation,
+          params.segments
+        );
+      case GeometryType3D.Hyperboloid:
+        return new Hyperboloid(
+          params.center,
+          params.xradius,
+          params.yradius,
+          params.zfactor,
+          params.height,
+          params.rotation,
+          params.segments
+        );
+      case GeometryType3D.Sphere:
+        return new Sphere(
+          params.center,
+          params.radius,
+          params.rotation,
+          params.segments
+        );
+      case GeometryType3D.Superellipsoid:
+        return new Superellipsoid(
+          params.center,
+          params.xradius,
+          params.yradius,
+          params.zradius,
+          params.e1,
+          params.e2,
+          params.rotation,
+          params.segments
+        );
+      case GeometryType3D.Convex:
+        return new Convex(params.center, params.rotation, params.segments);
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Creates a geometry based on type and parameters, stores it and returns its mesh.
+   * @param type The type of geometry (2D).
+   * @param id Unique identifier for the geometry.
+   * @param params Parameters for the geometry construction.
+   * @returns A THREE.Mesh or THREE.Line object representing the geometry.
+   */
+  private createGeometryByType2D(type: GeometryType2D, params: any): any {
     switch (type) {
       case GeometryType2D.Ellipse:
-        geometry = new Ellipse(
+        return new Ellipse(
           params.center,
           params.xradius,
           params.yradius,
           params.rotation,
           params.segments
         );
-        break;
       case GeometryType2D.Line:
-        geometry = new Line(params.start, params.end, params.rotation);
-        break;
+        return new Line(params.start, params.end, params.rotation);
       case GeometryType2D.Plane:
-        geometry = new Plane(
+        return new Plane(
           params.center,
           params.rotation,
           params.width,
           params.height,
           params.segments
         );
-        break;
       case GeometryType2D.Point:
-        geometry = new Point(params.center);
-        break;
+        return new Point(params.center);
       case GeometryType2D.Supperellipse:
-        geometry = new Superellipse(
+        return new Superellipse(
           params.center,
           params.xradius,
           params.yradius,
@@ -255,41 +249,24 @@ export class GeometryManager {
           params.rotation,
           params.segments
         );
-        break;
       case GeometryType2D.Circle:
-        geometry = new Circle(
+        return new Circle(
           params.center,
           params.radius,
           params.rotation,
           params.segments
         );
-        break;
       case GeometryType2D.ConvexCircle:
-        geometry = new Convexcircle(
+        return new Convexcircle(
           params.center,
           params.radius,
           params.rotation,
           params.segments
         );
-        break;
       case GeometryType2D.ConvexLine:
-        geometry = new ConvexLine(
-          params.center,
-          params.rotation,
-          params.segments
-        );
-        break;
+        return new ConvexLine(params.center, params.rotation, params.segments);
       default:
-        throw new Error(`Invalid geometry type: ${type}`);
-        break;
-    }
-    if (geometry) {
-      this.addGeometry(id, geometry);
-      let material = new THREE.LineBasicMaterial({ color: 0x0000ff });
-      let line = new THREE.Line(geometry.getGeometry(), material);
-      return line;
-    } else {
-      throw new Error(`Invalid parameters for geometry type: ${type}`);
+        return null;
     }
   }
 

@@ -206,6 +206,51 @@ export class ProximityQuery3D {
     return true;
   }
 
+  private static getAllIntersectionPoints(
+    cylinder1Position: Vector3,
+    cylinder2Position: Vector3,
+    commonNormal: Vector3,
+    Circle1Center1: Vector3,
+    Circle2Center1: Vector3,
+    Circle1Center2: Vector3,
+    Circle2Center2: Vector3,
+    zAxisCylinder1: Vector3,
+    zAxisCylinder2: Vector3,
+    cylinder1: Cylinder,
+    cylinder2: Cylinder
+  ) {
+    const point1 = FindIntersectionPoints(
+      cylinder1Position,
+      commonNormal,
+      Circle1Center1,
+      zAxisCylinder1,
+      cylinder1.xradius
+    );
+    const point2 = FindIntersectionPoints(
+      cylinder1Position,
+      commonNormal,
+      Circle2Center1,
+      zAxisCylinder1,
+      cylinder1.xradius
+    );
+    const point3 = FindIntersectionPoints(
+      cylinder2Position,
+      commonNormal,
+      Circle1Center2,
+      zAxisCylinder2,
+      cylinder2.xradius
+    );
+    const point4 = FindIntersectionPoints(
+      cylinder2Position,
+      commonNormal,
+      Circle2Center2,
+      zAxisCylinder2,
+      cylinder2.xradius
+    );
+
+    return [point1, point2, point3, point4];
+  }
+
   /**
    * Checks if two cylinders intersect in 3D space using the Chittawadigi method.
    * @param cylinder1 - The first cylinder.
@@ -216,10 +261,10 @@ export class ProximityQuery3D {
     cylinder1: Cylinder,
     cylinder2: Cylinder
   ): boolean {
-    const xradius1 = cylinder1.xradius;
-    const xradius2 = cylinder2.xradius;
-    const yradius1 = cylinder1.yradius;
-    const yradius2 = cylinder2.yradius;
+    // const xradius1 = cylinder1.xradius;
+    // const xradius2 = cylinder2.xradius;
+    // const yradius1 = cylinder1.yradius;
+    // const yradius2 = cylinder2.yradius;
 
     const cylinder1Position = cylinder1.getCenter();
     const cylinder2Position = cylinder2.getCenter();
@@ -278,15 +323,22 @@ export class ProximityQuery3D {
     if (c < 0.00001) c = 0;
     if (Math.abs(alpha) < 0.00001) alpha = 0;
 
-    const s1 = yradius1 / 2;
-    const s2 = yradius2 / 2;
-    const r1 = xradius1;
-    const r2 = xradius2;
+    const s1 = cylinder1.yradius / 2;
+    const s2 = cylinder2.yradius / 2;
+    // const r1 = xradius1;
+    // const r2 = xradius2;
 
     if ((alpha === 0 || alpha === 180) && b === 0) {
-      return s1 + s2 >= Math.abs(c) && r1 + r2 >= Math.abs(a);
+      return (
+        s1 + s2 >= Math.abs(c) &&
+        cylinder1.xradius + cylinder2.xradius >= Math.abs(a)
+      );
     } else {
-      if (Math.abs(b) <= s1 && Math.abs(c) <= s2 && Math.abs(a) <= r1 + r2) {
+      if (
+        Math.abs(b) <= s1 &&
+        Math.abs(c) <= s2 &&
+        Math.abs(a) <= cylinder1.xradius + cylinder2.xradius
+      ) {
         return true;
       } else {
         let doZAxisIntersect = false;
@@ -316,67 +368,78 @@ export class ProximityQuery3D {
           zAxisCylinder2.scale(s2)
         );
 
-        const point1 = FindIntersectionPoints(
+        const points = this.getAllIntersectionPoints(
           cylinder1Position,
+          cylinder2Position,
           commonNormal,
           Circle1Center1,
-          zAxisCylinder1,
-          r1
-        );
-        const point2 = FindIntersectionPoints(
-          cylinder1Position,
-          commonNormal,
           Circle2Center1,
-          zAxisCylinder1,
-          r1
-        );
-        const point3 = FindIntersectionPoints(
-          cylinder2Position,
-          commonNormal,
           Circle1Center2,
-          zAxisCylinder2,
-          r2
-        );
-        const point4 = FindIntersectionPoints(
-          cylinder2Position,
-          commonNormal,
           Circle2Center2,
+          zAxisCylinder1,
           zAxisCylinder2,
-          r2
+          cylinder1,
+          cylinder2
         );
 
-        if (!point1 || !point2 || !point3 || !point4) {
+        if (!points[0] || !points[1] || !points[2] || !points[3]) {
           return false;
         }
 
         const Q1Vertices = [];
-        if (point1[1].distanceTo(point2[0]) < point1[1].distanceTo(point2[1])) {
-          Q1Vertices.push(point1[0], point1[1], point2[0], point2[1]);
+        if (
+          points[0][1].distanceTo(points[1][0]) <
+          points[0][1].distanceTo(points[1][1])
+        ) {
+          Q1Vertices.push(
+            points[0][0],
+            points[0][1],
+            points[1][0],
+            points[1][1]
+          );
         } else {
-          Q1Vertices.push(point1[0], point1[1], point2[1], point2[0]);
+          Q1Vertices.push(
+            points[0][0],
+            points[0][1],
+            points[1][1],
+            points[1][0]
+          );
         }
 
         const Q2Vertices = [];
-        if (point3[1].distanceTo(point4[0]) < point3[1].distanceTo(point4[1])) {
+        if (
+          points[2][1].distanceTo(points[3][0]) <
+          points[2][1].distanceTo(points[3][1])
+        ) {
           if (doZAxisIntersect) {
-            Q2Vertices.push(point3[0], point3[1], point4[0], point4[1]);
+            Q2Vertices.push(
+              points[2][0],
+              points[2][1],
+              points[3][0],
+              points[3][1]
+            );
           } else {
             Q2Vertices.push(
-              point3[0].subtract(commonNormal),
-              point3[1].subtract(commonNormal),
-              point4[0].subtract(commonNormal),
-              point4[1].subtract(commonNormal)
+              points[2][0].subtract(commonNormal),
+              points[2][1].subtract(commonNormal),
+              points[3][0].subtract(commonNormal),
+              points[3][1].subtract(commonNormal)
             );
           }
         } else {
           if (doZAxisIntersect) {
-            Q2Vertices.push(point3[0], point3[1], point4[1], point4[0]);
+            Q2Vertices.push(
+              points[2][0],
+              points[2][1],
+              points[3][1],
+              points[3][0]
+            );
           } else {
             Q2Vertices.push(
-              point3[0].subtract(commonNormal),
-              point3[1].subtract(commonNormal),
-              point4[1].subtract(commonNormal),
-              point4[0].subtract(commonNormal)
+              points[2][0].subtract(commonNormal),
+              points[2][1].subtract(commonNormal),
+              points[3][1].subtract(commonNormal),
+              points[3][0].subtract(commonNormal)
             );
           }
         }
@@ -388,8 +451,8 @@ export class ProximityQuery3D {
         return VertexEdgeTestFunction(
           s1,
           s2,
-          r1,
-          r2,
+          cylinder1.xradius,
+          cylinder2.xradius,
           a,
           b,
           c,
@@ -401,6 +464,7 @@ export class ProximityQuery3D {
       }
     }
   }
+
   /**
    * Calculates the characteristic polynomial of two ellipsoids.
    * @param ellipsoid1 - The first ellipsoid.
@@ -411,37 +475,19 @@ export class ProximityQuery3D {
     ellipsoid1: Ellipsoid,
     ellipsoid2: Ellipsoid
   ): number[] {
-    const xradius1 = ellipsoid1.xradius;
-    const yradius1 = ellipsoid1.yradius;
-    const zradius1 = ellipsoid1.zradius;
-    const xEllipsoid1 = ellipsoid1.getCenter().x;
-    const yEllipsoid1 = ellipsoid1.getCenter().y;
-    const zEllipsoid1 = ellipsoid1.getCenter().z;
-    const alpha1 = ellipsoid1.getRotation().x * (Math.PI / 180);
-    const beta1 = ellipsoid1.getRotation().y * (Math.PI / 180);
-    const phi1 = ellipsoid1.getRotation().z * (Math.PI / 180);
-    const sinAlpha1 = Math.sin(alpha1);
-    const sinBeta1 = Math.sin(beta1);
-    const sinPhi1 = Math.sin(phi1);
-    const cosAlpha1 = Math.cos(alpha1);
-    const cosBeta1 = Math.cos(beta1);
-    const cosPhi1 = Math.cos(phi1);
+    const sinAlpha1 = Math.sin(ellipsoid1.getRotation().x * (Math.PI / 180));
+    const sinBeta1 = Math.sin(ellipsoid1.getRotation().y * (Math.PI / 180));
+    const sinPhi1 = Math.sin(ellipsoid1.getRotation().z * (Math.PI / 180));
+    const cosAlpha1 = Math.cos(ellipsoid1.getRotation().x * (Math.PI / 180));
+    const cosBeta1 = Math.cos(ellipsoid1.getRotation().y * (Math.PI / 180));
+    const cosPhi1 = Math.cos(ellipsoid1.getRotation().z * (Math.PI / 180));
 
-    const xradius2 = ellipsoid2.xradius;
-    const yradius2 = ellipsoid2.yradius;
-    const zradius2 = ellipsoid2.zradius;
-    const xEllipsoid2 = ellipsoid2.getCenter().x;
-    const yEllipsoid2 = ellipsoid2.getCenter().y;
-    const zEllipsoid2 = ellipsoid2.getCenter().z;
-    const alpha2 = ellipsoid2.getRotation().x * (Math.PI / 180);
-    const beta2 = ellipsoid2.getRotation().y * (Math.PI / 180);
-    const phi2 = ellipsoid2.getRotation().z * (Math.PI / 180);
-    const sinAlpha2 = Math.sin(alpha2);
-    const sinBeta2 = Math.sin(beta2);
-    const sinPhi2 = Math.sin(phi2);
-    const cosAlpha2 = Math.cos(alpha2);
-    const cosBeta2 = Math.cos(beta2);
-    const cosPhi2 = Math.cos(phi2);
+    const sinAlpha2 = Math.sin(ellipsoid2.getRotation().x * (Math.PI / 180));
+    const sinBeta2 = Math.sin(ellipsoid2.getRotation().y * (Math.PI / 180));
+    const sinPhi2 = Math.sin(ellipsoid2.getRotation().z * (Math.PI / 180));
+    const cosAlpha2 = Math.cos(ellipsoid2.getRotation().x * (Math.PI / 180));
+    const cosBeta2 = Math.cos(ellipsoid2.getRotation().y * (Math.PI / 180));
+    const cosPhi2 = Math.cos(ellipsoid2.getRotation().z * (Math.PI / 180));
 
     const matrixA: number[][] = Array(4)
       .fill(0)
@@ -450,13 +496,13 @@ export class ProximityQuery3D {
       .fill(0)
       .map(() => Array(4).fill(0));
 
-    const aa1 = xradius1 * xradius1;
-    const bb1 = yradius1 * yradius1;
-    const cc1 = zradius1 * zradius1;
+    const aa1 = ellipsoid1.xradius * ellipsoid1.xradius;
+    const bb1 = ellipsoid1.yradius * ellipsoid1.yradius;
+    const cc1 = ellipsoid1.zradius * ellipsoid1.zradius;
 
-    const aa2 = xradius2 * xradius2;
-    const bb2 = yradius2 * yradius2;
-    const cc2 = zradius2 * zradius2;
+    const aa2 = ellipsoid2.xradius * ellipsoid2.xradius;
+    const bb2 = ellipsoid2.yradius * ellipsoid2.yradius;
+    const cc2 = ellipsoid2.zradius * ellipsoid2.zradius;
 
     const A1 =
       cosBeta1 ** 2 * cosPhi1 ** 2 * bb1 * cc1 +
@@ -508,16 +554,25 @@ export class ProximityQuery3D {
         cc1 +
       cosBeta1 * cosAlpha1 * sinBeta1 * aa1 * bb1;
 
-    const G1 = -xEllipsoid1 * A1 - yEllipsoid1 * D1 - zEllipsoid1 * F1;
-    const H1 = -xEllipsoid1 * D1 - yEllipsoid1 * B1 - zEllipsoid1 * E1;
-    const I1 = -xEllipsoid1 * F1 - yEllipsoid1 * E1 - zEllipsoid1 * C1;
+    const G1 =
+      -ellipsoid1.getCenter().x * A1 -
+      ellipsoid1.getCenter().y * D1 -
+      ellipsoid1.getCenter().z * F1;
+    const H1 =
+      -ellipsoid1.getCenter().x * D1 -
+      ellipsoid1.getCenter().y * B1 -
+      ellipsoid1.getCenter().z * E1;
+    const I1 =
+      -ellipsoid1.getCenter().x * F1 -
+      ellipsoid1.getCenter().y * E1 -
+      ellipsoid1.getCenter().z * C1;
     const J1 =
-      xEllipsoid1 ** 2 * A1 +
-      xEllipsoid1 * yEllipsoid1 * 2 * D1 +
-      xEllipsoid1 * zEllipsoid1 * 2 * F1 +
-      yEllipsoid1 ** 2 * B1 +
-      yEllipsoid1 * zEllipsoid1 * 2 * E1 +
-      zEllipsoid1 ** 2 * C1 -
+      ellipsoid1.getCenter().x ** 2 * A1 +
+      ellipsoid1.getCenter().x * ellipsoid1.getCenter().y * 2 * D1 +
+      ellipsoid1.getCenter().x * ellipsoid1.getCenter().z * 2 * F1 +
+      ellipsoid1.getCenter().y ** 2 * B1 +
+      ellipsoid1.getCenter().y * ellipsoid1.getCenter().z * 2 * E1 +
+      ellipsoid1.getCenter().z ** 2 * C1 -
       aa1 * bb1 * cc1;
 
     matrixA[0][0] = A1;
@@ -587,16 +642,25 @@ export class ProximityQuery3D {
         cc2 +
       cosBeta2 * cosAlpha2 * sinBeta2 * aa2 * bb2;
 
-    const G2 = -xEllipsoid2 * A2 - yEllipsoid2 * D2 - zEllipsoid2 * F2;
-    const H2 = -xEllipsoid2 * D2 - yEllipsoid2 * B2 - zEllipsoid2 * E2;
-    const I2 = -xEllipsoid2 * F2 - yEllipsoid2 * E2 - zEllipsoid2 * C2;
+    const G2 =
+      -ellipsoid2.getCenter().x * A2 -
+      ellipsoid2.getCenter().y * D2 -
+      ellipsoid2.getCenter().z * F2;
+    const H2 =
+      -ellipsoid2.getCenter().x * D2 -
+      ellipsoid2.getCenter().y * B2 -
+      ellipsoid2.getCenter().z * E2;
+    const I2 =
+      -ellipsoid2.getCenter().x * F2 -
+      ellipsoid2.getCenter().y * E2 -
+      ellipsoid2.getCenter().z * C2;
     const J2 =
-      xEllipsoid2 ** 2 * A2 +
-      xEllipsoid2 * yEllipsoid2 * 2 * D2 +
-      xEllipsoid2 * zEllipsoid2 * 2 * F2 +
-      yEllipsoid2 ** 2 * B2 +
-      yEllipsoid2 * zEllipsoid2 * 2 * E2 +
-      zEllipsoid2 ** 2 * C2 -
+      ellipsoid2.getCenter().x ** 2 * A2 +
+      ellipsoid2.getCenter().x * ellipsoid2.getCenter().y * 2 * D2 +
+      ellipsoid2.getCenter().x * ellipsoid2.getCenter().z * 2 * F2 +
+      ellipsoid2.getCenter().y ** 2 * B2 +
+      ellipsoid2.getCenter().y * ellipsoid2.getCenter().z * 2 * E2 +
+      ellipsoid2.getCenter().z ** 2 * C2 -
       aa2 * bb2 * cc2;
 
     matrixB[0][0] = A2;
@@ -1052,38 +1116,35 @@ export class ProximityQuery3D {
     ellipsoid: Ellipsoid,
     ellipticParaboloid: EllipticParaboloid
   ): number[] {
-    const xradiusEllipsoid = ellipsoid.xradius;
-    const yradiusEllipsoid = ellipsoid.yradius;
-    const zradiusEllipsoid = ellipsoid.zradius;
-    const xEllipsoid = ellipsoid.getCenter().x;
-    const yEllipsoid = ellipsoid.getCenter().y;
-    const zEllipsoid = ellipsoid.getCenter().z;
-    const alphaEllipsoid = ellipsoid.getRotation().x * (Math.PI / 180);
-    const betaEllipsoid = ellipsoid.getRotation().y * (Math.PI / 180);
-    const phiEllipsoid = ellipsoid.getRotation().z * (Math.PI / 180);
-    const sinAlphaEllipsoid = Math.sin(alphaEllipsoid);
-    const sinBetaEllipsoid = Math.sin(betaEllipsoid);
-    const sinPhiEllipsoid = Math.sin(phiEllipsoid);
-    const cosAlphaEllipsoid = Math.cos(alphaEllipsoid);
-    const cosBetaEllipsoid = Math.cos(betaEllipsoid);
-    const cosPhiEllipsoid = Math.cos(phiEllipsoid);
+    const sinAlphaEllipsoid = Math.sin(
+      ellipsoid.getRotation().x * (Math.PI / 180)
+    );
+    const sinBetaEllipsoid = Math.sin(
+      ellipsoid.getRotation().y * (Math.PI / 180)
+    );
+    const sinPhiEllipsoid = Math.sin(
+      ellipsoid.getRotation().z * (Math.PI / 180)
+    );
+    const cosAlphaEllipsoid = Math.cos(
+      ellipsoid.getRotation().x * (Math.PI / 180)
+    );
+    const cosBetaEllipsoid = Math.cos(
+      ellipsoid.getRotation().y * (Math.PI / 180)
+    );
+    const cosPhiEllipsoid = Math.cos(
+      ellipsoid.getRotation().z * (Math.PI / 180)
+    );
 
-    const xradiusEllipticParaboloid = ellipticParaboloid.xradius;
-    const yradiusEllipticParaboloid = ellipticParaboloid.yradius;
-    const xEllipticParaboloid = ellipticParaboloid.getCenter().x;
-    const yEllipticParaboloid = ellipticParaboloid.getCenter().y;
-    const alphaEllipticParaboloid =
-      ellipticParaboloid.getRotation().x * (Math.PI / 180);
-    const betaEllipticParaboloid =
-      ellipticParaboloid.getRotation().y * (Math.PI / 180);
-    const phiEllipticParaboloid =
-      ellipticParaboloid.getRotation().z * (Math.PI / 180);
-    const sinAlphaEllipticParaboloid = Math.sin(alphaEllipticParaboloid);
-    const sinBetaEllipticParaboloid = Math.sin(betaEllipticParaboloid);
-    const sinPhiEllipticParaboloid = Math.sin(phiEllipticParaboloid);
-    const cosAlphaEllipticParaboloid = Math.cos(alphaEllipticParaboloid);
-    const cosBetaEllipticParaboloid = Math.cos(betaEllipticParaboloid);
-    const cosPhiEllipticParaboloid = Math.cos(phiEllipticParaboloid);
+    const sinAlphaEllipticParaboloid = Math.sin(
+      ellipticParaboloid.getRotation().x * (Math.PI / 180)
+    );
+    const sinBetaEllipticParaboloid = Math.sin(ellipticParaboloid.getRotation().y * (Math.PI / 180));
+    const sinPhiEllipticParaboloid = Math.sin(ellipticParaboloid.getRotation().z * (Math.PI / 180));
+    const cosAlphaEllipticParaboloid = Math.cos(
+      ellipticParaboloid.getRotation().x * (Math.PI / 180)
+    );
+    const cosBetaEllipticParaboloid = Math.cos(ellipticParaboloid.getRotation().y * (Math.PI / 180));
+    const cosPhiEllipticParaboloid = Math.cos(ellipticParaboloid.getRotation().z * (Math.PI / 180));
 
     const matrixA: number[][] = Array(4)
       .fill(0)
@@ -1092,12 +1153,12 @@ export class ProximityQuery3D {
       .fill(0)
       .map(() => Array(4).fill(0));
 
-    const aa1 = xradiusEllipsoid ** 2;
-    const bb1 = yradiusEllipsoid ** 2;
-    const cc1 = zradiusEllipsoid ** 2;
+    const aa1 = ellipsoid.xradius ** 2;
+    const bb1 = ellipsoid.yradius ** 2;
+    const cc1 = ellipsoid.zradius ** 2;
 
-    const aa2 = xradiusEllipticParaboloid ** 2;
-    const bb2 = yradiusEllipticParaboloid ** 2;
+    const aa2 = ellipticParaboloid.xradius ** 2;
+    const bb2 = ellipticParaboloid.yradius ** 2;
 
     const A1 =
       cosBetaEllipsoid ** 2 * cosPhiEllipsoid ** 2 * bb1 * cc1 +
@@ -1195,16 +1256,25 @@ export class ProximityQuery3D {
         cc1 +
       cosBetaEllipsoid * cosAlphaEllipsoid * sinBetaEllipsoid * aa1 * bb1;
 
-    const G1 = -xEllipsoid * A1 - yEllipsoid * D1 - zEllipsoid * F1;
-    const H1 = -xEllipsoid * D1 - yEllipsoid * B1 - zEllipsoid * E1;
-    const I1 = -xEllipsoid * F1 - yEllipsoid * E1 - zEllipsoid * C1;
+    const G1 =
+      -ellipsoid.getCenter().x * A1 -
+      ellipsoid.getCenter().y * D1 -
+      ellipsoid.getCenter().z * F1;
+    const H1 =
+      -ellipsoid.getCenter().x * D1 -
+      ellipsoid.getCenter().y * B1 -
+      ellipsoid.getCenter().z * E1;
+    const I1 =
+      -ellipsoid.getCenter().x * F1 -
+      ellipsoid.getCenter().y * E1 -
+      ellipsoid.getCenter().z * C1;
     const J1 =
-      xEllipsoid ** 2 * A1 +
-      xEllipsoid * yEllipsoid * 2 * D1 +
-      xEllipsoid * zEllipsoid * 2 * F1 +
-      yEllipsoid ** 2 * B1 +
-      yEllipsoid * zEllipsoid * 2 * E1 +
-      zEllipsoid ** 2 * C1 -
+      ellipsoid.getCenter().x ** 2 * A1 +
+      ellipsoid.getCenter().x * ellipsoid.getCenter().y * 2 * D1 +
+      ellipsoid.getCenter().x * ellipsoid.getCenter().z * 2 * F1 +
+      ellipsoid.getCenter().y ** 2 * B1 +
+      ellipsoid.getCenter().y * ellipsoid.getCenter().z * 2 * E1 +
+      ellipsoid.getCenter().z ** 2 * C1 -
       aa1 * bb1 * cc1;
 
     matrixA[0][0] = A1;
@@ -1245,10 +1315,10 @@ export class ProximityQuery3D {
     const E2 = 0;
     const F2 = 0;
 
-    const G2 = -xEllipticParaboloid * A2;
-    const H2 = -yEllipticParaboloid * B2;
+    const G2 = -ellipticParaboloid.getCenter().x * A2;
+    const H2 = -ellipticParaboloid.getCenter().y * B2;
     const I2 = -1;
-    const J2 = xEllipticParaboloid ** 2 * A2 + yEllipticParaboloid ** 2 * B2;
+    const J2 = ellipticParaboloid.getCenter().x ** 2 * A2 + ellipticParaboloid.getCenter().y ** 2 * B2;
 
     matrixB[0][0] = A2;
     matrixB[0][1] = D2;
@@ -1331,7 +1401,6 @@ export class ProximityQuery3D {
       4 * a1 * a1 * a2 * a2 * a2 * a4 +
       a1 * a1 * a2 * a2 * a3 * a3;
 
-    //Debug.Log(discriminant);
     if (discriminant < 0) {
       return true;
     }

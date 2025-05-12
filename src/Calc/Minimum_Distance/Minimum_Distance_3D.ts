@@ -146,6 +146,7 @@ export class MinimumDistance3D {
     sol[1] = pop;
     return sol;
   }
+
   /**
    * Find the contact points between two ellipsoids.
    * @param ellipsoid1
@@ -201,8 +202,6 @@ export class MinimumDistance3D {
   ): [Vector3, Vector3] {
     let sol: [Vector3, Vector3] = [Vector3.Zero(), Vector3.Zero()];
 
-    const variables = superellipsoid.getGeometry();
-
     let center = superellipsoid.getCenter();
     center = superellipsoid.InverseTransformPoint(center);
 
@@ -228,60 +227,56 @@ export class MinimumDistance3D {
 
     n = superellipsoid.InverseTransformDirection(n);
 
-    const a = variables.xradius;
-    const b = variables.yradius;
-    const c = variables.zradius;
-    const e1 = variables.e1;
-    const e2 = variables.e2;
-
-    const nx = n.x;
-    const ny = n.y;
-    const nz = n.z;
-
     const EPS = Math.pow(10, -6);
     let phi1: number;
     let phi2: number;
 
-    if (Math.abs(nx) <= EPS && Math.abs(ny) <= EPS) {
+    if (Math.abs(n.x) <= EPS && Math.abs(n.y) <= EPS) {
       phi1 = Math.PI / 2;
-      phi2 = (Math.sign(nz) * Math.PI) / 2;
-    } else if (Math.abs(nx) <= EPS && Math.abs(nz) <= EPS) {
-      phi1 = Math.PI + (Math.sign(ny) * Math.PI) / 2;
+      phi2 = (Math.sign(n.z) * Math.PI) / 2;
+    } else if (Math.abs(n.x) <= EPS && Math.abs(n.z) <= EPS) {
+      phi1 = Math.PI + (Math.sign(n.y) * Math.PI) / 2;
       phi2 = 0;
-    } else if (Math.abs(ny) <= EPS && Math.abs(nz) <= EPS) {
-      phi1 = Math.PI + Math.sign(nx) * Math.PI;
+    } else if (Math.abs(n.y) <= EPS && Math.abs(n.z) <= EPS) {
+      phi1 = Math.PI + Math.sign(n.x) * Math.PI;
       phi2 = 0;
     } else {
-      const anx = Math.abs(a * nx);
-      const bny = Math.abs(b * ny);
+      const anx = Math.abs(superellipsoid.xradius * n.x);
+      const bny = Math.abs(superellipsoid.yradius * n.y);
       phi1 = Math.atan2(
-        Math.sign(ny) * Math.pow(bny, 1 / (2 - e1)),
-        Math.sign(nx) * Math.pow(anx, 1 / (2 - e1))
+        Math.sign(n.y) * Math.pow(bny, 1 / (2 - superellipsoid.e1)),
+        Math.sign(n.x) * Math.pow(anx, 1 / (2 - superellipsoid.e1))
       );
 
       if (anx > bny) {
         const Cphi = Math.cos(phi1);
         phi2 = Math.atan2(
-          Math.sign(nz) *
+          Math.sign(n.z) *
             Math.pow(
               Math.abs(
-                c * nz * Math.sign(Cphi) * Math.pow(Math.abs(Cphi), 2 - e1)
+                superellipsoid.zradius *
+                  n.z *
+                  Math.sign(Cphi) *
+                  Math.pow(Math.abs(Cphi), 2 - superellipsoid.e1)
               ),
-              1 / (2 - e2)
+              1 / (2 - superellipsoid.e2)
             ),
-          Math.sign(nx) * Math.pow(anx, 1 / (2 - e2))
+          Math.sign(n.x) * Math.pow(anx, 1 / (2 - superellipsoid.e2))
         );
       } else {
         const Sphi = Math.sin(phi1);
         phi2 = Math.atan2(
-          Math.sign(nz) *
+          Math.sign(n.z) *
             Math.pow(
               Math.abs(
-                c * nz * Math.sign(Sphi) * Math.pow(Math.abs(Sphi), 2 - e1)
+                superellipsoid.zradius *
+                  n.z *
+                  Math.sign(Sphi) *
+                  Math.pow(Math.abs(Sphi), 2 - superellipsoid.e1)
               ),
-              1 / (2 - e2)
+              1 / (2 - superellipsoid.e2)
             ),
-          Math.sign(ny) * Math.pow(bny, 1 / (2 - e2))
+          Math.sign(n.y) * Math.pow(bny, 1 / (2 - superellipsoid.e2))
         );
       }
     }
@@ -315,6 +310,7 @@ export class MinimumDistance3D {
 
     return sol;
   }
+
   /**
    * Find the contact points between a convex and a plane.
    * @param geometry

@@ -93,15 +93,15 @@ export class ProximityQuery2D {
     Ellipse1: Ellipse,
     Ellipse2: Ellipse
   ): number[] {
-    const xradius1 = Ellipse1.xradius;
-    const yradius1 = Ellipse1.yradius;
-    const xEllipse1 = Ellipse1.getCenter().x;
-    const yEllipse1 = Ellipse1.getCenter().y;
-
-    const xradius2 = Ellipse2.xradius;
-    const yradius2 = Ellipse2.yradius;
-    const xEllipse2 = Ellipse2.getCenter().x;
-    const yEllipse2 = Ellipse2.getCenter().y;
+    //const xradius1 = Ellipse1.xradius;
+    //const yradius1 = Ellipse1.yradius;
+    //const xEllipse1 = Ellipse1.getCenter().x;
+    //const yEllipse1 = Ellipse1.getCenter().y;
+    //
+    //const xradius2 = Ellipse2.xradius;
+    //const yradius2 = Ellipse2.yradius;
+    //const xEllipse2 = Ellipse2.getCenter().x;
+    //const yEllipse2 = Ellipse2.getCenter().y;
 
     const matrixA: number[][] = Array.from({ length: 3 }, () =>
       Array(3).fill(0)
@@ -114,19 +114,19 @@ export class ProximityQuery2D {
     const theta1 = Ellipse1.getRotation().z * (Math.PI / 180);
     const sinTheta1 = Math.sin(theta1);
     const cosTheta1 = Math.cos(theta1);
-    const aaEllipse1 = xradius1 * xradius1;
-    const bbEllipse1 = yradius1 * yradius1;
+    const aaEllipse1 = Ellipse1.xradius ** 2;
+    const bbEllipse1 = Ellipse1.yradius ** 2;
     const A1 =
       aaEllipse1 * sinTheta1 * sinTheta1 + bbEllipse1 * cosTheta1 * cosTheta1;
     const B1 = (bbEllipse1 - aaEllipse1) * sinTheta1 * cosTheta1;
     const C1 =
       aaEllipse1 * cosTheta1 * cosTheta1 + bbEllipse1 * sinTheta1 * sinTheta1;
-    const D1 = -A1 * xEllipse1 - B1 * yEllipse1;
-    const E1 = -B1 * xEllipse1 - C1 * yEllipse1;
+    const D1 = -A1 * Ellipse1.getCenter().x - B1 * Ellipse1.getCenter().y;
+    const E1 = -B1 * Ellipse1.getCenter().x - C1 * Ellipse1.getCenter().y;
     const F1 =
-      A1 * xEllipse1 * xEllipse1 +
-      2 * B1 * xEllipse1 * yEllipse1 +
-      C1 * yEllipse1 * yEllipse1 -
+      A1 * Ellipse1.getCenter().x ** 2 +
+      2 * B1 * Ellipse1.getCenter().x * Ellipse1.getCenter().y +
+      C1 * Ellipse1.getCenter().y * Ellipse1.getCenter().y -
       aaEllipse1 * bbEllipse1;
     matrixA[0][0] = A1;
     matrixA[0][1] = B1;
@@ -142,19 +142,19 @@ export class ProximityQuery2D {
     const theta2 = Ellipse2.getRotation().z * (Math.PI / 180);
     const sinTheta2 = Math.sin(theta2);
     const cosTheta2 = Math.cos(theta2);
-    const aaEllipse2 = xradius2 * xradius2;
-    const bbEllipse2 = yradius2 * yradius2;
+    const aaEllipse2 = Ellipse2.xradius * Ellipse2.xradius;
+    const bbEllipse2 = Ellipse2.yradius * Ellipse2.yradius;
     const A2 =
       aaEllipse2 * sinTheta2 * sinTheta2 + bbEllipse2 * cosTheta2 * cosTheta2;
     const B2 = (bbEllipse2 - aaEllipse2) * sinTheta2 * cosTheta2;
     const C2 =
       aaEllipse2 * cosTheta2 * cosTheta2 + bbEllipse2 * sinTheta2 * sinTheta2;
-    const D2 = -A2 * xEllipse2 - B2 * yEllipse2;
-    const E2 = -B2 * xEllipse2 - C2 * yEllipse2;
+    const D2 = -A2 * Ellipse2.xradius - B2 * Ellipse2.yradius;
+    const E2 = -B2 * Ellipse2.xradius - C2 * Ellipse2.yradius;
     const F2 =
-      A2 * xEllipse2 * xEllipse2 +
-      2 * B2 * xEllipse2 * yEllipse2 +
-      C2 * yEllipse2 * yEllipse2 -
+      A2 * Ellipse2.getCenter().x ** 2 +
+      2 * B2 * Ellipse1.getCenter().x * Ellipse1.getCenter().y +
+      C2 * Ellipse1.getCenter().y ** 2 -
       aaEllipse2 * bbEllipse2;
     matrixB[0][0] = A2;
     matrixB[0][1] = B2;
@@ -220,8 +220,8 @@ export class ProximityQuery2D {
    * @returns True if the ellipses intersect, false otherwise.
    */
   public static Ellipse_Ellipse_Caravantes(
-    Ellipse1: any,
-    Ellipse2: any
+    Ellipse1: Ellipse,
+    Ellipse2: Ellipse
   ): boolean {
     const characteristicPolynomialValues = ProximityQuery2D.characteristicPolynomial(
       Ellipse1,
