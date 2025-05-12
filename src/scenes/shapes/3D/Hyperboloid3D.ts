@@ -43,7 +43,7 @@ export class Hyperboloid3D extends Base3DScene {
       segments: this.segments
     }
     this.geometryManager.createGeometry(GeometryType3D.Hyperboloid, 'Hyperboloid3D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Hyperboloid3D', this.color);
+    const mesh = this.geometryManager.getGeometryMesh('Hyperboloid3D', this.color, 'mesh');
     this.scene.add(mesh);
   }
 }

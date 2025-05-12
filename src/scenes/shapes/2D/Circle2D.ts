@@ -1,4 +1,4 @@
-import { Base2DScene } from '../../Base2DScene';
+import { Base2DScene } from "../../Base2DScene";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
 import { Vector2 } from "../../../Calc/Util/Utils";
 
@@ -9,12 +9,14 @@ export class Circle2D extends Base2DScene {
   private segments: number;
   private color: number;
 
-  constructor(canvas: HTMLCanvasElement,
-              center: Vector2,
-              radius: number,
-              rotation: Vector2,
-              segments: number,
-              color: number) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    center: Vector2,
+    radius: number,
+    rotation: Vector2,
+    segments: number,
+    color: number
+  ) {
     super(canvas);
     this.center = center;
     this.radius = radius;
@@ -24,14 +26,22 @@ export class Circle2D extends Base2DScene {
   }
 
   protected buildScene(): void {
-    let params = { 
+    let params = {
       center: this.center,
       radius: this.radius,
       rotation: this.rotation,
-      segments: this.segments
+      segments: this.segments,
     };
-    this.geometryManager.createGeometry(GeometryType2D.Circle, 'Circle2D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Circle2D', this.color);
+    this.geometryManager.createGeometry(
+      GeometryType2D.Circle,
+      "Circle2D",
+      params
+    );
+    const mesh = this.geometryManager.getGeometryMesh(
+      "Circle2D",
+      this.color,
+      "line"
+    );
     this.scene.add(mesh);
   }
 }

@@ -55,6 +55,23 @@ export class Circle extends Geometry2DBase implements IGeometry2D {
       return this.geometry;
     }
   }
+
+  //  public getGeometry(): any {
+  //  if (this.geometry !== null && this.geometry !== undefined) {
+  //    return this.geometry;
+  //  } else {
+  //    console.log("Creating Filled Circle Geometry");
+  //
+  //    
+  //    this.geometry = new THREE.CircleGeometry(this.radius, this.segments);
+  //
+  //    this.normalizeGeometry();
+  //    return this.geometry;
+  //  }
+  //}
+
+
+
   public getRadius(): number {
     return this.radius;
   }

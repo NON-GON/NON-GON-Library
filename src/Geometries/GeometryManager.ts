@@ -45,32 +45,24 @@ export class GeometryManager {
   }
 
   /**
-   * Generates a THREE.Line mesh for a geometry with the given ID.
-   * @param id Identifier of the geometry.
-   * @param color Color of the line material.
-   * @returns A THREE.Line object representing the geometry.
-   * @throws If the geometry is not found.
+   * Retrieves a geometry mesh by ID and color.
+   * @param id Identifier of the geometry to retrieve.
+   * @param color Color for the mesh material.
+   * @param type Optional type of geometry (line or mesh).
+   * @returns A THREE.Mesh or THREE.Line object representing the geometry.
    */
-  //public getGeometryMesh(id: string, color: number): any {
-  //  let geometry = this._geometries[id];
-  //  if (geometry) {
-  //    let material = new THREE.LineBasicMaterial({ color: color });
-  //    let line = new THREE.Line(geometry.getGeometry(), material);
-  //    return line;
-  //  } else {
-  //    throw new Error(`Geometry with id ${id} not found.`);
-  //  }
-  //}
-
-  public getGeometryMesh(id: string, color: number): any {
+  public getGeometryMesh(id: string, color: number, type?: string): any {
     let geometry = this._geometries[id];
     if (geometry) {
-      //let material = new THREE.MeshPhongMaterial({ color: color });
-      //let mesh = new THREE.Mesh(geometry.getGeometry(), material);
-      //return mesh;
-      let material = new THREE.LineBasicMaterial({ color: color });
-      let line = new THREE.Line(geometry.getGeometry(), material);
-      return line;
+      if (type === "line") {
+        let material = new THREE.LineBasicMaterial({ color: color });
+        let line = new THREE.Line(geometry.getGeometry(), material);
+        return line;
+      } else if (type === "mesh") {
+        let material = new THREE.MeshPhongMaterial({ color: color , side: 2 });
+        let mesh = new THREE.Mesh(geometry.getGeometry(), material);
+        return mesh;
+      }
     } else {
       throw new Error(`Geometry with id ${id} not found.`);
     }
