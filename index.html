@@ -3,51 +3,174 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="stylesheet" href="./src/style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geometry Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>NON-GON</title>
+  <link rel="stylesheet" href="/src/style-index.css"/>
+  <link rel="icon" href="/icons/favicon.ico"/>
+  <script type="module" src="/src/main.ts" defer></script>
 </head>
 
 <body>
-  <div id="T-Menu">
-    <div id="T-Menu-Left">
-      <div id="T-Menu-Title">Geometry Test</div>
-      <div id="T-Menu-Buttons">
-        <button id="T-MD">Minimum Distance</button>
-        <button id="T-PQ">Proximity Query</button>
-        <button id="T-About">About</button>
-      </div>
+  <!-- Header -->
+  <header class="webpage-header">
+    <div class="logo"><img src="images/non_gon_logo.png" alt="NON-GON Logo"></div>
+    <div class="title">
+      <h1>
+        A Non-Polygonal Collision Detection Library for 
+        Real-Time Queries Between Smooth Convex Shape
+      </h1>
     </div>
-    <div id="T-Menu-Right">
-      <div id="Back"><span>B</span></div>
-      <div id="Forward"><span>F</span></div>
-    </div>
-  </div>
-  <div id="L-Menu">
-    <div id="D2-Menu">
-      <div id="D2-Menu-Title">2D</div>
-      <div id="D2-Menu-Buttons">
-        <button class="D2-Menu-Button">Ellipse</button>
-        <button class="D2-Menu-Button">Line</button>
-        <button class="D2-Menu-Button">Plane</button>
-        <button class="D2-Menu-Button">Point</button>
-        <button class="D2-Menu-Button">Superellipse</button>
-      </div>
-    </div>
-    <div id="D3-Menu">
-      <div id="D3-Menu-Title">3D</div>
-      <div id="D3-Menu-Buttons">
-        <button class="D3-Menu-Button">Cylinder</button>
-        <button class="D3-Menu-Button">Ellipsoid</button>
-        <button class="D3-Menu-Button">Elliptic Paraboloid</button>
-        <button class="D3-Menu-Button">Hyperboloid</button>
-        <button class="D3-Menu-Button">Sphere</button>
-        <button class="D3-Menu-Button">Superellipse</button>
-      </div>
+  </header>
 
-    </div>
-  </div>
-  <script type="module" src="/src/main.ts"></script>
+  <!-- Main Body -->
+  <main>
+    <!-- Supported Shapes Section -->
+    <section id="supported-shapes">
+      <h2>Supported Shapes</h2>
+      <div class="shape-gallery">
+
+        <!-- 2D Shapes Section -->
+        <h3>2D Shapes</h3>
+        <div class="gallery-row" id="shapes-2D">
+          <!-- Point -->
+          <a href="./point2D.html" class="gallery-item">
+            <img src="images/2D_point.png" alt="2D Point">
+            <figcaption>Point</figcaption>
+          </a>
+
+          <!-- Line Segment-->
+          <a href="./line-segment2D.html" class="gallery-item">
+            <img src="images/2D_line_segment.png" alt="2D Line Segment">
+            <figcaption>Line Segment</figcaption>
+          </a>
+
+          <!-- Circle -->
+          <a href="./circle2D.html" class="gallery-item">
+            <img src="images/2D_circle.png" alt="2D Circle">
+            <figcaption>Circle</figcaption>
+          </a>
+
+          <!-- Ellipse -->
+          <a href="./ellipse2D.html" class="gallery-item">
+            <img src="images/2D_ellipse.png" alt="2D Ellipse">
+            <figcaption>Ellipse</figcaption>
+          </a>
+
+          <!-- Superellipse -->
+          <a href="./superellipse2D.html" class="gallery-item">
+            <img src="images/2D_superellipse.png" alt="2D Superellipse">
+            <figcaption>Superellipse</figcaption>
+          </a>
+
+          <!-- General Smooth Convex Shape -->
+          <a href="#" class="gallery-item">
+            <img src="images/2D_general_scs.png" alt="2D General Smooth Convex Shape">
+            <figcaption>General Smooth Convex Shape</figcaption>
+          </a>
+        </div>
+
+        <!-- 3D Shapes Section -->
+        <h3>3D Shapes</h3>
+        <div class="gallery-row" id="shapes-3d">
+          <!-- Point -->
+          <a href="./point3D.html" class="gallery-item">
+            <img src="images/3D_point.png" alt="3D Point">
+            <figcaption>Point</figcaption>
+          </a>
+
+          <!-- Plane -->
+          <a href="./plane3D.html" class="gallery-item">
+            <img src="images/3D_plane.png" alt="3D Plane">
+            <figcaption>Plane</figcaption>
+          </a>
+
+          <!-- Ellipsoid -->
+          <a href="./ellipsoid3D.html" class="gallery-item">
+            <img src="images/3D_ellipsoid.png" alt="3D Ellipsoid">
+            <figcaption>Ellipsoid</figcaption>
+          </a>
+
+          <!-- Superellipsoid -->
+          <a href="./superellipsoid3D.html" class="gallery-item">
+            <img src="images/3D_superellipsoid.png" alt="3D Superellipsoid">
+            <figcaption>Superellipsoid</figcaption>
+          </a>
+
+          <!-- Cylinder -->
+          <a href="./cylinder3D.html" class="gallery-item">
+            <img src="images/3D_cylinder.png" alt="3D Cylinder">
+            <figcaption>Cylinder</figcaption>
+          </a>
+
+          <!-- Hyperboloid -->
+          <a href="./hyperboloid3D.html" class="gallery-item">
+            <img src="images/3D_hyperboloid.png" alt="3D Hyperboloid">
+            <figcaption>Hyperboloid</figcaption>
+          </a>
+
+          <!-- Elliptic Paraboloid -->
+          <a href="./elliptic-paraboloid3D.html" class="gallery-item">
+            <img src="images/3D_elliptic_paraboloid.png" alt="3D Elliptic Paraboloid">
+            <figcaption>Elliptic Paraboloid</figcaption>
+          </a>
+
+          <!-- Strictly Convex Shape -->
+          <a href="./strictly-convex-shape3D.html" class="gallery-item">
+            <img src="images/3D_strictly_convex_shape.png" alt="3D Strictly Convex Shape">
+            <figcaption>Strictly Convex Shape</figcaption>
+          </a>
+          </div>
+      </div>
+    </section>
+
+    <!-- Collision Detection Queries Section -->
+    <section id="available-queries">
+      <h2>Available Queries</h2>
+      <div class="query-gallery">
+        <h3>Closest Distances</h3>
+        <div class="gallery-row" id="closest-2d">
+          <a href="#" class="gallery-item">
+            <img src="images/closest_2d_circle_square.png" alt="Closest: Circle & Square">
+            <figcaption>Circle ↔ Square</figcaption>
+          </a>
+          <a href="#" class="gallery-item">
+            <img src="images/closest_2d_triangle_rectangle.png" alt="Closest: Triangle & Rectangle">
+            <figcaption>Triangle ↔ Rectangle</figcaption>
+          </a>
+        </div>
+        <div class="gallery-row" id="closest-3d">
+          <a href="#" class="gallery-item">
+            <img src="images/closest_3d_sphere_cube.png" alt="Closest: Sphere & Cube">
+            <figcaption>Sphere ↔ Cube</figcaption>
+          </a>
+          <a href="#" class="gallery-item">
+            <img src="images/closest_3d_cylinder_cone.png" alt="Closest: Cylinder & Cone">
+            <figcaption>Cylinder ↔ Cone</figcaption>
+          </a>
+        </div>
+        <h3>Proximity Queries</h3>
+        <div class="gallery-row" id="proximity-2d">
+          <a href="#" class="gallery-item">
+            <img src="images/proximity_2d_circle_square.png" alt="Proximity: Circle & Square">
+            <figcaption>Circle ≈ Square</figcaption>
+          </a>
+          <a href="#" class="gallery-item">
+            <img src="images/proximity_2d_triangle_rectangle.png" alt="Proximity: Triangle & Rectangle">
+            <figcaption>Triangle ≈ Rectangle</figcaption>
+          </a>
+        </div>
+        <div class="gallery-row" id="proximity-3d">
+          <a href="#" class="gallery-item">
+            <img src="images/proximity_3d_sphere_cube.png" alt="Proximity: Sphere & Cube">
+            <figcaption>Sphere ≈ Cube</figcaption>
+          </a>
+          <a href="#" class="gallery-item">
+            <img src="images/proximity_3d_cylinder_cone.png" alt="Proximity: Cylinder & Cone">
+            <figcaption>Cylinder ≈ Cone</figcaption>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 </body>
-
 </html>
