@@ -4,7 +4,7 @@ import { Colors } from "../colors";
 
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
-    const center = new Vector3(-10, 15, 5);
+    const center = new Vector3(0, 0, 0);
     const color = Colors.MUSTARD;
     const scene = new Point3D(canvas, center, color);
     scene.startAnimation();

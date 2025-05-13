@@ -20,14 +20,17 @@ export class LineSegment2D extends Base2DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = { 
+  public getParams() {
+    return { 
       start: this.start,
       end: this.end,
       rotation: this.rotation
     };
-    this.geometryManager.createGeometry(GeometryType2D.Line, 'Line2D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Line2D', this.color);
+  }
+
+  protected buildScene(): void {
+    this.geometryManager.createGeometry(GeometryType2D.Line, 'Line2D', this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh('Line2D', this.color, 'line');
     this.scene.add(mesh);
   }
 }

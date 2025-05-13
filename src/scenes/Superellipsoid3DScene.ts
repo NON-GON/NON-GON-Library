@@ -4,14 +4,14 @@ import { Colors } from "../colors";
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
-  const center = new Vector3(-10, 15, 5);
-  const xradius = 20;
-  const yradius = 12;
-  const zradius = 30;
-  const e1 = 2;
-  const e2 = 5;
+  const center = new Vector3(0, 0, 0);
+  const xradius = 25;
+  const yradius = 25;
+  const zradius = 50;
+  const e1 = 1;
+  const e2 = 3;
   const rotation = new Vector3(0, 0, 0);
-  const segments = 80;
+  const segments = 100;
   const color = Colors.MUSTARD;
   const scene = new Superellipsoid3D(
     canvas,

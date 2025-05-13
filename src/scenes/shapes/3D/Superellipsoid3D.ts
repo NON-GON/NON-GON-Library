@@ -37,8 +37,8 @@ export class Superellipsoid3D extends Base3DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = {
+  public getParams() {
+    return {
       center: this.center,
       xradius: this.xradius,
       yradius: this.yradius,
@@ -48,10 +48,13 @@ export class Superellipsoid3D extends Base3DScene {
       rotation: this.rotation,
       segments: this.segments,
     };
+  }
+
+  protected buildScene(): void {
     this.geometryManager.createGeometry(
       GeometryType3D.Superellipsoid,
       "Superellipsoid3D",
-      params
+      this.getParams()
     );
     const mesh = this.geometryManager.getGeometryMesh(
       "Superellipsoid3D",

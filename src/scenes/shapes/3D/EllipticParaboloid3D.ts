@@ -29,17 +29,20 @@ export class EllipticParaboloid3D extends Base3DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = {
+  public getParams() {
+    return {
       center: this.center,
       xradius: this.xradius,
       yradius: this.yradius,
       height: this.height,
       rotation: this.rotation,
       segments: this.segments
-    }
-    this.geometryManager.createGeometry(GeometryType3D.EllipticParaboloid, 'EllipticParaboloid3D', params);
-    const mesh = this.geometryManager.getGeometryMesh('EllipticParaboloid3D', this.color);
+    };
+  }
+
+  protected buildScene(): void {
+    this.geometryManager.createGeometry(GeometryType3D.EllipticParaboloid, 'EllipticParaboloid3D', this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh('EllipticParaboloid3D', this.color, 'mesh');
     this.scene.add(mesh);
   }
 }

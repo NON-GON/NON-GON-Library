@@ -22,21 +22,24 @@ export class StrictlyConvexShape3D extends Base3DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = {
+  public getParams() {
+    return {
       center: this.center,
       rotation: this.rotation,
       segments: this.segments,
     };
+  }
+
+  protected buildScene(): void {
     this.geometryManager.createGeometry(
       GeometryType3D.Convex,
       "StrictlyConvexShape3D",
-      params
+      this.getParams()
     );
     const mesh = this.geometryManager.getGeometryMesh(
       "StrictlyConvexShape3D",
       this.color,
-      "line"
+      "mesh"
     );
     this.scene.add(mesh);
   }

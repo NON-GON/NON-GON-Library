@@ -32,8 +32,8 @@ export class Hyperboloid3D extends Base3DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = {
+  public getParams() {
+    return {
       center: this.center,
       xradius: this.xradius,
       yradius: this.yradius,
@@ -41,8 +41,11 @@ export class Hyperboloid3D extends Base3DScene {
       height: this.height,
       rotation: this.rotation,
       segments: this.segments
-    }
-    this.geometryManager.createGeometry(GeometryType3D.Hyperboloid, 'Hyperboloid3D', params);
+    };
+  }
+
+  protected buildScene(): void {
+    this.geometryManager.createGeometry(GeometryType3D.Hyperboloid, 'Hyperboloid3D', this.getParams());
     const mesh = this.geometryManager.getGeometryMesh('Hyperboloid3D', this.color, 'mesh');
     this.scene.add(mesh);
   }

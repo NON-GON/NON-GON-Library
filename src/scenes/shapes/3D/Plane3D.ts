@@ -26,16 +26,19 @@ export class Plane3D extends Base3DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = {
+  public getParams() {
+    return {
       center: this.center,
       rotation: this.rotation,
       width: this.width,
       height: this.height,
       segments: this.segments
-    }
-    this.geometryManager.createGeometry(GeometryType2D.Plane, 'Plane3D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Plane3D', this.color);
+    };
+  }
+
+  protected buildScene(): void {
+    this.geometryManager.createGeometry(GeometryType2D.Plane, 'Plane3D', this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh('Plane3D', this.color, 'mesh');
     this.scene.add(mesh);
   }
 }

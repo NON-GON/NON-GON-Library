@@ -29,8 +29,8 @@ export class Superellipse2D extends Base2DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = { 
+  public getParams() {
+    return { 
       center: this.center,
       xradius: this.xradius,
       yradius: this.yradius,
@@ -38,8 +38,11 @@ export class Superellipse2D extends Base2DScene {
       rotation: this.rotation,
       segments: this.segments
     };
-    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, 'Superellipse2D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Superellipse2D', this.color);
+  }
+
+  protected buildScene(): void {
+    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, 'Superellipse2D', this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh('Superellipse2D', this.color, 'line');
     this.scene.add(mesh);
   }
 }

@@ -4,12 +4,12 @@ import { Colors } from "../colors";
 
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
-    const center = new Vector3(-10, 15, 5);
-    const xradius = 4;
-    const yradius = 12;
-    const zradius = 8;
+    const center = new Vector3(0, 0, 0);
+    const xradius = 25;
+    const yradius = 50;
+    const zradius = 25;
     const rotation = new Vector3(0, 0, 0);
-    const segments = 15;
+    const segments = 100;
     const color = Colors.MUSTARD;
     const scene = new Ellipsoid3D(canvas, center, xradius, yradius, zradius, rotation, segments, color);
     scene.startAnimation();

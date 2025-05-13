@@ -14,10 +14,13 @@ export class Point3D extends Base3DScene {
     this.color = color;
   }
 
+  public getParams() {
+    return { center: this.center };
+  }
+
   protected buildScene(): void {
-    let params = { center: this.center };
-    this.geometryManager.createGeometry(GeometryType2D.Point, 'Point3D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Point3D', this.color);
+    this.geometryManager.createGeometry(GeometryType2D.Point, 'Point3D', this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh('Point3D', this.color, 'mesh');
     this.scene.add(mesh);
   }
 }

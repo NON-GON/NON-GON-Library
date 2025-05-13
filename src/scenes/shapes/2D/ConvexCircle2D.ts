@@ -2,7 +2,7 @@ import { Base2DScene } from "../../Base2DScene";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
 import { Vector2 } from "../../../Calc/Util/Utils";
 
-export class Circle2D extends Base2DScene {
+export class ConvexCircle2D extends Base2DScene {
   private center: Vector2;
   private radius: number;
   private rotation: Vector2;
@@ -36,12 +36,12 @@ export class Circle2D extends Base2DScene {
 
   protected buildScene(): void {
     this.geometryManager.createGeometry(
-      GeometryType2D.Circle,
-      "Circle2D",
+      GeometryType2D.ConvexCircle,
+      "ConvexCircle2D",
       this.getParams()
     );
     const mesh = this.geometryManager.getGeometryMesh(
-      "Circle2D",
+      "ConvexCircle2D",
       this.color,
       "line"
     );

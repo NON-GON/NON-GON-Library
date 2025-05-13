@@ -4,8 +4,8 @@ import { Colors } from "../colors";
 
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
-    const start = new Vector2(-10, 15);
-    const end = new Vector2(10, -15);
+    const start = new Vector2(-50, -50);
+    const end = new Vector2(50, 50);
     const rotation = new Vector2(0, 0);
     const color = Colors.MUSTARD;
     const scene = new LineSegment2D(canvas, start, end, rotation, color);

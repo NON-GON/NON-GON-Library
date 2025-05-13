@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Colors } from '../colors';
 import { GeometryManager } from '../Geometries/GeometryManager';
+import { Vector2, Vector3 } from "../Calc/Util/Utils";
 
 export abstract class Base2DScene {
     protected geometryManager = new GeometryManager();
@@ -101,4 +102,27 @@ export abstract class Base2DScene {
     }
 
     protected abstract buildScene(): void;
+
+    protected drawMinimumDistance(
+      point1: Vector3 | Vector2,
+      point2: Vector3 | Vector2,
+      color: number
+    ) {
+      const lineMaterial = new THREE.LineBasicMaterial({ color: color });
+      const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(
+          parseFloat(point1.x.toFixed(3)),
+          parseFloat(point1.y.toFixed(3)),
+          "z" in point1 ? parseFloat((point1 as Vector3).z.toFixed(3)) : 0
+        ),
+        new THREE.Vector3(
+          parseFloat(point2.x.toFixed(3)),
+          parseFloat(point2.y.toFixed(3)),
+          "z" in point2 ? parseFloat((point2 as Vector3).z.toFixed(3)) : 0
+        ),
+      ]);
+    
+      const line = new THREE.Line(lineGeometry, lineMaterial);
+      this.scene.add(line);
+    }
 }

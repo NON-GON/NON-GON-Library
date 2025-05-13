@@ -26,16 +26,19 @@ export class Ellipse2D extends Base2DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = { 
+  public getParams() {
+    return { 
       center: this.center,
       xradius: this.xradius,
       yradius: this.yradius,
       rotation: this.rotation,
       segments: this.segments
     };
-    this.geometryManager.createGeometry(GeometryType2D.Ellipse, 'Ellipse2D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Ellipse2D', this.color);
+  }
+
+  protected buildScene(): void {
+    this.geometryManager.createGeometry(GeometryType2D.Ellipse, 'Ellipse2D', this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh('Ellipse2D', this.color, 'line');
     this.scene.add(mesh);
   }
 }

@@ -29,17 +29,20 @@ export class Ellipsoid3D extends Base3DScene {
     this.color = color;
   }
 
-  protected buildScene(): void {
-    let params = {
+  public getParams() {
+    return {
       center: this.center,
       xradius: this.xradius,
       yradius: this.yradius,
       zradius: this.zradius,
       rotation: this.rotation,
       segments: this.segments
-    }
-    this.geometryManager.createGeometry(GeometryType3D.Ellipsoid, 'Ellipsoid3D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Ellipsoid3D', this.color);
+    };
+  }
+
+  protected buildScene(): void {
+    this.geometryManager.createGeometry(GeometryType3D.Ellipsoid, 'Ellipsoid3D', this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh('Ellipsoid3D', this.color, 'mesh');
     this.scene.add(mesh);
   }
 }

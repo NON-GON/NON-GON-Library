@@ -14,10 +14,13 @@ export class Point2D extends Base2DScene {
     this.color = color;
   }
 
+  public getParams() {
+    return { center: this.center };
+  }
+
   protected buildScene(): void {
-    let params = { center: this.center };
-    this.geometryManager.createGeometry(GeometryType2D.Point, 'Point2D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Point2D', this.color);
+    this.geometryManager.createGeometry(GeometryType2D.Point, 'Point2D', this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh('Point2D', this.color, 'line');
     this.scene.add(mesh);
   }
 }
