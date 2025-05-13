@@ -1,4 +1,4 @@
-import { Base3DScene } from '../../Base3DScene';
+import { Base3DScene } from "../../Base3DScene";
 import { GeometryType3D } from "../../../Geometries/GeoTypes";
 import { Vector3 } from "../../../Calc/Util/Utils";
 
@@ -8,11 +8,13 @@ export class StrictlyConvexShape3D extends Base3DScene {
   private segments: number;
   private color: number;
 
-  constructor(canvas: HTMLCanvasElement,
-              center: Vector3,
-              rotation: Vector3,
-              segments: number,
-              color: number) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    center: Vector3,
+    rotation: Vector3,
+    segments: number,
+    color: number
+  ) {
     super(canvas);
     this.center = center;
     this.rotation = rotation;
@@ -24,10 +26,18 @@ export class StrictlyConvexShape3D extends Base3DScene {
     let params = {
       center: this.center,
       rotation: this.rotation,
-      segments: this.segments
-    }
-    this.geometryManager.createGeometry(GeometryType3D.Convex, 'StrictlyConvexShape3D', params);
-    const mesh = this.geometryManager.getGeometryMesh('StrictlyConvexShape3D', this.color);
+      segments: this.segments,
+    };
+    this.geometryManager.createGeometry(
+      GeometryType3D.Convex,
+      "StrictlyConvexShape3D",
+      params
+    );
+    const mesh = this.geometryManager.getGeometryMesh(
+      "StrictlyConvexShape3D",
+      this.color,
+      "line"
+    );
     this.scene.add(mesh);
   }
 }

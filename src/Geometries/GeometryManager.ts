@@ -54,12 +54,13 @@ export class GeometryManager {
   public getGeometryMesh(id: string, color: number, type?: string): any {
     let geometry = this._geometries[id];
     if (geometry) {
+      type = type ?? "line";
       if (type === "line") {
         let material = new THREE.LineBasicMaterial({ color: color });
         let line = new THREE.Line(geometry.getGeometry(), material);
         return line;
       } else if (type === "mesh") {
-        let material = new THREE.MeshPhongMaterial({ color: color , side: 2 });
+        let material = new THREE.MeshPhongMaterial({ color: color, side: 2 });
         let mesh = new THREE.Mesh(geometry.getGeometry(), material);
         return mesh;
       }

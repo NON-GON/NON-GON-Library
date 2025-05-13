@@ -119,6 +119,7 @@ export class Hyperboloid extends Geometry3DBase implements IGeometry3D {
         "position",
         new THREE.Float32BufferAttribute(vertices, 3)
       );
+      
       geometry.setIndex(indices);
       geometry.computeVertexNormals();
 

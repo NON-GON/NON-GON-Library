@@ -1,4 +1,4 @@
-import { Base3DScene } from '../../Base3DScene';
+import { Base3DScene } from "../../Base3DScene";
 import { GeometryType3D } from "../../../Geometries/GeoTypes";
 import { Vector3 } from "../../../Calc/Util/Utils";
 
@@ -13,16 +13,18 @@ export class Superellipsoid3D extends Base3DScene {
   private segments: number;
   private color: number;
 
-  constructor(canvas: HTMLCanvasElement,
-              center: Vector3,
-              xradius: number,
-              yradius: number,
-              zradius: number,
-              e1: number,
-              e2: number,
-              rotation: Vector3,
-              segments: number,
-              color: number) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    center: Vector3,
+    xradius: number,
+    yradius: number,
+    zradius: number,
+    e1: number,
+    e2: number,
+    rotation: Vector3,
+    segments: number,
+    color: number
+  ) {
     super(canvas);
     this.center = center;
     this.xradius = xradius;
@@ -44,10 +46,18 @@ export class Superellipsoid3D extends Base3DScene {
       e1: this.e1,
       e2: this.e2,
       rotation: this.rotation,
-      segments: this.segments
-    }
-    this.geometryManager.createGeometry(GeometryType3D.Superellipsoid, 'Superellipsoid3D', params);
-    const mesh = this.geometryManager.getGeometryMesh('Superellipsoid3D', this.color);
+      segments: this.segments,
+    };
+    this.geometryManager.createGeometry(
+      GeometryType3D.Superellipsoid,
+      "Superellipsoid3D",
+      params
+    );
+    const mesh = this.geometryManager.getGeometryMesh(
+      "Superellipsoid3D",
+      this.color,
+      "mesh"
+    );
     this.scene.add(mesh);
   }
 }

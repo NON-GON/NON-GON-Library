@@ -78,13 +78,15 @@ export class Superellipsoid extends Geometry3DBase implements IGeometry3D {
     } else {
       console.log("Creating Superellipsoid Geometry");
       console.log(this.segmentsU, this.segmentsV);
+
       const n1 = this.e1 ?? 2;
       const n2 = this.e2 ?? 2;
       const a = this.xradius ?? 1;
       const b = this.yradius ?? 1;
       const c = this.zradius ?? 1;
 
-      const points: Vector3[] = [];
+      const vertices: number[] = [];
+      const indices: number[] = [];
 
       const sign = (x: number) => (x < 0 ? -1 : 1);
       const exp = (base: number, p: number) =>
@@ -99,13 +101,33 @@ export class Superellipsoid extends Geometry3DBase implements IGeometry3D {
           const y = b * exp(Math.cos(v), n1) * exp(Math.sin(u), n2);
           const z = c * exp(Math.sin(v), n1);
 
-          points.push(new Vector3(x, y, z));
+          vertices.push(x, y, z);
         }
       }
 
-      const threePoints = points.map((p) => new THREE.Vector3(p.x, p.y, p.z));
-      this.geometry = new THREE.BufferGeometry().setFromPoints(threePoints);
+      for (let i = 0; i < this.segmentsU; i++) {
+        for (let j = 0; j < this.segmentsV; j++) {
+          const a = i * (this.segmentsV + 1) + j;
+          const b = i * (this.segmentsV + 1) + (j + 1);
+          const c = (i + 1) * (this.segmentsV + 1) + j;
+          const d = (i + 1) * (this.segmentsV + 1) + (j + 1);
+
+          indices.push(a, b, d);
+
+          indices.push(a, d, c);
+        }
+      }
+
+      // Create BufferGeometry
+      this.geometry = new THREE.BufferGeometry();
+      this.geometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(vertices, 3)
+      );
+      this.geometry.setIndex(indices);
+      this.geometry.computeVertexNormals(); 
       this.normalizeGeometry();
+
       return this.geometry;
     }
   }

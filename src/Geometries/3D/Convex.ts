@@ -15,8 +15,6 @@ import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_
 export class Convex extends Geometry3DBase implements IGeometry3D {
   readonly segments: number;
   public type: GeometryType3D = GeometryType3D.Convex;
-  private phi = -Math.PI;
-  private theta = Math.PI / 2;
   constructor(
     center: Vector3 | Vector2,
     rotation: Vector3 | Vector2,
@@ -36,100 +34,46 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
       return this.geometry;
     } else {
       const points: Vector3[] = [];
-      let phi = -Math.PI;
-      let theta = -Math.PI;
-      const triangles: number[] = []; // Unused variable for now
+      const indices: number[] = [];
 
-      for (let i = 1; i < this.segments; i++) {
-        for (let j = 0; j < this.segments + 1; j++) {
-          const point = this.point(theta, phi);
-          points.push(point); // Add point to the array
-
-          if (i < this.segments - 1) {
-            if (j < this.segments) {
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  j * 6
-              ] = (i - 1) * (this.segments + 1) + j + 2;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  j * 6 +
-                  1
-              ] = i * (this.segments + 1) + j + 1;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  j * 6 +
-                  2
-              ] = (i - 1) * (this.segments + 1) + j + 1;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  j * 6 +
-                  3
-              ] = (i - 1) * (this.segments + 1) + j + 2;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  j * 6 +
-                  4
-              ] = i * (this.segments + 1) + j + 2;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  j * 6 +
-                  5
-              ] = i * (this.segments + 1) + j + 1;
-            } else {
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  this.segments * 6
-              ] = (i - 1) * (this.segments + 1) + 1;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  this.segments * 6 +
-                  1
-              ] = i * (this.segments + 1) + this.segments + 1;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  this.segments * 6 +
-                  2
-              ] = (i - 1) * (this.segments + 1) + this.segments + 1;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  this.segments * 6 +
-                  3
-              ] = (i - 1) * (this.segments + 1) + 1;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  this.segments * 6 +
-                  4
-              ] = i * (this.segments + 1) + 1;
-              triangles[
-                3 * (this.segments + 1) +
-                  (i - 1) * (this.segments + 1) * 6 +
-                  this.segments * 6 +
-                  5
-              ] = i * (this.segments + 1) + this.segments + 1;
-            }
-          }
-
-          theta += (2 * Math.PI) / (this.segments + 1);
+      // Generate vertices
+      for (let i = 0; i <= this.segments; i++) {
+        const theta = -Math.PI + (2 * Math.PI * i) / this.segments;
+        for (let j = 0; j <= this.segments; j++) {
+          const phi = -Math.PI / 2 + (Math.PI * j) / this.segments;
+          points.push(this.point(theta, phi));
         }
-        theta = -Math.PI; // Reset theta for the next row
-        phi += Math.PI / (this.segments + 1); // Increment phi
       }
 
-      this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-      console.log(points);
-      //this.normalizeGeometry();
+      // Generate indices for faces
+      for (let i = 0; i < this.segments; i++) {
+        for (let j = 0; j < this.segments; j++) {
+          const a = i * (this.segments + 1) + j;
+          const b = i * (this.segments + 1) + (j + 1);
+          const c = (i + 1) * (this.segments + 1) + j;
+          const d = (i + 1) * (this.segments + 1) + (j + 1);
+
+          // First triangle
+          indices.push(a, b, d);
+
+          // Second triangle
+          indices.push(a, d, c);
+        }
+      }
+
+      // Create BufferGeometry
+      this.geometry = new THREE.BufferGeometry();
+      this.geometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(
+          points.flatMap((v) => [v.x, v.y, v.z]),
+          3
+        )
+      );
+      this.geometry.setIndex(indices);
+      this.geometry.computeVertexNormals(); // Compute normals for lighting
+      this.normalizeGeometry();
+
       return this.geometry;
     }
   }
@@ -163,7 +107,7 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
         .add(etheta.scale(this.fdd(phi, theta) / Math.cos(phi)))
         .add(en.scale(this.f(phi, theta)));
     }
-
+    console.log(res);
     return res;
   }
   private f(alpha: number, beta: number): number {
@@ -176,6 +120,7 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
         900 * sina ** 2 * sinb ** 2 +
         400 * cosa ** 2
     );
+    console.log(res);
     return res;
   }
   private fda(alpha: number, beta: number): number {
@@ -190,6 +135,7 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
           100 * cosb * cosb * sina * sina +
           400 * cosa * cosa
       );
+    console.log(res);
     return res;
   }
   private fdb(alpha: number, beta: number): number {
@@ -204,6 +150,7 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
           100 * cosb * cosb * sina * sina +
           400 * cosa * cosa
       );
+    console.log(res);
     return res;
   }
   private fdd(alpha: number, beta: number): number {
@@ -237,6 +184,7 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
               400 * cosa * cosa,
             3 / 2
           ));
+    console.log(res);
     return res;
   }
 
