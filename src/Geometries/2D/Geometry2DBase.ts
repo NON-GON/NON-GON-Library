@@ -30,7 +30,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
 
   protected normalizeGeometry() {
     if (this.geometry !== null && this.geometry !== undefined) {
-      this.geometry.translate(this.center.x, this.center.y, this.center.z);
+      //TODO: Make this work and see when to call it or not
       let radRotationX = degToRad(this.rotation.x);
       let radRotationY = degToRad(this.rotation.y);
       let radRotationZ = degToRad(this.rotation.z);

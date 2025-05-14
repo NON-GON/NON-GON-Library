@@ -28,18 +28,17 @@ export class MinimumDistance2D {
     let res: Vector3[] = [Vector3.Zero(), Vector3.Zero()];
     let T: Vector3 = Vector3.Zero(); // Closest point on the ellipse
 
-    let a = ellipse.xradius;
-    let b = ellipse.yradius;
+
 
     // Transform the query point to a new system of coordinates relative to the ellipse
 
-    let Point_ = ellipse.WorldSpaceToLocalSpace(point);
+    let Point_ = ellipse.InverseTransformPoint(point);
 
-    T = MinimumDistance2D.pointEllipse(Point_, a, b); // Ensure no NaN values
+    T = MinimumDistance2D.pointEllipse(Point_, ellipse.xradius, ellipse.yradius); // Ensure no NaN values
     if (isNaN(T.x) || isNaN(T.y)) {
       throw new Error("Invalid result from pointEllipse");
     }
-    T = ellipse.LocalSpaceToWorldSpace(T); // Transform back to world space
+    T = ellipse.TransformPoint(T); // Transform back to world space
 
     res[0] = point;
     res[1] = T;
@@ -121,29 +120,28 @@ export class MinimumDistance2D {
     ellipse1: Ellipse,
     ellipse2: Ellipse
   ): [Vector2, Vector2] {
-    let tol = 0.1;
-    let T: Vector2[] = [new Vector2(0, 0), new Vector2(0, 0)];
-    let p1 = ellipse1.getCenter();
-    let p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1];
+    const tol = 0.1;
+    let p1 = ellipse1.getCenter().toVector2();
+    let p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1].toVector2();
     let dist = p1.distanceTo(p2);
 
     while (true) {
-      p1 = MinimumDistance2D.pointEllipseObj(p2, ellipse1)[1];
-      let dist_ = p2.distanceTo(p1);
+      p1 = MinimumDistance2D.pointEllipseObj(p2, ellipse1)[1].toVector2();
+      console.log(p1);
+      let dist_ = p1.distanceTo(p2);
       if (Math.abs(dist - dist_) < tol) {
         break;
       }
       dist = dist_;
-      p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1];
-      dist_ = p2.distanceTo(p1);
+      p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1].toVector2();
+      dist_ = p1.distanceTo(p2);
       if (Math.abs(dist - dist_) < tol) {
         break;
       }
       dist = dist_;
     }
-    T[0] = p1.toVector2();
-    T[1] = p2.toVector2();
-    return [T[0], T[1]];
+
+    return [p1.toVector2(), p2];
   }
   /**
    * Find the contact points between a line and an ellipse.

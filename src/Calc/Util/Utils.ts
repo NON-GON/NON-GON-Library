@@ -784,8 +784,6 @@ export function DoLinesIntersect(
  * @param {number} vertexCylinder2 - Index of the second cylinder's vertex (0, 1, 2, or 3).
  * @param {number} u - A parameter vector component used in geometric calculations.
  * @param {number} w - Another vector parameter used in geometric calculations.
- * @param {number} v1 - Index of the first vertex (not used in logic, kept for compatibility).
- * @param {number} v2 - Index of the second vertex (not used in logic, kept for compatibility).
  * @param {number} s1 - Half-height of the first cylinder.
  * @param {number} s2 - Half-height of the second cylinder.
  * @param {number} r1 - Radius of the first cylinder.

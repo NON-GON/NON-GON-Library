@@ -1,128 +1,163 @@
-import * as THREE from 'three';
-import { Colors } from '../colors';
-import { GeometryManager } from '../Geometries/GeometryManager';
+import * as THREE from "three";
+import { Colors } from "../colors";
+import { GeometryManager } from "../Geometries/GeometryManager";
 import { Vector2, Vector3 } from "../Calc/Util/Utils";
 
 export abstract class Base2DScene {
-    protected geometryManager = new GeometryManager();
-    protected renderer: THREE.WebGLRenderer;
-    protected scene: THREE.Scene;
-    protected camera: THREE.PerspectiveCamera;
+  protected geometryManager = new GeometryManager();
+  protected renderer: THREE.WebGLRenderer;
+  protected scene: THREE.Scene;
+  protected camera: THREE.PerspectiveCamera;
 
-    constructor(protected canvas: HTMLCanvasElement) {
-        // Renderer
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  constructor(protected canvas: HTMLCanvasElement) {
+    // Renderer
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
 
-        // Camera
-        const fov = 75;
-        const aspect = canvas.clientWidth / canvas.clientHeight;
-        const near = 0.1;
-        const far = 1000;
-        this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera.position.set(0, 0, 200);
-        this.camera.lookAt(0, 0, 0);
+    // Camera
+    const fov = 75;
+    const aspect = canvas.clientWidth / canvas.clientHeight;
+    const near = 0.1;
+    const far = 1000;
+    this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    this.camera.position.set(0, 0, 200);
+    this.camera.lookAt(0, 0, 0);
 
-        // Scene & Light
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(Colors.BACKGROUND);
+    // Scene & Light
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(Colors.BACKGROUND);
 
-        const light = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light.position.set(0, 0, 200);
-        light.lookAt(0, 0, 0);
-        this.scene.add(light);
+    const light = new THREE.DirectionalLight(Colors.WHITE, 3);
+    light.position.set(0, 0, 200);
+    light.lookAt(0, 0, 0);
+    this.scene.add(light);
 
-        // Grid & Axes
-        this.makeAxes();
+    // Grid & Axes
+    this.makeAxes();
 
-        // Resize Handler
-        window.addEventListener('resize', this.onWindowResize.bind(this));
+    // Resize Handler
+    window.addEventListener("resize", this.onWindowResize.bind(this));
+  }
+
+  private makeAxes() {
+    // Cartesian Axes
+    const halfGridSize = 100;
+    const xAxis = this.makeClippedAxis(
+      new THREE.Vector3(1, 0, 0),
+      halfGridSize,
+      Colors.RED
+    );
+    const xAxisNeg = this.makeClippedAxis(
+      new THREE.Vector3(-1, 0, 0),
+      halfGridSize,
+      Colors.RED
+    );
+    const yAxis = this.makeClippedAxis(
+      new THREE.Vector3(0, 1, 0),
+      halfGridSize,
+      Colors.BLUE
+    );
+    const yAxisNeg = this.makeClippedAxis(
+      new THREE.Vector3(0, -1, 0),
+      halfGridSize,
+      Colors.BLUE
+    );
+    this.scene.add(xAxis, xAxisNeg, yAxis, yAxisNeg);
+
+    // Axes Arrowheads
+    const arrowX = this.makeArrowCone(
+      new THREE.Vector3(1, 0, 0),
+      halfGridSize,
+      Colors.RED
+    );
+    const arrowY = this.makeArrowCone(
+      new THREE.Vector3(0, 1, 0),
+      halfGridSize,
+      Colors.BLUE
+    );
+    this.scene.add(arrowX, arrowY);
+  }
+
+  private makeClippedAxis(
+    dir: THREE.Vector3,
+    length: number,
+    color: number
+  ): THREE.Line {
+    const points = [
+      new THREE.Vector3(0, 0, 0),
+      dir.clone().multiplyScalar(length),
+    ];
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({ color, linewidth: 2 });
+    return new THREE.Line(geometry, material);
+  }
+
+  private makeArrowCone(dir: THREE.Vector3, length: number, color: number) {
+    const coneHeight = 4;
+    const coneRadius = 2;
+    const coneGeometry = new THREE.ConeGeometry(coneRadius, coneHeight, 16);
+    const coneMaterial = new THREE.MeshBasicMaterial({ color });
+    const cone = new THREE.Mesh(coneGeometry, coneMaterial);
+
+    coneGeometry.translate(0, -coneHeight / 2, 0);
+    const axis = new THREE.Vector3(0, 1, 0);
+    const quaternion = new THREE.Quaternion().setFromUnitVectors(
+      axis,
+      dir.clone().normalize()
+    );
+    cone.applyQuaternion(quaternion);
+
+    const tipPos = dir.clone().setLength(length);
+    cone.position.copy(tipPos);
+
+    return cone;
+  }
+
+  private onWindowResize() {
+    const width = this.canvas.clientWidth;
+    const height = this.canvas.clientHeight;
+
+    if (this.canvas.width !== width || this.canvas.height !== height) {
+      this.renderer.setSize(width, height, false);
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
     }
+  }
 
-    private makeAxes() {
-        // Cartesian Axes
-        const halfGridSize = 100;
-        const xAxis = this.makeClippedAxis(new THREE.Vector3(1, 0, 0), halfGridSize, Colors.RED);
-        const xAxisNeg = this.makeClippedAxis(new THREE.Vector3(-1, 0, 0), halfGridSize, Colors.RED);
-        const yAxis = this.makeClippedAxis(new THREE.Vector3(0, 1, 0), halfGridSize, Colors.BLUE);
-        const yAxisNeg = this.makeClippedAxis(new THREE.Vector3(0, -1, 0), halfGridSize, Colors.BLUE);
-        this.scene.add(xAxis, xAxisNeg, yAxis, yAxisNeg);
+  public startAnimation(): void {
+    this.buildScene();
+    this.render();
+  }
 
-        // Axes Arrowheads
-        const arrowX = this.makeArrowCone(new THREE.Vector3(1, 0, 0), halfGridSize, Colors.RED);
-        const arrowY = this.makeArrowCone(new THREE.Vector3(0, 1, 0), halfGridSize, Colors.BLUE);
-        this.scene.add(arrowX, arrowY);
-    }
+  private render = (): void => {
+    this.renderer.render(this.scene, this.camera);
+    requestAnimationFrame(this.render);
+  };
 
-    private makeClippedAxis(dir: THREE.Vector3, length: number, color: number): THREE.Line {
-        const points = [new THREE.Vector3(0, 0, 0), dir.clone().multiplyScalar(length)];
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const material  = new THREE.LineBasicMaterial({color, linewidth: 2});
-        return new THREE.Line(geometry, material);
-    }
-    
-    private makeArrowCone(dir: THREE.Vector3, length: number, color: number) {
-        const coneHeight = 4;
-        const coneRadius = 2;
-        const coneGeometry  = new THREE.ConeGeometry(coneRadius, coneHeight, 16);
-        const coneMaterial  = new THREE.MeshBasicMaterial({color});
-        const cone = new THREE.Mesh(coneGeometry, coneMaterial);
+  protected abstract buildScene(): void;
 
-        coneGeometry.translate(0, -coneHeight / 2, 0);
-        const axis = new THREE.Vector3(0, 1, 0);
-        const quaternion = new THREE.Quaternion().setFromUnitVectors(axis, dir.clone().normalize());
-        cone.applyQuaternion(quaternion);
+  protected drawMinimumDistance(
+    point1: Vector3 | Vector2,
+    point2: Vector3 | Vector2,
+    color: number
+  ) {
+    console.log(point1, point2);
+    const lineMaterial = new THREE.LineBasicMaterial({ color: color });
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(
+        parseFloat(point1.x.toFixed(3)),
+        parseFloat(point1.y.toFixed(3)),
+        "z" in point1 ? parseFloat((point1 as Vector3).z.toFixed(3)) : 0
+      ),
+      new THREE.Vector3(
+        parseFloat(point2.x.toFixed(3)),
+        parseFloat(point2.y.toFixed(3)),
+        "z" in point2 ? parseFloat((point2 as Vector3).z.toFixed(3)) : 0
+      ),
+    ]);
 
-        const tipPos = dir.clone().setLength(length);
-        cone.position.copy(tipPos);
-
-        return cone;
-    }
-
-    private onWindowResize() {
-        const width = this.canvas.clientWidth;
-        const height = this.canvas.clientHeight;
-
-        if (this.canvas.width !== width || this.canvas.height !== height) {
-          this.renderer.setSize(width, height, false);
-          this.camera.aspect = width / height;
-          this.camera.updateProjectionMatrix();
-        }
-    }
-    
-    public startAnimation(): void {
-        this.buildScene();
-        this.render();
-    }
-
-    private render = (): void => {
-        this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(this.render);
-    }
-
-    protected abstract buildScene(): void;
-
-    protected drawMinimumDistance(
-      point1: Vector3 | Vector2,
-      point2: Vector3 | Vector2,
-      color: number
-    ) {
-      const lineMaterial = new THREE.LineBasicMaterial({ color: color });
-      const lineGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(
-          parseFloat(point1.x.toFixed(3)),
-          parseFloat(point1.y.toFixed(3)),
-          "z" in point1 ? parseFloat((point1 as Vector3).z.toFixed(3)) : 0
-        ),
-        new THREE.Vector3(
-          parseFloat(point2.x.toFixed(3)),
-          parseFloat(point2.y.toFixed(3)),
-          "z" in point2 ? parseFloat((point2 as Vector3).z.toFixed(3)) : 0
-        ),
-      ]);
-    
-      const line = new THREE.Line(lineGeometry, lineMaterial);
-      this.scene.add(line);
-    }
+    const line = new THREE.Line(lineGeometry, lineMaterial);
+    this.scene.add(line);
+  }
 }
