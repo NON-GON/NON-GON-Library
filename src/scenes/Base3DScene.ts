@@ -31,45 +31,23 @@ export abstract class Base3DScene {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(Colors.BACKGROUND);
 
-        const light1 = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light1.position.set(-100, 100, 100);
-        light1.lookAt(0, 0, 0);
-        this.scene.add(light1);
+        // Key Light  
+        const key = new THREE.DirectionalLight(Colors.WHITE, 1.0);
+        key.position.set(-100, 100, 100);
+        this.scene.add(key);
 
-        const light2 = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light2.position.set(-100, 100, -100);
-        light2.lookAt(0, 0, 0);
-        this.scene.add(light2);
+        // Fill Light  
+        const fill = new THREE.DirectionalLight(Colors.WHITE, 0.3);
+        fill.position.set(100, 50, -50);
+        this.scene.add(fill);
 
-        const light3 = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light3.position.set(100, 100, -100);
-        light3.lookAt(0, 0, 0);
-        this.scene.add(light3);
+        // Back (Rim)
+        const back = new THREE.DirectionalLight(Colors.WHITE, 0.5);
+        back.position.set(0, 100, -100);
+        this.scene.add(back);
 
-        const light4 = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light4.position.set(100, 100, 100);
-        light4.lookAt(0, 0, 0);
-        this.scene.add(light4);
-
-        const light5 = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light5.position.set(-100, -100, 100);
-        light5.lookAt(0, 0, 0);
-        this.scene.add(light5);
-
-        const light6 = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light6.position.set(-100, -100, -100);
-        light6.lookAt(0, 0, 0);
-        this.scene.add(light6);
-
-        const light7 = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light7.position.set(100, -100, -100);
-        light7.lookAt(0, 0, 0);
-        this.scene.add(light7);
-
-        const light8 = new THREE.DirectionalLight(Colors.WHITE, 3);
-        light8.position.set(100, -100, 100);
-        light8.lookAt(0, 0, 0);
-        this.scene.add(light8);
+        // Ambient  
+        this.scene.add(new THREE.AmbientLight(0x222222));
 
         // Grid & Axes
         this.makeGridAndAxes();

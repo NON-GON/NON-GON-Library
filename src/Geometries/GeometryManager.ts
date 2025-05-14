@@ -60,7 +60,7 @@ export class GeometryManager {
         let line = new THREE.Line(geometry.getGeometry(), material);
         return line;
       } else if (type === "mesh") {
-        let material = new THREE.MeshPhongMaterial({ color: color, side: 2 });
+        let material = new THREE.MeshPhongMaterial({ color: color, side: 2, shininess: 100 });
         let mesh = new THREE.Mesh(geometry.getGeometry(), material);
         return mesh;
       }

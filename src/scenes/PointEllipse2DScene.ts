@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Point
     const pointCenter = new Vector2(-50, 50);
-    const pointColor = Colors.MUSTARD;
+    const pointColor = Colors.PURPLE;
     const point = new Point2D(canvas, pointCenter, pointColor);
 
     // Ellipse

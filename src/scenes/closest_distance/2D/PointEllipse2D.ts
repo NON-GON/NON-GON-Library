@@ -28,11 +28,11 @@ export class PointEllipse2D extends Base2DScene {
 
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Point, 'Point2D', this.point.getParams());
-    const pointMesh = this.geometryManager.getGeometryMesh('Point2D', this.colorPoint);
+    const pointMesh = this.geometryManager.getGeometryMesh('Point2D', this.colorPoint, "line");
     this.scene.add(pointMesh);
 
     this.geometryManager.createGeometry(GeometryType2D.Ellipse, 'Ellipse2D', this.ellipse.getParams());
-    const ellipseMesh = this.geometryManager.getGeometryMesh('Ellipse2D', this.colorEllipse);
+    const ellipseMesh = this.geometryManager.getGeometryMesh('Ellipse2D', this.colorEllipse, "line");
     this.scene.add(ellipseMesh);
 
     let points = this.geometryManager.calculateMinimumDistance('Point2D', 'Ellipse2D');
