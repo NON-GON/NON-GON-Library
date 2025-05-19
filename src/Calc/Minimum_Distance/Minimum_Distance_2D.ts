@@ -28,13 +28,15 @@ export class MinimumDistance2D {
     let res: Vector3[] = [Vector3.Zero(), Vector3.Zero()];
     let T: Vector3 = Vector3.Zero(); // Closest point on the ellipse
 
-
-
     // Transform the query point to a new system of coordinates relative to the ellipse
 
     let Point_ = ellipse.InverseTransformPoint(point);
 
-    T = MinimumDistance2D.pointEllipse(Point_, ellipse.xradius, ellipse.yradius); // Ensure no NaN values
+    T = MinimumDistance2D.pointEllipse(
+      Point_,
+      ellipse.xradius,
+      ellipse.yradius
+    ); // Ensure no NaN values
     if (isNaN(T.x) || isNaN(T.y)) {
       throw new Error("Invalid result from pointEllipse");
     }
@@ -81,6 +83,7 @@ export class MinimumDistance2D {
         let z3 = -2 * (b2 + a2);
 
         // Solve quartic equation
+        //TODO: this implementation is not correct of the quartic Roots
         let roots = quarticRoots(-1, z3, z2, z1, z0);
         // Find the largest valid root
         let t = -Infinity;
@@ -110,6 +113,7 @@ export class MinimumDistance2D {
     T.y = T.y * multy;
     return T;
   }
+
   /**
    * Find the contact points between two ellipses.
    * @param ellipse1
@@ -123,10 +127,13 @@ export class MinimumDistance2D {
     const tol = 0.1;
     let p1 = ellipse1.getCenter().toVector2();
     let p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1].toVector2();
+    console.log("Point ellipse outside of while:" + p1.x + " " + p1.y);
     let dist = p1.distanceTo(p2);
 
     while (true) {
       p1 = MinimumDistance2D.pointEllipseObj(p2, ellipse1)[1].toVector2();
+      console.log("Point ellipse inside of while 1:" + p1.x + " " + p1.y);
+
       console.log(p1);
       let dist_ = p1.distanceTo(p2);
       if (Math.abs(dist - dist_) < tol) {
@@ -134,6 +141,7 @@ export class MinimumDistance2D {
       }
       dist = dist_;
       p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1].toVector2();
+      console.log("Point ellipse inside of while 2:" + p2.x + " " + p2.y);
       dist_ = p1.distanceTo(p2);
       if (Math.abs(dist - dist_) < tol) {
         break;
@@ -157,7 +165,7 @@ export class MinimumDistance2D {
 
     let a = superellipse.xradius;
     let b = superellipse.yradius;
-    let e = superellipse.exponent;
+    let e = superellipse.e;
 
     n = superellipse.InverseTransformDirection(n);
     let nx = n.x;

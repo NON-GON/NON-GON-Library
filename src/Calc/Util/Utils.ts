@@ -271,40 +271,45 @@ export function quarticRoots(
   d: number,
   e: number
 ): number[] {
-  if (a === 0) {
-    throw new Error("Coefficient 'a' must not be zero for a quartic equation.");
+  function cubeRoot(x: number): number {
+    return x < 0 ? -Math.pow(-x, 1 / 3) : Math.pow(x, 1 / 3);
   }
 
-  // Normalize coefficients
-  const A = b / a;
-  const B = c / a;
-  const C = d / a;
-  const D = e / a;
+  const s0 = c * c - 3 * b * d + 12 * a * e;
+  const s1 =
+    2 * c * c * c -
+    9 * b * c * d +
+    27 * b * b * e +
+    27 * a * d * d -
+    72 * a * c * e;
+  const p = (8 * a * c - 3 * b * b) / (8 * a * a);
+  const q = (b * b * b - 4 * a * b * c + 8 * a * a * d) / (8 * a * a * a);
 
-  // Depress the quartic: x = y - A/4
-  const p = B - (3 * A ** 2) / 8;
-  const q = C + A ** 3 / 8 - (A * B) / 2;
-  const r = D - (3 * A ** 4) / 256 + (A ** 2 * B) / 16 - (A * C) / 4;
+  let Q = cubeRoot(0.5 * (s1 + Math.sqrt(s1 * s1 - 4 * s0 * s0 * s0)));
+  let S: number;
 
-  // Solve resolvent cubic: z³ + (p/2)z² + ((p² - 4r)/16)z - q²/64 = 0
-  const cubicA = 1;
-  const cubicB = 0.5 * p;
-  const cubicC = (p ** 2 - 4 * r) / 16;
-  const cubicD = -(q ** 2) / 64;
+  if (isNaN(Q)) {
+    const phi = Math.acos(s1 / (2 * Math.sqrt(s0 * s0 * s0)));
+    S =
+      0.5 *
+      Math.sqrt(
+        (-2 / 3) * p + (2 / (3 * a)) * Math.sqrt(s0) * Math.cos(phi / 3)
+      );
+  } else {
+    S = 0.5 * Math.sqrt(-(2 / 3) * p + (1 / (3 * a)) * (Q + s0 / Q));
+  }
 
-  const cubicRoots = solveCubic(cubicA, cubicB, cubicC, cubicD);
-  const z = cubicRoots.find((root) => !isNaN(root))!; // Pick a real root
+  const sols: number[] = [0, 0, 0, 0];
+  const base = (-0.25 * b) / a;
+  const sqrt1 = Math.sqrt(-4 * S * S - 2 * p + q / S);
+  const sqrt2 = Math.sqrt(-4 * S * S - 2 * p - q / S);
 
-  const sqrt1 = Math.sqrt(2 * z - p);
-  const sqrt2 = q / (2 * sqrt1);
+  sols[0] = base - S + 0.5 * sqrt1;
+  sols[1] = base - S - 0.5 * sqrt1;
+  sols[2] = base + S + 0.5 * sqrt2;
+  sols[3] = base + S - 0.5 * sqrt2;
 
-  // Now solve two quadratics
-  const quad1 = solveQuadratic(1, sqrt1, z - sqrt2);
-  const quad2 = solveQuadratic(1, -sqrt1, z + sqrt2);
-
-  // Undo the initial substitution (x = y - A/4)
-  const offset = -A / 4;
-  return [...quad1, ...quad2].map((root) => root + offset);
+  return sols;
 }
 
 /**
