@@ -59,8 +59,8 @@ export class Superellipse extends Geometry2DBase implements IGeometry2D {
       for (let i = 0; i <= segments; i++) {
         const theta = (i / segments) * 2 * Math.PI;
 
-        const x = a * exp(Math.cos(theta), 2 / n);
-        const y = b * exp(Math.sin(theta), 2 / n);
+        const x = a * exp(Math.cos(theta), n);
+        const y = b * exp(Math.sin(theta), n);
 
         vertices.push(x, y, 0); // z = 0 for 2D shape
       }
@@ -72,7 +72,7 @@ export class Superellipse extends Geometry2DBase implements IGeometry2D {
       );
 
       this.geometry.computeVertexNormals?.(); // Optional
-      this.normalizeGeometry?.(); // Optional custom method
+      //this.normalizeGeometry?.(); // Optional custom method
 
       return this.geometry;
     }

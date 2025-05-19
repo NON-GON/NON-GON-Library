@@ -44,14 +44,15 @@ export class Line extends Geometry2DBase implements IGeometry2D {
       return this.geometry;
     } else {
       console.log("Creating Line Geometry");
+      console.log(this.start, this.end);
       let points = [
         new THREE.Vector3(this.start.x, this.start.y, this.start.z),
         new THREE.Vector3(this.end.x, this.end.y, this.end.z),
       ];
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-      this.geometry.rotateX(this.rotation.x);
-      this.geometry.rotateY(this.rotation.y);
-      this.geometry.rotateZ(this.rotation.z);
+      //this.geometry.rotateX(this.rotation.x);
+      //this.geometry.rotateY(this.rotation.y);
+      //this.geometry.rotateZ(this.rotation.z);
       return this.geometry;
     }
   }

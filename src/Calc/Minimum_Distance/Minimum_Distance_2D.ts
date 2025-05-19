@@ -83,7 +83,6 @@ export class MinimumDistance2D {
         let z3 = -2 * (b2 + a2);
 
         // Solve quartic equation
-        //TODO: this implementation is not correct of the quartic Roots
         let roots = quarticRoots(-1, z3, z2, z1, z0);
         // Find the largest valid root
         let t = -Infinity;
