@@ -105,6 +105,7 @@ export class Superellipsoid extends Geometry3DBase implements IGeometry3D {
         }
       }
 
+      // Create indices for the triangles
       for (let i = 0; i < this.segmentsU; i++) {
         for (let j = 0; j < this.segmentsV; j++) {
           const a = i * (this.segmentsV + 1) + j;
@@ -125,7 +126,7 @@ export class Superellipsoid extends Geometry3DBase implements IGeometry3D {
         new THREE.Float32BufferAttribute(vertices, 3)
       );
       this.geometry.setIndex(indices);
-      this.geometry.computeVertexNormals(); 
+      this.geometry.computeVertexNormals();
       this.normalizeGeometry();
 
       return this.geometry;

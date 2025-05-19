@@ -14,7 +14,7 @@ export class Superellipse extends Geometry2DBase implements IGeometry2D {
   readonly xradius: number;
   readonly yradius: number;
   readonly segments: number;
-  readonly exponent: number;
+  readonly e: number;
   public type: GeometryType2D = GeometryType2D.Supperellipse;
 
   constructor(
@@ -34,39 +34,46 @@ export class Superellipse extends Geometry2DBase implements IGeometry2D {
         : rotation;
     this.xradius = xradius;
     this.yradius = yradius;
+    this.e = exponent;
     this.segments = segments;
-    this.exponent = exponent;
     this.geometry = null;
   }
 
-  public getGeometry(): any {
+  getGeometry(): any {
     if (this.geometry !== null && this.geometry !== undefined) {
       return this.geometry;
     } else {
       console.log("Creating Superellipse Geometry");
 
-      const points: Vector2[] = [];
+      const n = this.e ?? 2; // exponent for superellipse
+      const a = this.xradius ?? 1; // horizontal radius
+      const b = this.yradius ?? 1; // vertical radius
+      const segments = this.segments ?? 64;
 
-      for (let i = 0; i <= this.segments; i++) {
-        const theta = (i / this.segments) * 2 * Math.PI;
-        const cosTheta = Math.cos(theta);
-        const sinTheta = Math.sin(theta);
+      const vertices: number[] = [];
 
-        // Apply superellipse formula
-        const x =
-          this.xradius *
-          Math.sign(cosTheta) *
-          Math.pow(Math.abs(cosTheta), 2 / this.exponent);
-        const y =
-          this.yradius *
-          Math.sign(sinTheta) *
-          Math.pow(Math.abs(sinTheta), 2 / this.exponent);
+      const sign = (x: number) => (x < 0 ? -1 : 1);
+      const exp = (base: number, p: number) =>
+        sign(base) * Math.pow(Math.abs(base), p);
 
-        points.push(new THREE.Vector2(x + this.center.x, y + this.center.y));
+      for (let i = 0; i <= segments; i++) {
+        const theta = (i / segments) * 2 * Math.PI;
+
+        const x = a * exp(Math.cos(theta), 2 / n);
+        const y = b * exp(Math.sin(theta), 2 / n);
+
+        vertices.push(x, y, 0); // z = 0 for 2D shape
       }
 
-      this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-      this.normalizeGeometry();
+      this.geometry = new THREE.BufferGeometry();
+      this.geometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(vertices, 3)
+      );
+
+      this.geometry.computeVertexNormals?.(); // Optional
+      this.normalizeGeometry?.(); // Optional custom method
+
       return this.geometry;
     }
   }
@@ -75,7 +82,7 @@ export class Superellipse extends Geometry2DBase implements IGeometry2D {
     return new Vector2(this.xradius, this.yradius);
   }
   public getExponent(): number {
-    return this.exponent;
+    return this.e;
   }
 
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
