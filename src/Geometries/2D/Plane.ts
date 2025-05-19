@@ -20,6 +20,10 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
   width: number;
   height: number;
 
+  //WARNING: This is a infinity plane in the mathematical sense but in the visualization
+  // it is a rectangle with width and height so the MD and PQ take the mathematical sense but the
+  // visualization is a rectangle and can seem wrong.
+
   constructor(
     center: Vector2 | Vector3,
     rotation: Vector3,
@@ -102,6 +106,8 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
         this.segments,
         this.segments
       );
+      plane.rotateX(Math.PI / 2);
+      plane.translate(this.center.x, this.center.y, this.center.z);
       this.geometry = plane;
     }
     this.normalizeGeometry();

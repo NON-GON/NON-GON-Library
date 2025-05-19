@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { Colors } from '../colors';
 import { GeometryManager } from '../Geometries/GeometryManager';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry';
 import { Vector2, Vector3 } from "../Calc/Util/Utils";
 
 export abstract class Base3DScene {
