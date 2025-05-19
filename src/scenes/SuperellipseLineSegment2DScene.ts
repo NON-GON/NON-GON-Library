@@ -8,10 +8,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
 
     // Superellipse
-    const superellipseCenter = new Vector2(-30, 30);
+    const superellipseCenter = new Vector2(0, 0);
     const superellipseXRadius = 50;
     const superellipseYRadius = 25;
-    const superellipseExponent = 4;
+    const superellipseExponent = 0.5;
     const superellipseRotation = new Vector2(0, 0);
     const superellipseSegments = 100;
     const superellipseColor = Colors.MUSTARD;
@@ -21,8 +21,8 @@ window.addEventListener('DOMContentLoaded', () => {
                                             superellipseSegments, superellipseColor);
 
     // Line Segment
-    const lineSegmentStart = new Vector2(25, 25);
-    const lineSegmentEnd = new Vector2(25, -25);
+    const lineSegmentStart = new Vector2(-75, 0);
+    const lineSegmentEnd = new Vector2(75, 0);
     const lineSegmentRotation = new Vector2(0, 0);
     const lineSegmentColor = Colors.PURPLE;
     const lineSegment = new LineSegment2D(canvas, lineSegmentStart,

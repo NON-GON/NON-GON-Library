@@ -160,8 +160,9 @@ export class MinimumDistance2D {
     line: Line,
     superellipse: Superellipse
   ): [Vector3, Vector3] {
-    let n = line.TransformDirection(new Vector3(0, 1, 0));
 
+    let n = line.TransformDirection(new Vector3(0, 1, 0));
+    console.log("Normal: " + n.x + " " + n.y);
     let a = superellipse.xradius;
     let b = superellipse.yradius;
     let e = superellipse.e;
@@ -169,10 +170,12 @@ export class MinimumDistance2D {
     n = superellipse.InverseTransformDirection(n);
     let nx = n.x;
     let ny = n.y;
+    console.log("Normal after inverse transform: " + nx + " " + ny);
     let phi = Math.atan(
       (Math.sign(ny) * Math.pow(Math.abs(b * ny), 1 / (2 - e))) /
         (Math.sign(nx) * Math.pow(Math.abs(a * nx), 1 / (2 - e)))
     );
+    console.log("Phi: " + phi);
 
     let cosPhi = Math.cos(phi);
     let sinPhi = Math.sin(phi);
@@ -181,13 +184,17 @@ export class MinimumDistance2D {
       Math.sign(cosPhi) * a * Math.pow(Math.abs(cosPhi), e),
       Math.sign(sinPhi) * b * Math.pow(Math.abs(sinPhi), e)
     );
+    console.log("T: " + T.x + " " + T.y);
     let Ti = T.clone().scale(-1);
-
+    console.log("Ti: " + Ti.x + " " + Ti.y);
     T = superellipse.TransformPoint(T.toVector3()).toVector2();
     Ti = superellipse.TransformPoint(Ti.toVector3()).toVector2();
-
+    console.log("T after transform: " + T.x + " " + T.y);
+    console.log("Ti after transform: " + Ti.x + " " + Ti.y);
     let T_ = line.InverseTransformPoint(T.toVector3());
     let Ti_ = line.InverseTransformPoint(Ti.toVector3());
+    console.log("T_ after inverse transform: " + T_.x + " " + T_.y);
+    console.log("Ti_ after inverse transform: " + Ti_.x + " " + Ti_.y);
 
     if (Math.abs(Ti_.y) < Math.abs(T_.y)) {
       T = Ti;

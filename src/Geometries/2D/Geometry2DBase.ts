@@ -49,15 +49,28 @@ export abstract class Geometry2DBase implements IGeometry2D {
   ): boolean {
     throw new Error("Method not implemented for this geometry.");
   }
-
   public LocalSpaceToWorldSpace(point: Vector3): Vector3 {
+    // Ensure rotation values are valid numbers
+    const rotX =
+      isNaN(this.rotation.x) || this.rotation.x === undefined
+        ? 0
+        : this.rotation.x;
+    const rotY =
+      isNaN(this.rotation.y) || this.rotation.y === undefined
+        ? 0
+        : this.rotation.y;
+    const rotZ =
+      isNaN(this.rotation.z) || this.rotation.z === undefined
+        ? 0
+        : this.rotation.z;
+
     // Step 1: Rotate point by ellipsoid rotation
-    const cosX = Math.cos(this.rotation.x);
-    const sinX = Math.sin(this.rotation.x);
-    const cosY = Math.cos(this.rotation.y);
-    const sinY = Math.sin(this.rotation.y);
-    const cosZ = Math.cos(this.rotation.z);
-    const sinZ = Math.sin(this.rotation.z);
+    const cosX = Math.cos(rotX);
+    const sinX = Math.sin(rotX);
+    const cosY = Math.cos(rotY);
+    const sinY = Math.sin(rotY);
+    const cosZ = Math.cos(rotZ);
+    const sinZ = Math.sin(rotZ);
 
     // Apply rotation around X-axis
     const rotatedX1 = point.x;
@@ -114,13 +127,27 @@ export abstract class Geometry2DBase implements IGeometry2D {
   }
 
   public TransformDirection(direction: Vector3): Vector3 {
-    // Step 1: Rotate direction by ellipsoid rotation
-    const cosX = Math.cos(this.rotation.x);
-    const sinX = Math.sin(this.rotation.x);
-    const cosY = Math.cos(this.rotation.y);
-    const sinY = Math.sin(this.rotation.y);
-    const cosZ = Math.cos(this.rotation.z);
-    const sinZ = Math.sin(this.rotation.z);
+    // Ensure rotation values are valid numbers
+    const rotX =
+      isNaN(this.rotation.x) || this.rotation.x === undefined
+        ? 0
+        : this.rotation.x;
+    const rotY =
+      isNaN(this.rotation.y) || this.rotation.y === undefined
+        ? 0
+        : this.rotation.y;
+    const rotZ =
+      isNaN(this.rotation.z) || this.rotation.z === undefined
+        ? 0
+        : this.rotation.z;
+
+    // Step 1: Rotate point by ellipsoid rotation
+    const cosX = Math.cos(rotX);
+    const sinX = Math.sin(rotX);
+    const cosY = Math.cos(rotY);
+    const sinY = Math.sin(rotY);
+    const cosZ = Math.cos(rotZ);
+    const sinZ = Math.sin(rotZ);
 
     // Apply rotation around X-axis
     const rotatedX1 = direction.x;
@@ -141,13 +168,18 @@ export abstract class Geometry2DBase implements IGeometry2D {
   }
 
   public InverseTransformDirection(direction: Vector3): Vector3 {
-    // Step 1: Rotate direction by negative ellipsoid rotation
-    const cosX = Math.cos(-this.rotation.x);
-    const sinX = Math.sin(-this.rotation.x);
-    const cosY = Math.cos(-this.rotation.y);
-    const sinY = Math.sin(-this.rotation.y);
-    const cosZ = Math.cos(-this.rotation.z);
-    const sinZ = Math.sin(-this.rotation.z);
+    // Ensure rotation values are valid numbers
+    const rotX = isNaN(this.rotation.x) || this.rotation.x === undefined ? 0 : this.rotation.x;
+    const rotY = isNaN(this.rotation.y) || this.rotation.y === undefined ? 0 : this.rotation.y;
+    const rotZ = isNaN(this.rotation.z) || this.rotation.z === undefined ? 0 : this.rotation.z;
+
+    // Step 1: Rotate point by ellipsoid rotation
+    const cosX = Math.cos(-rotX);
+    const sinX = Math.sin(-rotX);
+    const cosY = Math.cos(-rotY);
+    const sinY = Math.sin(-rotY);
+    const cosZ = Math.cos(-rotZ);
+    const sinZ = Math.sin(-rotZ);
 
     // Apply rotation around Z-axis
     const rotatedX1 = direction.x * cosZ - direction.y * sinZ;
@@ -168,6 +200,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
   }
 
   public TransformPoint(point: Vector3): Vector3 {
+
     // Step 1: Rotate point by ellipsoid rotation
     const rotatedPoint = this.TransformDirection(point);
 
