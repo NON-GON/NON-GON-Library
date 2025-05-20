@@ -60,7 +60,11 @@ export class GeometryManager {
         let line = new THREE.Line(geometry.getGeometry(), material);
         return line;
       } else if (type === "mesh") {
-        let material = new THREE.MeshPhongMaterial({ color: color, side: 2, shininess: 100 });
+        let material = new THREE.MeshPhongMaterial({
+          color: color,
+          side: 2,
+          shininess: 100,
+        });
         let mesh = new THREE.Mesh(geometry.getGeometry(), material);
         return mesh;
       }
@@ -73,8 +77,8 @@ export class GeometryManager {
    * Returns all stored geometries.
    * @returns An object containing all geometries keyed by their IDs.
    */
-  public getAllGeometries(): { [key: string]: any } {
-    return this._geometries;
+  public getAllGeometries(): any[] {
+    return Object.values(this._geometries);
   }
 
   /**
