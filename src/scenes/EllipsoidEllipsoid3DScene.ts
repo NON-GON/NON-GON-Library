@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                        ellipsoid1ZRadius, ellipsoid1Rotation,
                                        ellipsoid1Segments, ellipsoid1Color);
 
-    // Ellipsoid
+    // Ellipsoid2
     const ellipsoid2Center = new Vector3(50, -50, -50);
     const ellipsoid2XRadius = 25;
     const ellipsoid2YRadius = 50;
