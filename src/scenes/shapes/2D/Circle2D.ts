@@ -40,10 +40,6 @@ export class Circle2D extends Base2DScene {
       "Circle2D",
       this.getParams()
     );
-    this.geometryManager.changePosition(
-      "Circle2D",
-      new Vector3(this.center.x, this.center.y, 0)
-    );
     const mesh = this.geometryManager.getGeometryMesh(
       "Circle2D",
       this.color,
