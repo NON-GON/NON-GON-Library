@@ -1138,13 +1138,21 @@ export class ProximityQuery3D {
     const sinAlphaEllipticParaboloid = Math.sin(
       ellipticParaboloid.getRotation().x * (Math.PI / 180)
     );
-    const sinBetaEllipticParaboloid = Math.sin(ellipticParaboloid.getRotation().y * (Math.PI / 180));
-    const sinPhiEllipticParaboloid = Math.sin(ellipticParaboloid.getRotation().z * (Math.PI / 180));
+    const sinBetaEllipticParaboloid = Math.sin(
+      ellipticParaboloid.getRotation().y * (Math.PI / 180)
+    );
+    const sinPhiEllipticParaboloid = Math.sin(
+      ellipticParaboloid.getRotation().z * (Math.PI / 180)
+    );
     const cosAlphaEllipticParaboloid = Math.cos(
       ellipticParaboloid.getRotation().x * (Math.PI / 180)
     );
-    const cosBetaEllipticParaboloid = Math.cos(ellipticParaboloid.getRotation().y * (Math.PI / 180));
-    const cosPhiEllipticParaboloid = Math.cos(ellipticParaboloid.getRotation().z * (Math.PI / 180));
+    const cosBetaEllipticParaboloid = Math.cos(
+      ellipticParaboloid.getRotation().y * (Math.PI / 180)
+    );
+    const cosPhiEllipticParaboloid = Math.cos(
+      ellipticParaboloid.getRotation().z * (Math.PI / 180)
+    );
 
     const matrixA: number[][] = Array(4)
       .fill(0)
@@ -1318,7 +1326,9 @@ export class ProximityQuery3D {
     const G2 = -ellipticParaboloid.getCenter().x * A2;
     const H2 = -ellipticParaboloid.getCenter().y * B2;
     const I2 = -1;
-    const J2 = ellipticParaboloid.getCenter().x ** 2 * A2 + ellipticParaboloid.getCenter().y ** 2 * B2;
+    const J2 =
+      ellipticParaboloid.getCenter().x ** 2 * A2 +
+      ellipticParaboloid.getCenter().y ** 2 * B2;
 
     matrixB[0][0] = A2;
     matrixB[0][1] = D2;

@@ -30,6 +30,7 @@ export class ProximityQuery2D {
   ): boolean {
     const x1 = positionAABB1.x;
     const y1 = positionAABB1.y;
+    
     const x2 = positionAABB2.x;
     const y2 = positionAABB2.y;
 

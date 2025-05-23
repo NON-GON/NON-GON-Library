@@ -1,6 +1,6 @@
 import { Base2DScene } from "../../Base2DScene";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
-import { Vector2 } from "../../../Calc/Util/Utils";
+import { Vector2, Vector3 } from "../../../Calc/Util/Utils";
 
 export class Circle2D extends Base2DScene {
   private center: Vector2;
@@ -39,6 +39,10 @@ export class Circle2D extends Base2DScene {
       GeometryType2D.Circle,
       "Circle2D",
       this.getParams()
+    );
+    this.geometryManager.changePosition(
+      "Circle2D",
+      new Vector3(this.center.x, this.center.y, 0)
     );
     const mesh = this.geometryManager.getGeometryMesh(
       "Circle2D",

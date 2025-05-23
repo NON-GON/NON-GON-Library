@@ -16,6 +16,8 @@ export abstract class Geometry2DBase implements IGeometry2D {
     return this.center;
   }
 
+  
+
   public getSegments(): number {
     return this.segments;
   }
@@ -43,6 +45,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
   MinimumDistance(_geometry: IGeometry2D | IGeometry3D): [Vector3, Vector3] {
     throw new Error("Method not implemented.");
   }
+
   ProximityQuery(
     _geometry: IGeometry2D | IGeometry3D,
     _method?: string
@@ -169,9 +172,18 @@ export abstract class Geometry2DBase implements IGeometry2D {
 
   public InverseTransformDirection(direction: Vector3): Vector3 {
     // Ensure rotation values are valid numbers
-    const rotX = isNaN(this.rotation.x) || this.rotation.x === undefined ? 0 : this.rotation.x;
-    const rotY = isNaN(this.rotation.y) || this.rotation.y === undefined ? 0 : this.rotation.y;
-    const rotZ = isNaN(this.rotation.z) || this.rotation.z === undefined ? 0 : this.rotation.z;
+    const rotX =
+      isNaN(this.rotation.x) || this.rotation.x === undefined
+        ? 0
+        : this.rotation.x;
+    const rotY =
+      isNaN(this.rotation.y) || this.rotation.y === undefined
+        ? 0
+        : this.rotation.y;
+    const rotZ =
+      isNaN(this.rotation.z) || this.rotation.z === undefined
+        ? 0
+        : this.rotation.z;
 
     // Step 1: Rotate point by ellipsoid rotation
     const cosX = Math.cos(-rotX);
@@ -200,7 +212,6 @@ export abstract class Geometry2DBase implements IGeometry2D {
   }
 
   public TransformPoint(point: Vector3): Vector3 {
-
     // Step 1: Rotate point by ellipsoid rotation
     const rotatedPoint = this.TransformDirection(point);
 

@@ -18,7 +18,8 @@ export class ConvexLine extends Geometry2DBase implements IGeometry2D {
   constructor(
     center: Vector3 | Vector2,
     rotation: Vector3 | Vector2,
-    segments: number
+    segments: number,
+    
   ) {
     super();
     this.center =

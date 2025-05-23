@@ -201,6 +201,36 @@ export class Vector3 {
     }
     return new Vector3(this.x / mag, this.y / mag, this.z / mag);
   }
+  public rotateX(angle: number): Vector3 {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return new Vector3(
+      this.x,
+      this.y * cos - this.z * sin,
+      this.y * sin + this.z * cos
+    );
+  }
+  public rotateY(angle: number): Vector3 {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return new Vector3(
+      this.x * cos + this.z * sin,
+      this.y,
+      -this.x * sin + this.z * cos
+    );
+  }
+  public rotateZ(angle: number): Vector3 {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return new Vector3(
+      this.x * cos - this.y * sin,
+      this.x * sin + this.y * cos,
+      this.z
+    );
+  }
+  public rotate(Vector3: Vector3): Vector3 {
+    return this.rotateX(Vector3.x).rotateY(Vector3.y).rotateZ(Vector3.z);
+  }
 }
 
 /**

@@ -19,7 +19,8 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
     center: Vector3 | Vector2,
     radius: number,
     rotation: Vector3 | Vector2,
-    segments: number
+    segments: number,
+    
   ) {
     super();
     this.center =
@@ -45,7 +46,12 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
         let r = Math.sqrt(xpc ** 2 + zpc ** 2);
         let phi = this.angle - Math.atan(xpc / zpc);
         let pos = new Vector2(Math.cos(phi), Math.sin(phi));
-        points.push(new THREE.Vector2(pos.x * r, pos.y * r));
+        points.push(
+          new THREE.Vector2(
+            pos.x * r + this.center.x,
+            pos.y * r + this.center.y
+          )
+        );
         this.angle += (2 * Math.PI) / this.segments;
       }
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -94,6 +100,7 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
     }
     return res;
   }
+
   MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Circle:
@@ -109,6 +116,7 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
         );
     }
   }
+  
   MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {

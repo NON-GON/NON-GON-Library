@@ -293,6 +293,11 @@ export class GeometryManager {
   ): [Vector2, Vector2] | [Vector3, Vector3] {
     let geometry1 = this.getGeometry(id1);
     let geometry2 = this.getGeometry(id2);
+    if (!geometry1 || !geometry2) {
+      throw new Error(
+        `One or both geometries with ids ${id1} and ${id2} not found.`
+      );
+    }
     let distance = geometry1.MinimumDistance(geometry2);
     console.log(
       `Minimum distance between ${id1} and ${id2}: ${distance[0].distanceTo(
@@ -319,5 +324,17 @@ export class GeometryManager {
     let result = geometry1.ProximityQuery(geometry2, method);
     console.log(`Proximity query between ${id1} and ${id2}: ${result}`);
     return result;
+  }
+
+  public changePosition(id: string, position: Vector3 | Vector2) {
+    let geometry = this.getGeometry(id);
+    geometry.center = position;
+    geometry.geometry = null;
+  }
+
+  public changeRotation(id: string, rotation: Vector3 | Vector2) {
+    let geometry = this.getGeometry(id);
+    geometry.rotation = rotation;
+    geometry.geometry = null;
   }
 }

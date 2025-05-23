@@ -20,7 +20,7 @@ export class Ellipse extends Geometry2DBase implements IGeometry2D {
     xradius: number,
     yradius: number,
     rotation: Vector3 | Vector2,
-    segments: number
+    segments: number,
   ) {
     super();
     this.center =

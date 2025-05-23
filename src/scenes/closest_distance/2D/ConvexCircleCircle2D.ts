@@ -27,15 +27,34 @@ export class ConvexCircleCircle2D extends Base2DScene {
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.ConvexCircle, 'ConvexCircle2D', this.convexCircle.getParams());
-    const convexCircleMesh = this.geometryManager.getGeometryMesh('ConvexCircle2D', this.colorConvexCircle, "line");
+    this.geometryManager.createGeometry(
+      GeometryType2D.ConvexCircle,
+      "ConvexCircle2D",
+      this.convexCircle.getParams()
+    );
+    const convexCircleMesh = this.geometryManager.getGeometryMesh(
+      "ConvexCircle2D",
+      this.colorConvexCircle,
+      "line"
+    );
     this.scene.add(convexCircleMesh);
 
-    this.geometryManager.createGeometry(GeometryType2D.Circle, 'Circle2D', this.circle.getParams());
-    const circleMesh = this.geometryManager.getGeometryMesh('Circle2D', this.colorCircle, "line");
+    this.geometryManager.createGeometry(
+      GeometryType2D.Circle,
+      "Circle2D",
+      this.circle.getParams()
+    );
+    const circleMesh = this.geometryManager.getGeometryMesh(
+      "Circle2D",
+      this.colorCircle,
+      "line"
+    );
     this.scene.add(circleMesh);
 
-    let points = this.geometryManager.calculateMinimumDistance('ConvexCircleD', 'Circle2D');
+    let points = this.geometryManager.calculateMinimumDistance(
+      "ConvexCircle2D",
+      "Circle2D"
+    );
     this.drawMinimumDistance(points[0], points[1], this.colorConnection);
   }
 }

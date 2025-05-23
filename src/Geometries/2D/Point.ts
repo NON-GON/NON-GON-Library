@@ -29,9 +29,10 @@ export class Point extends Geometry2DBase implements IGeometry2D {
       return this.geometry;
     } else {
       console.log("Creating Point Geometry");
+      console.log(this.center);
       const points = [this.center];
+
       this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-      this.normalizeGeometry();
       return this.geometry;
     }
   }
@@ -39,9 +40,8 @@ export class Point extends Geometry2DBase implements IGeometry2D {
   MinimumDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType3D.Ellipsoid:
-        let vec3 = new Vector3(this.center.x, this.center.y, 0);
         let res = MinimumDistance3D.point_Ellipsoid(
-          vec3,
+          this.center,
           geometry as Ellipsoid
         );
         return [res[0], res[1]];

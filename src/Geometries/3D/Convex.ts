@@ -38,10 +38,14 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
 
       // Generate vertices
       for (let i = 0; i <= this.segments; i++) {
-        const theta = -Math.PI + (2 * Math.PI * i) / this.segments;
+        const theta = -Math.PI + (2 * Math.PI * i) / this.segments; // x axis
         for (let j = 0; j <= this.segments; j++) {
-          const phi = -Math.PI / 2 + (Math.PI * j) / this.segments;
-          points.push(this.point(theta, phi));
+          const phi = -Math.PI / 2 + (Math.PI * j) / this.segments; // y axis
+
+          let prepoint = this.point(theta, phi);
+          // Apply transformation
+          prepoint = prepoint.add(this.center).rotate(this.rotation);
+          points.push(prepoint);
         }
       }
 
@@ -77,6 +81,7 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
       return this.geometry;
     }
   }
+
   public point(theta: number, phi: number): Vector3 {
     let res = Vector3.Zero();
 
@@ -107,9 +112,9 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
         .add(etheta.scale(this.fdd(phi, theta) / Math.cos(phi)))
         .add(en.scale(this.f(phi, theta)));
     }
-    console.log(res);
     return res;
   }
+
   private f(alpha: number, beta: number): number {
     let sina = Math.sin(alpha);
     let cosa = Math.cos(alpha);
@@ -120,9 +125,9 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
         900 * sina ** 2 * sinb ** 2 +
         400 * cosa ** 2
     );
-    console.log(res);
     return res;
   }
+
   private fda(alpha: number, beta: number): number {
     let sina = Math.sin(alpha);
     let cosa = Math.cos(alpha);
@@ -135,9 +140,9 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
           100 * cosb * cosb * sina * sina +
           400 * cosa * cosa
       );
-    console.log(res);
     return res;
   }
+
   private fdb(alpha: number, beta: number): number {
     let sina = Math.sin(alpha);
     let cosa = Math.cos(alpha);
@@ -150,9 +155,9 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
           100 * cosb * cosb * sina * sina +
           400 * cosa * cosa
       );
-    console.log(res);
     return res;
   }
+
   private fdd(alpha: number, beta: number): number {
     let sina = Math.sin(alpha);
     let cosa = Math.cos(alpha);
@@ -184,7 +189,6 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
               400 * cosa * cosa,
             3 / 2
           ));
-    console.log(res);
     return res;
   }
 
@@ -203,10 +207,11 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
 
   MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
+    console.log("MinimumDistance3D");
     if (isGeometryType3D(geometry.type)) {
       throw new Error("Not MinimumDistance3D for this geometry type");
     } else if (isGeometryType2D(geometry.type)) {
-      throw new Error();
+      this.MinimumDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
   }

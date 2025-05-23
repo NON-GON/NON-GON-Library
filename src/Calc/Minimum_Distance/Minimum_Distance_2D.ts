@@ -160,7 +160,6 @@ export class MinimumDistance2D {
     line: Line,
     superellipse: Superellipse
   ): [Vector3, Vector3] {
-
     let n = line.TransformDirection(new Vector3(0, 1, 0));
     console.log("Normal: " + n.x + " " + n.y);
     let a = superellipse.xradius;
@@ -250,8 +249,8 @@ export class MinimumDistance2D {
   /**
    * Find the contact points between a Convexcircle and a line.
    * @param convexCircle
-   * @param line
-   * @returns A tuple of two points: the closest point of the Convexcircle and the closest point of the line.
+   * @param circle
+   * @returns A tuple of two points: the closest point of the Convexcircle and the closest point of the circle.
    */
   static ConvexCircle_Circle(convexCircle: Convexcircle, circle: Circle) {
     let center_convex = convexCircle.getCenter();
