@@ -1,11 +1,14 @@
 export const Colors = {
-    BACKGROUND: 0x2F3336,
+    BACKGROUND: 0x373C40,
     WHITE: 0xFFFFFF,
     RED: 0xCD384E,
     BLUE: 0x2B8FFF,
+    BRIGHT_BLUE: 0x31AAFF,
     GREEN: 0x76B117,
     MUSTARD: 0xC4A000,
     PURPLE: 0x805D93,
+    PINK: 0xFF4599,
+    ORANGE: 0xFFB419,
     GRAY: 0xB0B0B0,
     TEAL: 0x5FB4B4
 } as const;

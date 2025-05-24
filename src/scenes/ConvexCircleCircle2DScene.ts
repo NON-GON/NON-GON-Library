@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const convexCircleRadius = 25;
   const convexCircleRotation = new Vector2(0, 0);
   const convexCircleSegments = 100;
-  const convexCircleColor = Colors.MUSTARD;
+  const convexCircleColor = Colors.BRIGHT_BLUE;
   const convexCircle = new ConvexCircle2D(
     canvas,
     convexCircleCenter,
@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const circleRadius = 25;
   const circleRotation = new Vector2(0, 0);
   const circleSegments = 100;
-  const circleColor = Colors.PURPLE;
+  const circleColor = Colors.ORANGE;
   const circle = new Circle2D(
     canvas,
     circleCenter,
@@ -38,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Interaction
-  const colorConnection = Colors.TEAL;
+  const colorConnection = Colors.PINK;
   const convexCircleCircle = new ConvexCircleCircle2D(
     canvas,
     convexCircle,

@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const center = new Vector2(0, 0);
     const rotation = new Vector2(0, 0);
     const segments = 100;
-    const color = Colors.MUSTARD;
+    const color = Colors.BRIGHT_BLUE;
     const scene = new ConvexLine2D(canvas, center, rotation, segments, color);
     scene.startAnimation();
 });

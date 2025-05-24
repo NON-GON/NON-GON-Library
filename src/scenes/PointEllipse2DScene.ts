@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Point
     const pointCenter = new Vector2(-50, 50);
-    const pointColor = Colors.PURPLE;
+    const pointColor = Colors.BRIGHT_BLUE;
     const point = new Point2D(canvas, pointCenter, pointColor);
 
     // Ellipse
@@ -18,14 +18,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const ellipseYRadius = 25;
     const ellipseRotation = new Vector2(0, 0);
     const ellipseSegments = 100;
-    const ellipseColor = Colors.MUSTARD;
+    const ellipseColor = Colors.ORANGE;
     const ellipse = new Ellipse2D(canvas, ellipseCenter,
                                   ellipseXRadius, ellipseYRadius, 
                                   ellipseRotation, ellipseSegments, 
                                   ellipseColor);
     
     // Interaction
-    const colorConnection = Colors.TEAL;
+    const colorConnection = Colors.PINK;
     const pointEllipse = new PointEllipse2D(canvas, point, pointColor, 
                                             ellipse, ellipseColor, colorConnection);
     pointEllipse.startAnimation();
