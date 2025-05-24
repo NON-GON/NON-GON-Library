@@ -5,11 +5,11 @@ import { Colors } from "../colors";
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
     const center = new Vector3(0, 0, 0);
-    const rotation = new Vector3(0, 0, 0);
+    const rotation = new Vector3(0, 0, 90);
     const width = 50;
-    const height = 75;
+    const height = 100;
     const segments = 100;
-    const color = Colors.MUSTARD;
+    const color = Colors.BRIGHT_BLUE;
     const scene = new Plane3D(canvas, center, rotation, width, height, segments, color);
     scene.startAnimation();
 });

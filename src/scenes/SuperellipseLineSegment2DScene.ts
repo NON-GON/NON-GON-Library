@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const superellipseExponent = 0.5;
     const superellipseRotation = new Vector2(0, 0);
     const superellipseSegments = 100;
-    const superellipseColor = Colors.MUSTARD;
+    const superellipseColor = Colors.BRIGHT_BLUE;
     const superellipse = new Superellipse2D(canvas, superellipseCenter,
                                             superellipseXRadius, superellipseYRadius,
                                             superellipseExponent, superellipseRotation,
@@ -24,13 +24,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const lineSegmentStart = new Vector2(-75, 0);
     const lineSegmentEnd = new Vector2(75, 0);
     const lineSegmentRotation = new Vector2(0, 0);
-    const lineSegmentColor = Colors.PURPLE;
+    const lineSegmentColor = Colors.ORANGE;
     const lineSegment = new LineSegment2D(canvas, lineSegmentStart,
                                           lineSegmentEnd, lineSegmentRotation,
                                           lineSegmentColor);
     
     // Interaction
-    const colorConnection = Colors.TEAL;
+    const colorConnection = Colors.PINK;
     const superellipseLineSegment = new SuperellipseLineSegment2D(canvas, superellipse, superellipseColor,
                                                                   lineSegment, lineSegmentColor, colorConnection);
     superellipseLineSegment.startAnimation();

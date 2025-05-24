@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const yradius = 25;
     const rotation = new Vector2(0, 0);
     const segments = 100;
-    const color = Colors.MUSTARD;
+    const color = Colors.BRIGHT_BLUE;
     const scene = new Ellipse2D(canvas, center, xradius, yradius, rotation, segments, color);
     scene.startAnimation();
 });

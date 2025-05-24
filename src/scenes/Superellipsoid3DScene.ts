@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const e2 = 0.5;
   const rotation = new Vector3(0, 0, 0);
   const segments = 100;
-  const color = Colors.MUSTARD;
+  const color = Colors.BRIGHT_BLUE;
   const scene = new Superellipsoid3D(
     canvas,
     center,

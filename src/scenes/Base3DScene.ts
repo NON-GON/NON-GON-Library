@@ -23,7 +23,8 @@ export abstract class Base3DScene {
         const near = 0.1;
         const far = 1000;
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.camera.position.set(-200, 200, 200);
+        //this.camera.position.set(-200, 200, 200);
+        this.camera.position.set(-100, 50, 80); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
         this.camera.lookAt(0, 0, 0);
 
         // Scene & Light
@@ -49,7 +50,7 @@ export abstract class Base3DScene {
         this.scene.add(new THREE.AmbientLight(0x222222));
 
         // Grid & Axes
-        this.makeGridAndAxes();
+        //this.makeGridAndAxes();
 
         // Controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
