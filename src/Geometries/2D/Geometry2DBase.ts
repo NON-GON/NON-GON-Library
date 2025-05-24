@@ -16,8 +16,6 @@ export abstract class Geometry2DBase implements IGeometry2D {
     return this.center;
   }
 
-  
-
   public getSegments(): number {
     return this.segments;
   }
@@ -36,9 +34,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
       let radRotationX = degToRad(this.rotation.x);
       let radRotationY = degToRad(this.rotation.y);
       let radRotationZ = degToRad(this.rotation.z);
-      this.geometry.rotateX(radRotationX);
-      this.geometry.rotateY(radRotationY);
-      this.geometry.rotateZ(radRotationZ);
+      this.geometry.rotation(radRotationX, radRotationY, radRotationZ);
     }
   }
 
