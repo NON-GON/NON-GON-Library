@@ -50,6 +50,22 @@ export class Superellipsoid3D extends Base3DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      center_z: this.center.z,
+      rotation_x: this.rotation.x,
+      rotation_y: this.rotation.y,
+      rotation_z: this.rotation.z,
+      x_radius: this.xradius,
+      y_radius: this.yradius,
+      z_radius: this.zradius,
+      e1: this.e1,
+      e2: this.e2
+    }
+  }
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(
       GeometryType3D.Superellipsoid,
@@ -61,6 +77,7 @@ export class Superellipsoid3D extends Base3DScene {
       this.color,
       "mesh"
     );
+    this.makeSliders("Superellipsoid", this.getSliderParams());
     this.scene.add(mesh);
   }
 }

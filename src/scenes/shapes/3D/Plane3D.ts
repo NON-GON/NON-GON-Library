@@ -36,9 +36,23 @@ export class Plane3D extends Base3DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      center_z: this.center.z,
+      rotation_x: this.rotation.x,
+      rotation_y: this.rotation.y,
+      rotation_z: this.rotation.z,
+      width: this.width,
+      height: this.height
+    }
+  }
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Plane, 'Plane3D', this.getParams());
     const mesh = this.geometryManager.getGeometryMesh('Plane3D', this.color, 'mesh');
+    this.makeSliders("Plane", this.getSliderParams());
     this.scene.add(mesh);
   }
 }

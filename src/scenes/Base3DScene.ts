@@ -10,10 +10,11 @@ export abstract class Base3DScene {
     protected scene: THREE.Scene;
     protected camera: THREE.PerspectiveCamera;
     protected controls: OrbitControls;
+    protected sliders: HTMLElement | null;
 
     constructor(protected canvas: HTMLCanvasElement) {
         // Renderer
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, canvas });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
 
@@ -63,9 +64,29 @@ export abstract class Base3DScene {
         this.controls.addEventListener('end', () => {
           canvas.style.cursor = 'grab';
         });
+        this.sliders = document.getElementById('sliders');
+
+        // Image Capture
+        window.addEventListener('keydown', (evt) => {
+          if (evt.key === 's' || evt.key === 'S') {
+            this.saveScreenshot();
+          }
+        });
 
         // Resize Handler
         window.addEventListener('resize', this.onWindowResize.bind(this));
+    }
+
+    private saveScreenshot() {
+      const canvas = this.renderer.domElement;
+      const dataURL = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataURL;
+      link.download = 'non-gon-scene.png';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     private makeGridAndAxes() {
@@ -116,6 +137,37 @@ export abstract class Base3DScene {
         cone.position.copy(tipPos);
 
         return cone;
+    }
+
+    protected makeSliders(shapeName: string, shapeParams: any) {
+      const fieldSet = document.createElement('fieldset');
+      const legend = document.createElement('legend');
+      legend.textContent = shapeName;
+      fieldSet.appendChild(legend);
+
+      for (const [key, value] of Object.entries(shapeParams)) {
+        const label = document.createElement('label');
+        label.textContent = `${key}: `;
+      
+        const slider = document.createElement('input');
+        slider.type  = 'range';
+        slider.min   = '-100';
+        slider.max   = '100';
+        slider.step  = '1';
+        slider.value = value.toString();
+      
+        slider.addEventListener('input', () => {
+          const v = parseFloat(slider.value);
+          shapeParams[key] = v;
+          // rebuild geometry here
+        });
+
+        label.appendChild(slider);
+        fieldSet.appendChild(label);
+        fieldSet.appendChild(document.createElement('br'));
+      }
+
+      this.sliders.appendChild(fieldSet);
     }
 
     private onWindowResize() {

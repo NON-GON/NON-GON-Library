@@ -30,6 +30,17 @@ export class StrictlyConvexShape3D extends Base3DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      center_z: this.center.z,
+      rotation_x: this.rotation.x,
+      rotation_y: this.rotation.y,
+      rotation_z: this.rotation.z
+    }
+  }
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(
       GeometryType3D.Convex,
@@ -41,6 +52,7 @@ export class StrictlyConvexShape3D extends Base3DScene {
       this.color,
       "mesh"
     );
+    this.makeSliders("Strictly Convex Shape", this.getSliderParams());
     this.scene.add(mesh);
   }
 }

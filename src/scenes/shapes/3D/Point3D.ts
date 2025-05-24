@@ -18,9 +18,18 @@ export class Point3D extends Base3DScene {
     return { center: this.center };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      center_z: this.center.z
+    }
+  }
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Point, 'Point3D', this.getParams());
     const mesh = this.geometryManager.getGeometryMesh('Point3D', this.color, 'mesh');
+    this.makeSliders("Point", this.getSliderParams());
     this.scene.add(mesh);
   }
 }

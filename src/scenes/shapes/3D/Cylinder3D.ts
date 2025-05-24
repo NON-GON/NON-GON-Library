@@ -39,10 +39,25 @@ export class Cylinder3D extends Base3DScene {
       segments: this.segments
     };
   }
-  
+
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      center_z: this.center.z,
+      rotation_x: this.rotation.x,
+      rotation_y: this.rotation.y,
+      rotation_z: this.rotation.z,
+      x_radius: this.xradius,
+      y_radius: this.yradius,
+      height: this.height
+    }
+  }
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType3D.Cylinder, 'Cylinder3D', this.getParams());
     const mesh = this.geometryManager.getGeometryMesh('Cylinder3D', this.color, 'mesh');
+    this.makeSliders("Cylinder", this.getSliderParams());
     this.scene.add(mesh);
   }
 }

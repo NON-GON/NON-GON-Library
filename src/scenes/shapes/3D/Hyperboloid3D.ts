@@ -44,9 +44,25 @@ export class Hyperboloid3D extends Base3DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      center_z: this.center.z,
+      rotation_x: this.rotation.x,
+      rotation_y: this.rotation.y,
+      rotation_z: this.rotation.z,
+      x_radius: this.xradius,
+      y_radius: this.yradius,
+      z_factor: this.zfactor,
+      height: this.height
+    }
+  }
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType3D.Hyperboloid, 'Hyperboloid3D', this.getParams());
     const mesh = this.geometryManager.getGeometryMesh('Hyperboloid3D', this.color, 'mesh');
+    this.makeSliders("Hyperboloid", this.getSliderParams());
     this.scene.add(mesh);
   }
 }
