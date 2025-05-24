@@ -31,13 +31,11 @@ export abstract class Geometry3DBase implements IGeometry3D {
   protected normalizeGeometry() {
     if (this.geometry !== null && this.geometry !== undefined) {
       this.geometry.translate(this.center.x, this.center.y, this.center.z);
-      
+
       let radRotationX = degToRad(this.rotation.x);
       let radRotationY = degToRad(this.rotation.y);
       let radRotationZ = degToRad(this.rotation.z);
-      this.geometry.rotateX(radRotationX);
-      this.geometry.rotateY(radRotationY);
-      this.geometry.rotateZ(radRotationZ);
+      this.geometry.rotation(radRotationX, radRotationY, radRotationZ);
     }
   }
 
