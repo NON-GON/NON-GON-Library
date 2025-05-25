@@ -3,6 +3,7 @@ import { Vector3 } from "../../Calc/Util/Utils";
 import { IGeometry3D } from "../3D/IGeometry3D";
 import { GeometryType2D } from "../GeoTypes";
 import { IGeometry2D } from "./IGeometry2D";
+import * as THREE from "three";
 
 export abstract class Geometry2DBase implements IGeometry2D {
   center: Vector3 = new Vector3(0, 0, 0);
@@ -29,14 +30,22 @@ export abstract class Geometry2DBase implements IGeometry2D {
   }
 
   protected normalizeGeometry() {
-    if (this.geometry !== null && this.geometry !== undefined) {
-      //TODO: Make this work and see when to call it or not
-      let radRotationX = degToRad(this.rotation.x);
-      let radRotationY = degToRad(this.rotation.y);
-      let radRotationZ = degToRad(this.rotation.z);
-      this.geometry.rotateX(radRotationX);
-      this.geometry.rotateY(radRotationY);
-      this.geometry.rotateZ(radRotationZ);
+    if (this.geometry) {
+      const radRotationX = degToRad(this.rotation.x);
+      const radRotationY = degToRad(this.rotation.y);
+      const radRotationZ = degToRad(this.rotation.z);
+
+      const rotationEuler = new THREE.Euler(
+        radRotationX,
+        radRotationY,
+        radRotationZ
+      );
+      const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
+        rotationEuler
+      );
+
+      this.geometry.applyMatrix4(rotationMatrix);
+      this.rotation.set(0, 0, 0); // Reset rotation after baking
     }
   }
 
