@@ -11,7 +11,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const height = 75;
     const rotation = new Vector3(0, 0, 0);
     const segments = 100;
+    const id = 'Hyperboloid';
     const color = Colors.BRIGHT_BLUE;
-    const scene = new Hyperboloid3D(canvas, center, xradius, yradius, zfactor, height, rotation, segments, color);
+    const scene = new Hyperboloid3D(canvas, center, xradius, yradius, zfactor, height, rotation, segments, id, color);
     scene.startAnimation();
 });

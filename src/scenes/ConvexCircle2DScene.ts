@@ -4,11 +4,12 @@ import { Colors } from "../colors";
 
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
-    const center = new Vector2(25, 20);
+    const center = new Vector2(0, 0);
     const radius = 50;
     const rotation = new Vector2(0, 0);
     const segments = 100;
+    const id = 'Convex Circle';
     const color = Colors.BRIGHT_BLUE;
-    const scene = new ConvexCircle2D(canvas, center, radius, rotation, segments, color);
+    const scene = new ConvexCircle2D(canvas, center, radius, rotation, segments, id, color);
     scene.startAnimation();
 });

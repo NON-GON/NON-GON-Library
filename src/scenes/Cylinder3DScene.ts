@@ -10,7 +10,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const height = 100;
     const rotation = new Vector3(90, 0, 0);
     const segments = 100;
+    const id = 'Cylinder';
     const color = Colors.BRIGHT_BLUE;
-    const scene = new Cylinder3D(canvas, center, xradius, yradius, height, rotation, segments, color);
+    const scene = new Cylinder3D(canvas, center, xradius, yradius, height, rotation, segments, id, color);
     scene.startAnimation();
 });

@@ -5,7 +5,8 @@ import { Colors } from "../colors";
 window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
     const center = new Vector2(0, 0);
+    const id = 'Point';
     const color = Colors.BRIGHT_BLUE;
-    const scene = new Point2D(canvas, center, color);
+    const scene = new Point2D(canvas, center, id, color);
     scene.startAnimation();
 });

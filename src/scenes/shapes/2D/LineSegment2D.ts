@@ -6,17 +6,20 @@ export class LineSegment2D extends Base2DScene {
   private start: Vector2;
   private end: Vector2;
   private rotation: Vector2;
+  private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
               start: Vector2,
               end: Vector2,
               rotation: Vector2,
+              id: string,
               color: number) {
     super(canvas);
     this.start = start;
     this.end = end;
     this.rotation = rotation;
+    this.id = id;
     this.color = color;
   }
 
@@ -28,9 +31,20 @@ export class LineSegment2D extends Base2DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      start_x: this.start.x,
+      start_y: this.start.y,
+      end_x: this.end.x,
+      end_y: this.end.y,
+      rotation: this.rotation
+    }
+  }
+
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.Line, 'Line2D', this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh('Line2D', this.color, 'line');
+    this.geometryManager.createGeometry(GeometryType2D.Line, this.id, this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

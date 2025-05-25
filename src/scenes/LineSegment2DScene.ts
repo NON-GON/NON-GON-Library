@@ -7,7 +7,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const start = new Vector2(-50, -50);
     const end = new Vector2(50, 50);
     const rotation = new Vector2(0, 0);
+    const id = 'Line Segment';
     const color = Colors.BRIGHT_BLUE;
-    const scene = new LineSegment2D(canvas, start, end, rotation, color);
+    const scene = new LineSegment2D(canvas, start, end, rotation, id, color);
     scene.startAnimation();
 });

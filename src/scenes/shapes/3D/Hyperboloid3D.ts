@@ -10,6 +10,7 @@ export class Hyperboloid3D extends Base3DScene {
   private height: number;
   private rotation: Vector3;
   private segments: number;
+  private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
@@ -20,6 +21,7 @@ export class Hyperboloid3D extends Base3DScene {
               height: number,
               rotation: Vector3,
               segments: number,
+              id: string,
               color: number) {
     super(canvas);
     this.center = center;
@@ -29,6 +31,7 @@ export class Hyperboloid3D extends Base3DScene {
     this.height = height;
     this.rotation = rotation;
     this.segments = segments;
+    this.id = id;
     this.color = color;
   }
 
@@ -44,9 +47,25 @@ export class Hyperboloid3D extends Base3DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      center_z: this.center.z,
+      rotation_x: this.rotation.x,
+      rotation_y: this.rotation.y,
+      rotation_z: this.rotation.z,
+      x_radius: this.xradius,
+      y_radius: this.yradius,
+      z_factor: this.zfactor,
+      height: this.height
+    }
+  }
+
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType3D.Hyperboloid, 'Hyperboloid3D', this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh('Hyperboloid3D', this.color, 'mesh');
+    this.geometryManager.createGeometry(GeometryType3D.Hyperboloid, this.id, this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'mesh');
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }
