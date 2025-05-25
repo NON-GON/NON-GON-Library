@@ -4,13 +4,16 @@ import { Vector3 } from "../../../Calc/Util/Utils";
 
 export class Point3D extends Base3DScene {
   private center: Vector3;
+  private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
               center: Vector3,
+              id: string,
               color: number) {
     super(canvas);
     this.center = center;
+    this.id = id;
     this.color = color;
   }
 
@@ -27,9 +30,9 @@ export class Point3D extends Base3DScene {
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.Point, 'Point3D', this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh('Point3D', this.color, 'mesh');
-    this.makeSliders("Point", this.getSliderParams());
+    this.geometryManager.createGeometry(GeometryType2D.Point, this.id, this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'mesh');
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

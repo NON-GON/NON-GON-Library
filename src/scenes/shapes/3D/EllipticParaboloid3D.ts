@@ -9,6 +9,7 @@ export class EllipticParaboloid3D extends Base3DScene {
   private height: number;
   private rotation: Vector3;
   private segments: number;
+  private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
@@ -18,6 +19,7 @@ export class EllipticParaboloid3D extends Base3DScene {
               height: number,
               rotation: Vector3,
               segments: number,
+              id: string,
               color: number) {
     super(canvas);
     this.center = center;
@@ -26,6 +28,7 @@ export class EllipticParaboloid3D extends Base3DScene {
     this.height = height;
     this.rotation = rotation;
     this.segments = segments;
+    this.id = id;
     this.color = color;
   }
 
@@ -55,9 +58,9 @@ export class EllipticParaboloid3D extends Base3DScene {
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType3D.EllipticParaboloid, 'EllipticParaboloid3D', this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh('EllipticParaboloid3D', this.color, 'mesh');
-    this.makeSliders("Elliptic Paraboloid", this.getSliderParams());
+    this.geometryManager.createGeometry(GeometryType3D.EllipticParaboloid, this.id, this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'mesh');
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

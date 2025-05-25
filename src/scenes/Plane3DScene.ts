@@ -9,7 +9,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const width = 50;
     const height = 100;
     const segments = 100;
+    const id = 'Plane';
     const color = Colors.BRIGHT_BLUE;
-    const scene = new Plane3D(canvas, center, rotation, width, height, segments, color);
+    const scene = new Plane3D(canvas, center, rotation, width, height, segments, id, color);
     scene.startAnimation();
 });

@@ -9,6 +9,7 @@ export class Ellipsoid3D extends Base3DScene {
   private zradius: number;
   private rotation: Vector3;
   private segments: number;
+  private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
@@ -18,6 +19,7 @@ export class Ellipsoid3D extends Base3DScene {
               zradius: number,
               rotation: Vector3,
               segments: number,
+              id: string,
               color: number) {
     super(canvas);
     this.center = center;
@@ -26,6 +28,7 @@ export class Ellipsoid3D extends Base3DScene {
     this.zradius = zradius;
     this.rotation = rotation;
     this.segments = segments;
+    this.id = id;
     this.color = color;
   }
 
@@ -55,9 +58,10 @@ export class Ellipsoid3D extends Base3DScene {
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType3D.Ellipsoid, 'Ellipsoid3D', this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh('Ellipsoid3D', this.color, 'mesh');
-    this.makeSliders("Ellipsoid", this.getSliderParams());
+    this.geometryManager.createGeometry(GeometryType3D.Ellipsoid, this.id, this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'mesh');
+    this.makeSliders(this.id, this.getSliderParams());
+    mesh.name = this.id;
     this.scene.add(mesh);
   }
 }

@@ -73,6 +73,16 @@ export abstract class Base3DScene {
           }
         });
 
+        // A simple prototype to test the possibility of changing positions (works only once and on ellipsoid)
+        window.addEventListener('keydown', (evt) => {
+          if (evt.key === 'p' || evt.key === 'P') {
+            //this.scene.remove(this.geometryManager.getGeometryMesh('Ellipsoid', Colors.BRIGHT_BLUE, 'mesh'));
+            this.scene.remove(this.scene.getObjectByName('Ellipsoid'));
+            this.geometryManager.changePosition('Ellipsoid', new Vector3(50, 50, 50));
+            this.scene.add(this.geometryManager.getGeometryMesh('Ellipsoid', Colors.BRIGHT_BLUE, 'mesh'));
+          }
+        });
+
         // Resize Handler
         window.addEventListener('resize', this.onWindowResize.bind(this));
     }
@@ -139,10 +149,10 @@ export abstract class Base3DScene {
         return cone;
     }
 
-    protected makeSliders(shapeName: string, shapeParams: any) {
+    protected makeSliders(shapeId: string, shapeParams: any) {
       const fieldSet = document.createElement('fieldset');
       const legend = document.createElement('legend');
-      legend.textContent = shapeName;
+      legend.textContent = shapeId;
       fieldSet.appendChild(legend);
 
       for (const [key, value] of Object.entries(shapeParams)) {

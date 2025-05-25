@@ -11,6 +11,7 @@ export class Superellipsoid3D extends Base3DScene {
   private e2: number;
   private rotation: Vector3;
   private segments: number;
+  private id: string;
   private color: number;
 
   constructor(
@@ -23,6 +24,7 @@ export class Superellipsoid3D extends Base3DScene {
     e2: number,
     rotation: Vector3,
     segments: number,
+    id: string,
     color: number
   ) {
     super(canvas);
@@ -34,6 +36,7 @@ export class Superellipsoid3D extends Base3DScene {
     this.e2 = e2;
     this.rotation = rotation;
     this.segments = segments;
+    this.id = id;
     this.color = color;
   }
 
@@ -69,15 +72,15 @@ export class Superellipsoid3D extends Base3DScene {
   protected buildScene(): void {
     this.geometryManager.createGeometry(
       GeometryType3D.Superellipsoid,
-      "Superellipsoid3D",
+      this.id,
       this.getParams()
     );
     const mesh = this.geometryManager.getGeometryMesh(
-      "Superellipsoid3D",
+      this.id,
       this.color,
       "mesh"
     );
-    this.makeSliders("Superellipsoid", this.getSliderParams());
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }
