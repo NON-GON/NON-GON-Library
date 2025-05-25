@@ -6,17 +6,20 @@ export class ConvexLine2D extends Base2DScene {
   private center: Vector2;
   private rotation: Vector2;
   private segments: number;
+  private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
               center: Vector2,
               rotation: Vector2,
               segments: number,
+              id: string,
               color: number) {
     super(canvas);
     this.center = center;
     this.rotation = rotation;
     this.segments = segments;
+    this.id = id;
     this.color = color;
   }
 
@@ -28,9 +31,18 @@ export class ConvexLine2D extends Base2DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      rotation: this.rotation
+    }
+  }
+
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.ConvexLine, 'ConvexLine2D', this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh('ConvexLine2D', this.color, 'line');
+    this.geometryManager.createGeometry(GeometryType2D.ConvexLine, this.id, this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

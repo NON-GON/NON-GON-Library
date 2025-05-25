@@ -8,7 +8,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const radius = 50;
     const rotation = new Vector2(0, 0);
     const segments = 100;
+    const id = 'Circle';
     const color = Colors.BRIGHT_BLUE;
-    const scene = new Circle2D(canvas, center, radius, rotation, segments, color);
+    const scene = new Circle2D(canvas, center, radius, rotation, segments, id, color);
     scene.startAnimation();
 });

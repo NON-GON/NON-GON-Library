@@ -8,6 +8,7 @@ export class Ellipse2D extends Base2DScene {
   private yradius: number;
   private rotation: Vector2;
   private segments: number;
+  private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
@@ -16,6 +17,7 @@ export class Ellipse2D extends Base2DScene {
               yradius: number,
               rotation: Vector2,
               segments: number,
+              id: string,
               color: number) {
     super(canvas);
     this.center = center;
@@ -23,6 +25,7 @@ export class Ellipse2D extends Base2DScene {
     this.yradius = yradius;
     this.rotation = rotation;
     this.segments = segments;
+    this.id = id;
     this.color = color;
   }
 
@@ -36,9 +39,20 @@ export class Ellipse2D extends Base2DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      x_radius: this.xradius,
+      y_radius: this.yradius,
+      rotation: this.rotation
+    }
+  }
+
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.Ellipse, 'Ellipse2D', this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh('Ellipse2D', this.color, 'line');
+    this.geometryManager.createGeometry(GeometryType2D.Ellipse, this.id, this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

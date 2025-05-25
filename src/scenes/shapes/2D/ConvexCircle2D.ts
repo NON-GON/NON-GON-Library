@@ -7,6 +7,7 @@ export class ConvexCircle2D extends Base2DScene {
   private radius: number;
   private rotation: Vector2;
   private segments: number;
+  private id: string;
   private color: number;
 
   constructor(
@@ -15,6 +16,7 @@ export class ConvexCircle2D extends Base2DScene {
     radius: number,
     rotation: Vector2,
     segments: number,
+    id: string,
     color: number
   ) {
     super(canvas);
@@ -22,6 +24,7 @@ export class ConvexCircle2D extends Base2DScene {
     this.radius = radius;
     this.rotation = rotation;
     this.segments = segments;
+    this.id = id;
     this.color = color;
   }
 
@@ -34,17 +37,27 @@ export class ConvexCircle2D extends Base2DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      rotation: this.rotation,
+      radius: this.radius
+    }
+  }
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(
       GeometryType2D.ConvexCircle,
-      "ConvexCircle2D",
+      this.id,
       this.getParams()
     );
     const mesh = this.geometryManager.getGeometryMesh(
-      "ConvexCircle2D",
+      this.id,
       this.color,
       "line"
     );
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

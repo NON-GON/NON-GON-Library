@@ -9,6 +9,7 @@ export class Superellipse2D extends Base2DScene {
   private exponent: number;
   private rotation: Vector2;
   private segments: number;
+  private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
@@ -18,6 +19,7 @@ export class Superellipse2D extends Base2DScene {
               exponent: number,
               rotation: Vector2,
               segments: number,
+              id: string,
               color: number) {
     super(canvas);
     this.center = center;
@@ -26,6 +28,7 @@ export class Superellipse2D extends Base2DScene {
     this.exponent = exponent;
     this.rotation = rotation;
     this.segments = segments;
+    this.id = id;
     this.color = color;
   }
 
@@ -40,9 +43,21 @@ export class Superellipse2D extends Base2DScene {
     };
   }
 
+  protected getSliderParams() {
+    return {
+      center_x: this.center.x,
+      center_y: this.center.y,
+      x_radius: this.xradius,
+      y_radius: this.yradius,
+      exponent: this.exponent,
+      rotation: this.rotation
+    }
+  }
+
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, 'Superellipse2D', this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh('Superellipse2D', this.color, 'line');
+    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, this.id, this.getParams());
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
+    this.makeSliders(this.id, this.getSliderParams());
     this.scene.add(mesh);
   }
 }
