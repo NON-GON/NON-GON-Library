@@ -22,17 +22,13 @@ export class Point3D extends Base3DScene {
   }
 
   protected getSliderParams() {
-    return {
-      center_x: this.center.x,
-      center_y: this.center.y,
-      center_z: this.center.z
-    }
+    return {}
   }
 
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Point, this.id, this.getParams());
     const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'mesh');
-    this.makeSliders(this.id, this.getSliderParams());
+    this.makeSliders(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

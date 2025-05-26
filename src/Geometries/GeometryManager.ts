@@ -328,17 +328,39 @@ export class GeometryManager {
     return result;
   }
 
-  public changePosition(id: string, position: Vector3 | Vector2) {
+  public changeCenterX(id: string, x: number) {
     let geometry = this.getGeometry(id);
-    geometry.center = position;
+    geometry.center = new Vector3(x, geometry.center.y, geometry.center.z);
     geometry.geometry = null;
-    return id;
   }
 
-  public changeRotation(id: string, rotation: Vector3 | Vector2) {
+  public changeCenterY(id: string, y: number) {
     let geometry = this.getGeometry(id);
-    geometry.rotation = rotation;
+    geometry.center = new Vector3(geometry.center.x, y, geometry.center.z);
     geometry.geometry = null;
-    return id;
+  }
+
+  public changeCenterZ(id: string, z: number) {
+    let geometry = this.getGeometry(id);
+    geometry.center = new Vector3(geometry.center.x, geometry.center.y, z);
+    geometry.geometry = null;
+  }
+
+  public changeRotationX(id: string, x: number) {
+    let geometry = this.getGeometry(id);
+    geometry.rotation = new Vector3(x, geometry.rotation.y, geometry.rotation.z);
+    geometry.geometry = null;
+  }
+
+  public changeRotationY(id: string, y: number) {
+    let geometry = this.getGeometry(id);
+    geometry.rotation = new Vector3(geometry.rotation.x, y, geometry.rotation.z);
+    geometry.geometry = null;
+  }
+
+  public changeRotationZ(id: string, z: number) {
+    let geometry = this.getGeometry(id);
+    geometry.rotation = new Vector3(geometry.rotation.x, geometry.rotation.y, z);
+    geometry.geometry = null;
   }
 }

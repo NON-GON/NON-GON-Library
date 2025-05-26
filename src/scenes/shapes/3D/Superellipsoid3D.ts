@@ -55,12 +55,6 @@ export class Superellipsoid3D extends Base3DScene {
 
   protected getSliderParams() {
     return {
-      center_x: this.center.x,
-      center_y: this.center.y,
-      center_z: this.center.z,
-      rotation_x: this.rotation.x,
-      rotation_y: this.rotation.y,
-      rotation_z: this.rotation.z,
       x_radius: this.xradius,
       y_radius: this.yradius,
       z_radius: this.zradius,
@@ -80,7 +74,7 @@ export class Superellipsoid3D extends Base3DScene {
       this.color,
       "mesh"
     );
-    this.makeSliders(this.id, this.getSliderParams());
+    this.makeSliders(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

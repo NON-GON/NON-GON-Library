@@ -39,9 +39,6 @@ export class Circle2D extends Base2DScene {
 
   protected getSliderParams() {
     return {
-      center_x: this.center.x,
-      center_y: this.center.y,
-      rotation: this.rotation,
       radius: this.radius
     }
   }
@@ -57,7 +54,7 @@ export class Circle2D extends Base2DScene {
       this.color,
       "line"
     );
-    this.makeSliders(this.id, this.getSliderParams());
+    this.makeSliders(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

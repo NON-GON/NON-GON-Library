@@ -73,16 +73,6 @@ export abstract class Base3DScene {
           }
         });
 
-        // A simple prototype to test the possibility of changing positions (works only once and on ellipsoid)
-        window.addEventListener('keydown', (evt) => {
-          if (evt.key === 'p' || evt.key === 'P') {
-            //this.scene.remove(this.geometryManager.getGeometryMesh('Ellipsoid', Colors.BRIGHT_BLUE, 'mesh'));
-            this.scene.remove(this.scene.getObjectByName('Ellipsoid'));
-            this.geometryManager.changePosition('Ellipsoid', new Vector3(50, 50, 50));
-            this.scene.add(this.geometryManager.getGeometryMesh('Ellipsoid', Colors.BRIGHT_BLUE, 'mesh'));
-          }
-        });
-
         // Resize Handler
         window.addEventListener('resize', this.onWindowResize.bind(this));
     }
@@ -149,35 +139,96 @@ export abstract class Base3DScene {
         return cone;
     }
 
-    protected makeSliders(shapeId: string, shapeParams: any) {
+    protected makeSliders(shapeId: string, shapeColor: number, shapeParams: any) {
       const fieldSet = document.createElement('fieldset');
       const legend = document.createElement('legend');
       legend.textContent = shapeId;
       fieldSet.appendChild(legend);
+      this.makeShapeCenterSliders(fieldSet, shapeId, shapeColor);
+      this.makeShapeRotationSliders(fieldSet, shapeId, shapeColor);
+      //for (const [key, value] of Object.entries(shapeParams)) {
+      //  const label = document.createElement('label');
+      //  label.textContent = `${key}: `;
+      //
+      //  const slider = document.createElement('input');
+      //  slider.type  = 'range';
+      //  slider.min   = '-100';
+      //  slider.max   = '100';
+      //  slider.step  = '1';
+      //  slider.value = value.toString();
+      //
+      //  slider.addEventListener('input', () => {
+      //    const v = parseFloat(slider.value);
+      //    shapeParams[key] = v;
+      //    // rebuild geometry here
+      //  });
+//
+      //  label.appendChild(slider);
+      //  fieldSet.appendChild(label);
+      //  fieldSet.appendChild(document.createElement('br'));
+      //}
 
-      for (const [key, value] of Object.entries(shapeParams)) {
+      this.sliders.appendChild(fieldSet);
+    }
+
+    private makeShapeCenterSliders(fieldSet: HTMLFieldSetElement, shapeId: string, shapeColor: number) {
+      const shapeCenter = this.geometryManager.getGeometry(shapeId).center;
+      const fields = [['Center X: ', shapeCenter.x, v => this.geometryManager.changeCenterX(shapeId, v)],
+                      ['Center Y: ', shapeCenter.y, v => this.geometryManager.changeCenterY(shapeId, v)],
+                      ['Center Z: ', shapeCenter.z, v => this.geometryManager.changeCenterZ(shapeId, v)]];
+
+      fields.forEach( ([labelText, value, newCenter]) => {
         const label = document.createElement('label');
-        label.textContent = `${key}: `;
+        label.textContent = labelText;
       
         const slider = document.createElement('input');
         slider.type  = 'range';
         slider.min   = '-100';
         slider.max   = '100';
-        slider.step  = '1';
+        slider.step  = '0.01';
         slider.value = value.toString();
       
         slider.addEventListener('input', () => {
           const v = parseFloat(slider.value);
-          shapeParams[key] = v;
-          // rebuild geometry here
+          this.scene.remove(this.scene.getObjectByName(shapeId));
+          newCenter(v);
+          this.scene.add(this.geometryManager.getGeometryMesh(shapeId, shapeColor, 'mesh'));
         });
 
         label.appendChild(slider);
         fieldSet.appendChild(label);
         fieldSet.appendChild(document.createElement('br'));
-      }
+      });
+    }
 
-      this.sliders.appendChild(fieldSet);
+    private makeShapeRotationSliders(fieldSet: HTMLFieldSetElement, shapeId: string, shapeColor: number) {
+      const shapeRotation = this.geometryManager.getGeometry(shapeId).rotation;
+      const fields = [['Rotation X: ', shapeRotation.x, v => this.geometryManager.changeRotationX(shapeId, v)],
+                      ['Rotation Y: ', shapeRotation.y, v => this.geometryManager.changeRotationY(shapeId, v)],
+                      ['Rotation Z: ', shapeRotation.z, v => this.geometryManager.changeRotationZ(shapeId, v)]];
+
+      fields.forEach( ([labelText, value, newRotation]) => {
+        const label = document.createElement('label');
+        label.textContent = labelText;
+      
+        const slider = document.createElement('input');
+        slider.type  = 'range';
+        slider.min   = '-360';
+        slider.max   = '360';
+        slider.step  = '0.01';
+        slider.value = value.toString();
+      
+        slider.addEventListener('input', () => {
+          const v = parseFloat(slider.value);
+          this.scene.remove(this.scene.getObjectByName(shapeId));
+          newRotation(v);
+          this.scene.add(this.geometryManager.getGeometryMesh(shapeId, shapeColor, 'mesh'));
+        });
+
+        label.appendChild(slider);
+        fieldSet.appendChild(label);
+        fieldSet.appendChild(document.createElement('br'));
+      });
     }
 
     private onWindowResize() {

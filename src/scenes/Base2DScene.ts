@@ -137,35 +137,92 @@ export abstract class Base2DScene {
     return cone;
   }
 
-  protected makeSliders(shapeId: string, shapeParams: any) {
+  protected makeSliders(shapeId: string, shapeColor: number, shapeParams: any) {
     const fieldSet = document.createElement('fieldset');
     const legend = document.createElement('legend');
     legend.textContent = shapeId;
     fieldSet.appendChild(legend);
+    this.makeShapeCenterSliders(fieldSet, shapeId, shapeColor);
+    this.makeShapeRotationSliders(fieldSet, shapeId, shapeColor);
+    //for (const [key, value] of Object.entries(shapeParams)) {
+    //  const label = document.createElement('label');
+    //  label.textContent = `${key}: `;
+    //
+    //  const slider = document.createElement('input');
+    //  slider.type  = 'range';
+    //  slider.min   = '-100';
+    //  slider.max   = '100';
+    //  slider.step  = '1';
+    //  slider.value = value.toString();
+    //
+    //  slider.addEventListener('input', () => {
+    //    const v = parseFloat(slider.value);
+    //    shapeParams[key] = v;
+    //    // rebuild geometry here
+    //  });
+    //
+    //  label.appendChild(slider);
+    //  fieldSet.appendChild(label);
+    //  fieldSet.appendChild(document.createElement('br'));
+    //}
+    this.sliders.appendChild(fieldSet);
+  }
 
-    for (const [key, value] of Object.entries(shapeParams)) {
+  private makeShapeCenterSliders(fieldSet: HTMLFieldSetElement, shapeId: string, shapeColor: number) {
+    const shapeCenter = this.geometryManager.getGeometry(shapeId).center;
+    const fields = [['Center X: ', shapeCenter.x, v => this.geometryManager.changeCenterX(shapeId, v)],
+                    ['Center Y: ', shapeCenter.y, v => this.geometryManager.changeCenterY(shapeId, v)]];
+
+    fields.forEach( ([labelText, value, newCenter]) => {
       const label = document.createElement('label');
-      label.textContent = `${key}: `;
+      label.textContent = labelText;
     
       const slider = document.createElement('input');
       slider.type  = 'range';
       slider.min   = '-100';
       slider.max   = '100';
-      slider.step  = '1';
+      slider.step  = '0.01';
       slider.value = value.toString();
     
       slider.addEventListener('input', () => {
         const v = parseFloat(slider.value);
-        shapeParams[key] = v;
-        // rebuild geometry here
+        this.scene.remove(this.scene.getObjectByName(shapeId));
+        newCenter(v);
+        this.scene.add(this.geometryManager.getGeometryMesh(shapeId, shapeColor, 'line'));
       });
 
       label.appendChild(slider);
       fieldSet.appendChild(label);
       fieldSet.appendChild(document.createElement('br'));
-    }
+    });
+  }
+
+  private makeShapeRotationSliders(fieldSet: HTMLFieldSetElement, shapeId: string, shapeColor: number) {
+    const shapeRotation = this.geometryManager.getGeometry(shapeId).rotation;
+    const fields = [['Rotation: ', shapeRotation.z, v => this.geometryManager.changeRotationZ(shapeId, v)]];
+
+    fields.forEach( ([labelText, value, newRotation]) => {
+      const label = document.createElement('label');
+      label.textContent = labelText;
     
-    this.sliders.appendChild(fieldSet);
+      const slider = document.createElement('input');
+      slider.type  = 'range';
+      slider.min   = '-360';
+      slider.max   = '360';
+      slider.step  = '0.01';
+      slider.value = value.toString();
+    
+      slider.addEventListener('input', () => {
+        const v = parseFloat(slider.value);
+        this.scene.remove(this.scene.getObjectByName(shapeId));
+        newRotation(v);
+        this.scene.add(this.geometryManager.getGeometryMesh(shapeId, shapeColor, 'line'));
+      });
+
+      label.appendChild(slider);
+      fieldSet.appendChild(label);
+      fieldSet.appendChild(document.createElement('br'));
+    });
   }
 
   private onWindowResize() {
