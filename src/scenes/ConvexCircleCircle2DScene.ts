@@ -46,9 +46,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const convexCircleCircle = new ConvexCircleCircle2D(
     canvas,
     convexCircle,
-    convexCircleColor,
     circle,
-    circleColor,
     colorConnection
   );
   convexCircleCircle.startAnimation();

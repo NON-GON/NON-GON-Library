@@ -39,17 +39,25 @@ export class Ellipse2D extends Base2DScene {
     };
   }
 
-  protected getSliderParams() {
+  public getSliderParams() {
     return {
       x_radius: this.xradius,
       y_radius: this.yradius
     }
   }
 
+  public getId() {
+    return this.id;
+  }
+  
+  public getColor() {
+    return this.color;
+  }
+  
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Ellipse, this.id, this.getParams());
     const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
-    this.makeSliders(this.id, this.color, this.getSliderParams());
+    this.makeSlidersSolo(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

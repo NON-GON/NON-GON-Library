@@ -56,9 +56,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const superellipsoidPlane = new SuperellipsoidPlane3D(
     canvas,
     superellipsoid,
-    superellipsoiColor,
     plane,
-    planeColor,
     colorConnection
   );
   superellipsoidPlane.startAnimation();

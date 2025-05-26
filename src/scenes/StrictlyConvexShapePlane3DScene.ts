@@ -46,9 +46,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const strictlyConvexShapePlane = new StrictlyConvexShapePlane3D(
     canvas,
     strictlyConvexShape,
-    strictlyConvexShapeColor,
     plane,
-    planeColor,
     colorConnection
   );
   strictlyConvexShapePlane.startAnimation();

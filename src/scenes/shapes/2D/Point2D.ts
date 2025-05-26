@@ -21,14 +21,22 @@ export class Point2D extends Base2DScene {
     return { center: this.center };
   }
 
-  protected getSliderParams() {
+  public getSliderParams() {
     return {}
   }
 
+  public getId() {
+    return this.id;
+  }
+  
+  public getColor() {
+    return this.color;
+  }
+  
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Point, this.id, this.getParams());
     const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
-    this.makeSliders(this.id, this.color, this.getSliderParams());
+    this.makeSlidersSolo(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

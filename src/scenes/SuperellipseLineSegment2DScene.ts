@@ -33,7 +33,6 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Interaction
     const colorConnection = Colors.PINK;
-    const superellipseLineSegment = new SuperellipseLineSegment2D(canvas, superellipse, superellipseColor,
-                                                                  lineSegment, lineSegmentColor, colorConnection);
+    const superellipseLineSegment = new SuperellipseLineSegment2D(canvas, superellipse, lineSegment, colorConnection);
     superellipseLineSegment.startAnimation();
 });

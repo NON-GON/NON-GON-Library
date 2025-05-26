@@ -5,37 +5,39 @@ import { GeometryType2D } from "../../../Geometries/GeoTypes";
 
 export class ConvexLineLineSegment2D extends Base2DScene {
   private convexLine: ConvexLine2D;
-  private colorConvexLine: number;
   private lineSegment: LineSegment2D;
-  private colorLineSegment: number;
   private colorConnection: number;
 
   constructor(
     canvas: HTMLCanvasElement,
     convexLine: ConvexLine2D,
-    colorConvexLine: number,
     lineSegment: LineSegment2D,
-    colorLineSegment: number,
     colorConnection: number
   ) {
     super(canvas);
     this.convexLine = convexLine;
-    this.colorConvexLine = colorConvexLine;
     this.lineSegment = lineSegment;
-    this.colorLineSegment = colorLineSegment;
     this.colorConnection = colorConnection;
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.ConvexLine, 'ConvexLine2D', this.convexLine.getParams());
-    const convexLineMesh = this.geometryManager.getGeometryMesh('ConvexLine2D', this.colorConvexLine, "line");
+    const convexLineId = this.convexLine.getId();
+    const convexLineColor = this.convexLine.getColor();
+    this.geometryManager.createGeometry(GeometryType2D.ConvexLine, convexLineId, this.convexLine.getParams());
+    const convexLineMesh = this.geometryManager.getGeometryMesh(convexLineId, convexLineColor, "line");
     this.scene.add(convexLineMesh);
 
-    this.geometryManager.createGeometry(GeometryType2D.Line, 'LineSegment2D', this.lineSegment.getParams());
-    const lineSegmentMesh = this.geometryManager.getGeometryMesh('LineSegment2D', this.colorLineSegment, "line");
+    const lineSegmentId = this.lineSegment.getId();
+    const lineSegmentColor = this.lineSegment.getColor();
+    this.geometryManager.createGeometry(GeometryType2D.Line, lineSegmentId, this.lineSegment.getParams());
+    const lineSegmentMesh = this.geometryManager.getGeometryMesh(lineSegmentId, lineSegmentColor, "line");
     this.scene.add(lineSegmentMesh);
 
-    let points = this.geometryManager.calculateMinimumDistance('ConvexLine2D', 'LineSegment2D');
+    this.makeSlidersInteraction(convexLineId, convexLineColor, this.convexLine.getSliderParams(),
+                                lineSegmentId, lineSegmentColor, this.lineSegment.getSliderParams(),
+                                this.colorConnection);
+
+    let points = this.geometryManager.calculateMinimumDistance(convexLineId, lineSegmentId);
     this.drawMinimumDistance(points[0], points[1], this.colorConnection);
   }
 }

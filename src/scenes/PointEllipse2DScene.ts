@@ -28,7 +28,6 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Interaction
     const colorConnection = Colors.PINK;
-    const pointEllipse = new PointEllipse2D(canvas, point, pointColor, 
-                                            ellipse, ellipseColor, colorConnection);
+    const pointEllipse = new PointEllipse2D(canvas, point, ellipse, colorConnection);
     pointEllipse.startAnimation();
 });

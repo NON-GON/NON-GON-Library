@@ -37,12 +37,20 @@ export class Circle2D extends Base2DScene {
     };
   }
 
-  protected getSliderParams() {
+  public getSliderParams() {
     return {
       radius: this.radius
     }
   }
 
+  public getId() {
+    return this.id;
+  }
+  
+  public getColor() {
+    return this.color;
+  }
+  
   protected buildScene(): void {
     this.geometryManager.createGeometry(
       GeometryType2D.Circle,
@@ -54,7 +62,7 @@ export class Circle2D extends Base2DScene {
       this.color,
       "line"
     );
-    this.makeSliders(this.id, this.color, this.getSliderParams());
+    this.makeSlidersSolo(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

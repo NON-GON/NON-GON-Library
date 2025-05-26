@@ -29,7 +29,6 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Interaction
     const colorConnection = Colors.PINK;
-    const pointEllipsoid = new PointEllipsoid3D(canvas, point, pointColor,
-                                                ellipsoid, ellipsoidColor, colorConnection);
+    const pointEllipsoid = new PointEllipsoid3D(canvas, point, ellipsoid, colorConnection);
     pointEllipsoid.startAnimation();
 });

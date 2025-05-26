@@ -5,37 +5,39 @@ import { GeometryType2D } from "../../../Geometries/GeoTypes";
 
 export class SuperellipseLineSegment2D extends Base2DScene {
   private superellipse: Superellipse2D;
-  private colorSuperellipse: number;
   private lineSegment: LineSegment2D;
-  private colorLineSegment: number;
   private colorConnection: number;
 
   constructor(
     canvas: HTMLCanvasElement,
     superellipse: Superellipse2D,
-    colorSuperellipse: number,
     lineSegment: LineSegment2D,
-    colorLineSegment: number,
     colorConnection: number
   ) {
     super(canvas);
     this.superellipse = superellipse;
-    this.colorSuperellipse = colorSuperellipse;
     this.lineSegment = lineSegment;
-    this.colorLineSegment = colorLineSegment;
     this.colorConnection = colorConnection;
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, 'Superellipse2D', this.superellipse.getParams());
-    const superellipseMesh = this.geometryManager.getGeometryMesh('Superellipse2D', this.colorSuperellipse, "line");
+    const superellipseId = this.superellipse.getId();
+    const superellipseColor = this.superellipse.getColor();
+    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, superellipseId, this.superellipse.getParams());
+    const superellipseMesh = this.geometryManager.getGeometryMesh(superellipseId, superellipseColor, "line");
     this.scene.add(superellipseMesh);
 
-    this.geometryManager.createGeometry(GeometryType2D.Line, 'LineSegment2D', this.lineSegment.getParams());
-    const lineSegmentMesh = this.geometryManager.getGeometryMesh('LineSegment2D', this.colorLineSegment, "line");
+    const lineSegmentId = this.lineSegment.getId();
+    const lineSegmentColor = this.lineSegment.getColor();
+    this.geometryManager.createGeometry(GeometryType2D.Line, lineSegmentId, this.lineSegment.getParams());
+    const lineSegmentMesh = this.geometryManager.getGeometryMesh(lineSegmentId, lineSegmentColor, "line");
     this.scene.add(lineSegmentMesh);
 
-    let points = this.geometryManager.calculateMinimumDistance('Superellipse2D', 'LineSegment2D');
+    this.makeSlidersInteraction(superellipseId, superellipseColor, this.superellipse.getSliderParams(),
+                                lineSegmentId, lineSegmentColor, this.lineSegment.getSliderParams(),
+                              this.colorConnection);
+
+    let points = this.geometryManager.calculateMinimumDistance(superellipseId, lineSegmentId);
     this.drawMinimumDistance(points[0], points[1], this.colorConnection);
   }
 }

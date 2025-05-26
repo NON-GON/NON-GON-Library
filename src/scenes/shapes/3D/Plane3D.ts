@@ -39,17 +39,25 @@ export class Plane3D extends Base3DScene {
     };
   }
 
-  protected getSliderParams() {
+  public getSliderParams() {
     return {
       width: this.width,
       height: this.height
     }
   }
 
+  public getId() {
+    return this.id;
+  }
+  
+  public getColor() {
+    return this.color;
+  }
+  
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Plane, this.id, this.getParams());
     const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'mesh');
-    this.makeSliders(this.id, this.color, this.getSliderParams());
+    this.makeSlidersSolo(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);
   }
 }

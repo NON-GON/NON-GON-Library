@@ -5,37 +5,39 @@ import { GeometryType2D, GeometryType3D } from "../../../Geometries/GeoTypes";
 
 export class PointEllipsoid3D extends Base3DScene {
   private point: Point3D;
-  private colorPoint: number;
   private ellipsoid: Ellipsoid3D;
-  private colorEllipsoid: number;
   private colorConnection: number;
 
   constructor(
     canvas: HTMLCanvasElement,
     point: Point3D,
-    colorPoint: number,
     ellipsoid: Ellipsoid3D,
-    colorEllipsoid: number,
     colorConnection: number
   ) {
     super(canvas);
     this.point = point;
-    this.colorPoint = colorPoint;
     this.ellipsoid = ellipsoid;
-    this.colorEllipsoid = colorEllipsoid;
     this.colorConnection = colorConnection;
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.Point, 'Point3D', this.point.getParams());
-    const pointMesh = this.geometryManager.getGeometryMesh('Point3D', this.colorPoint, "mesh");
+    const pointId = this.point.getId();
+    const pointColor = this.point.getColor();
+    this.geometryManager.createGeometry(GeometryType2D.Point, pointId, this.point.getParams());
+    const pointMesh = this.geometryManager.getGeometryMesh(pointId, pointColor, "mesh");
     this.scene.add(pointMesh);
 
-    this.geometryManager.createGeometry(GeometryType3D.Ellipsoid, 'Ellipsoid3D', this.ellipsoid.getParams());
-    const ellipsoidMesh = this.geometryManager.getGeometryMesh('Ellipsoid3D', this.colorEllipsoid, "mesh");
+    const ellipsoidId = this.ellipsoid.getId();
+    const ellipsoidColor = this.ellipsoid.getColor();
+    this.geometryManager.createGeometry(GeometryType3D.Ellipsoid, ellipsoidId, this.ellipsoid.getParams());
+    const ellipsoidMesh = this.geometryManager.getGeometryMesh(ellipsoidId, ellipsoidColor, "mesh");
     this.scene.add(ellipsoidMesh);
 
-    let points = this.geometryManager.calculateMinimumDistance('Point3D', 'Ellipsoid3D');
+    this.makeSlidersInteraction(pointId, pointColor, this.point.getSliderParams(),
+                                ellipsoidId, ellipsoidColor, this.ellipsoid.getSliderParams(),
+                                this.colorConnection);
+    
+    let points = this.geometryManager.calculateMinimumDistance(pointId, ellipsoidId);
     this.drawMinimumDistance(points[0], points[1], this.colorConnection);
   }
 }

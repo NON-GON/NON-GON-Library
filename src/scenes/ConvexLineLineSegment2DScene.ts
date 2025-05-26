@@ -25,6 +25,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Interaction
     const colorConnection = Colors.PINK;
-    const convexLineLineSegment = new ConvexLineLineSegment2D(canvas, convexLine, convexLineColor, lineSegment, lineSegmentColor, colorConnection);
+    const convexLineLineSegment = new ConvexLineLineSegment2D(canvas, convexLine, lineSegment, colorConnection);
     convexLineLineSegment.startAnimation();
 });

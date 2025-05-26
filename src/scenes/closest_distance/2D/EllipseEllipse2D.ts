@@ -4,37 +4,39 @@ import { GeometryType2D } from "../../../Geometries/GeoTypes";
 
 export class EllipseEllipse2D extends Base2DScene {
   private ellipse1: Ellipse2D;
-  private colorEllipse1: number;
   private ellipse2: Ellipse2D;
-  private colorEllipse2: number;
   private colorConnection: number;
 
   constructor(
     canvas: HTMLCanvasElement,
     ellipse1: Ellipse2D,
-    colorEllipse1: number,
     ellipse2: Ellipse2D,
-    colorEllipse2: number,
     colorConnection: number
   ) {
     super(canvas);
     this.ellipse1 = ellipse1;
-    this.colorEllipse1 = colorEllipse1;
     this.ellipse2 = ellipse2;
-    this.colorEllipse2 = colorEllipse2;
     this.colorConnection = colorConnection;
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.Ellipse, 'Ellipse1', this.ellipse1.getParams());
-    const ellipse1Mesh = this.geometryManager.getGeometryMesh('Ellipse1', this.colorEllipse1, "line");
+    const ellipse1Id = this.ellipse1.getId();
+    const ellipse1Color = this.ellipse1.getColor();
+    this.geometryManager.createGeometry(GeometryType2D.Ellipse, ellipse1Id, this.ellipse1.getParams());
+    const ellipse1Mesh = this.geometryManager.getGeometryMesh(ellipse1Id, ellipse1Color, "line");
     this.scene.add(ellipse1Mesh);
 
-    this.geometryManager.createGeometry(GeometryType2D.Ellipse, 'Ellipse2', this.ellipse2.getParams());
-    const ellipse2Mesh = this.geometryManager.getGeometryMesh('Ellipse2', this.colorEllipse2, "line");
+    const ellipse2Id = this.ellipse2.getId();
+    const ellipse2Color = this.ellipse2.getColor();
+    this.geometryManager.createGeometry(GeometryType2D.Ellipse, ellipse2Id, this.ellipse2.getParams());
+    const ellipse2Mesh = this.geometryManager.getGeometryMesh(ellipse2Id, ellipse2Color, "line");
     this.scene.add(ellipse2Mesh);
 
-    let points = this.geometryManager.calculateMinimumDistance('Ellipse1', 'Ellipse2');
+    this.makeSlidersInteraction(ellipse1Id, ellipse1Color, this.ellipse1.getSliderParams(),
+                                ellipse2Id, ellipse2Color, this.ellipse2.getSliderParams(),
+                                this.colorConnection);
+
+    let points = this.geometryManager.calculateMinimumDistance(ellipse1Id, ellipse2Id);
     this.drawMinimumDistance(points[0], points[1], this.colorConnection);
   }
 }

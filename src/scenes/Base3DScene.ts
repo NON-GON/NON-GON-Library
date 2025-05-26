@@ -24,8 +24,8 @@ export abstract class Base3DScene {
         const near = 0.1;
         const far = 1000;
         this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        //this.camera.position.set(-200, 200, 200);
-        this.camera.position.set(-100, 50, 80); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
+        this.camera.position.set(-200, 200, 200);
+        //this.camera.position.set(-100, 50, 80); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
         this.camera.lookAt(0, 0, 0);
 
         // Scene & Light
@@ -51,7 +51,7 @@ export abstract class Base3DScene {
         this.scene.add(new THREE.AmbientLight(0x222222));
 
         // Grid & Axes
-        //this.makeGridAndAxes();
+        this.makeGridAndAxes();
 
         // Controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -139,35 +139,30 @@ export abstract class Base3DScene {
         return cone;
     }
 
-    protected makeSliders(shapeId: string, shapeColor: number, shapeParams: any) {
+    protected makeSlidersSolo(shapeId: string, shapeColor: number, shapeParams: any) {
       const fieldSet = document.createElement('fieldset');
       const legend = document.createElement('legend');
       legend.textContent = shapeId;
       fieldSet.appendChild(legend);
       this.makeShapeCenterSliders(fieldSet, shapeId, shapeColor);
       this.makeShapeRotationSliders(fieldSet, shapeId, shapeColor);
-      //for (const [key, value] of Object.entries(shapeParams)) {
-      //  const label = document.createElement('label');
-      //  label.textContent = `${key}: `;
-      //
-      //  const slider = document.createElement('input');
-      //  slider.type  = 'range';
-      //  slider.min   = '-100';
-      //  slider.max   = '100';
-      //  slider.step  = '1';
-      //  slider.value = value.toString();
-      //
-      //  slider.addEventListener('input', () => {
-      //    const v = parseFloat(slider.value);
-      //    shapeParams[key] = v;
-      //    // rebuild geometry here
-      //  });
-//
-      //  label.appendChild(slider);
-      //  fieldSet.appendChild(label);
-      //  fieldSet.appendChild(document.createElement('br'));
-      //}
+      this.sliders.appendChild(fieldSet);
+    }
 
+    protected makeSlidersInteraction(shape1Id: string, shape1Color: number, shape1Params: any,
+                                     shape2Id: string, shape2Color: number, shape2Params: any,
+                                     connectionColor: number) {
+      this.makeSlidersInteractionAux(shape1Id, shape1Color, shape1Params, shape2Id, connectionColor);
+      this.makeSlidersInteractionAux(shape2Id, shape2Color, shape2Params, shape1Id, connectionColor);
+    }
+
+    protected makeSlidersInteractionAux(shape1Id: string, shape1Color: number, shape1Params: any, shape2Id: string, connectionColor: number) {
+      const fieldSet = document.createElement('fieldset');
+      const legend = document.createElement('legend');
+      legend.textContent = shape1Id;
+      fieldSet.appendChild(legend);
+      this.makeShapeCenterSlidersInteraction(fieldSet, shape1Id, shape1Color, shape2Id, connectionColor);
+      this.makeShapeRotationSlidersInteraction(fieldSet, shape1Id, shape1Color, shape2Id, connectionColor);
       this.sliders.appendChild(fieldSet);
     }
 
@@ -231,6 +226,70 @@ export abstract class Base3DScene {
       });
     }
 
+    private makeShapeCenterSlidersInteraction(fieldSet: HTMLFieldSetElement, shape1Id: string, shape1Color: number, shape2Id: string, connectionColor: number) {
+      const shapeCenter = this.geometryManager.getGeometry(shape1Id).center;
+      const fields = [['Center X: ', shapeCenter.x, v => this.geometryManager.changeCenterX(shape1Id, v)],
+                      ['Center Y: ', shapeCenter.y, v => this.geometryManager.changeCenterY(shape1Id, v)],
+                      ['Center Z: ', shapeCenter.z, v => this.geometryManager.changeCenterZ(shape1Id, v)]];
+
+      fields.forEach( ([labelText, value, newCenter]) => {
+        const label = document.createElement('label');
+        label.textContent = labelText;
+      
+        const slider = document.createElement('input');
+        slider.type  = 'range';
+        slider.min   = '-100';
+        slider.max   = '100';
+        slider.step  = '0.01';
+        slider.value = value.toString();
+      
+        slider.addEventListener('input', () => {
+          const v = parseFloat(slider.value);
+          this.scene.remove(this.scene.getObjectByName(shape1Id));
+          newCenter(v);
+          this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, 'mesh'));
+          const points = this.geometryManager.calculateMinimumDistance(shape1Id, shape2Id);
+          this.scene.remove(this.scene.getObjectByName(this.drawMinimumDistance(points[0], points[1], connectionColor)));
+        });
+
+        label.appendChild(slider);
+        fieldSet.appendChild(label);
+        fieldSet.appendChild(document.createElement('br'));
+      });
+    }
+
+    private makeShapeRotationSlidersInteraction(fieldSet: HTMLFieldSetElement, shape1Id: string, shape1Color: number, shape2Id: string, connectionColor: number) {
+      const shapeRotation = this.geometryManager.getGeometry(shape1Id).rotation;
+      const fields = [['Rotation X: ', shapeRotation.x, v => this.geometryManager.changeRotationX(shape1Id, v)],
+                      ['Rotation Y: ', shapeRotation.y, v => this.geometryManager.changeRotationY(shape1Id, v)],
+                      ['Rotation Z: ', shapeRotation.z, v => this.geometryManager.changeRotationZ(shape1Id, v)]];
+
+      fields.forEach( ([labelText, value, newRotation]) => {
+        const label = document.createElement('label');
+        label.textContent = labelText;
+      
+        const slider = document.createElement('input');
+        slider.type  = 'range';
+        slider.min   = '-360';
+        slider.max   = '360';
+        slider.step  = '0.01';
+        slider.value = value.toString();
+      
+        slider.addEventListener('input', () => {
+          const v = parseFloat(slider.value);
+          this.scene.remove(this.scene.getObjectByName(shape1Id));
+          newRotation(v);
+          this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, 'mesh'));
+          const points = this.geometryManager.calculateMinimumDistance(shape1Id, shape2Id);
+          this.scene.remove(this.scene.getObjectByName(this.drawMinimumDistance(points[0], points[1], connectionColor)));
+        });
+
+        label.appendChild(slider);
+        fieldSet.appendChild(label);
+        fieldSet.appendChild(document.createElement('br'));
+      });
+    }
+
     private onWindowResize() {
         const width = this.canvas.clientWidth;
         const height = this.canvas.clientHeight;
@@ -276,6 +335,9 @@ export abstract class Base3DScene {
       ]);
 
       const line = new THREE.Line(lineGeometry, lineMaterial);
+      line.name = 'connection';
       this.scene.add(line);
+
+      return line.name;
     }
 }
