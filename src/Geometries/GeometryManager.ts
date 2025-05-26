@@ -58,6 +58,7 @@ export class GeometryManager {
       if (type === "line") {
         let material = new THREE.LineBasicMaterial({ color: color });
         let line = new THREE.Line(geometry.getGeometry(), material);
+        line.name = id;
         return line;
       } else if (type === "mesh") {
         let material = new THREE.MeshPhongMaterial({
@@ -66,6 +67,7 @@ export class GeometryManager {
           shininess: 100,
         });
         let mesh = new THREE.Mesh(geometry.getGeometry(), material);
+        mesh.name = id;
         return mesh;
       }
     } else {
@@ -330,11 +332,13 @@ export class GeometryManager {
     let geometry = this.getGeometry(id);
     geometry.center = position;
     geometry.geometry = null;
+    return id;
   }
 
   public changeRotation(id: string, rotation: Vector3 | Vector2) {
     let geometry = this.getGeometry(id);
     geometry.rotation = rotation;
     geometry.geometry = null;
+    return id;
   }
 }
