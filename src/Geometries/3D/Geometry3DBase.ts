@@ -3,6 +3,7 @@ import { Vector3 } from "../../Calc/Util/Utils";
 import { IGeometry2D } from "../2D/IGeometry2D";
 import { GeometryType3D } from "../GeoTypes";
 import { IGeometry3D } from "./IGeometry3D";
+import * as THREE from "three";
 
 export abstract class Geometry3DBase implements IGeometry3D {
   center: Vector3 = new Vector3(0, 0, 0);
@@ -30,14 +31,34 @@ export abstract class Geometry3DBase implements IGeometry3D {
 
   protected normalizeGeometry() {
     if (this.geometry !== null && this.geometry !== undefined) {
-      this.geometry.translate(this.center.x, this.center.y, this.center.z);
+      const geometryCenter = this.getCenter();
 
-      let radRotationX = degToRad(this.rotation.x);
-      let radRotationY = degToRad(this.rotation.y);
-      let radRotationZ = degToRad(this.rotation.z);
-      this.geometry.rotateX(radRotationX);
-      this.geometry.rotateY(radRotationY);
-      this.geometry.rotateZ(radRotationZ);
+      this.geometry.translate(
+        -geometryCenter.x,
+        -geometryCenter.y,
+        -geometryCenter.z
+      );
+
+      const radRotationX = degToRad(this.rotation.x);
+      const radRotationY = degToRad(this.rotation.y);
+      const radRotationZ = degToRad(this.rotation.z);
+      const rotationEuler = new THREE.Euler(
+        radRotationX,
+        radRotationY,
+        radRotationZ,
+        "XYZ"
+      );
+      const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
+        rotationEuler
+      );
+
+      this.geometry.applyMatrix4(rotationMatrix);
+
+      this.geometry.translate(
+        geometryCenter.x,
+        geometryCenter.y,
+        geometryCenter.z
+      );
     }
   }
 

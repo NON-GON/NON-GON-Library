@@ -31,21 +31,35 @@ export abstract class Geometry2DBase implements IGeometry2D {
 
   protected normalizeGeometry() {
     if (this.geometry) {
+
+      const geometryCenter = this.getCenter();
+
+      this.geometry.translate(
+        -geometryCenter.x,
+        -geometryCenter.y,
+        -geometryCenter.z
+      );
+
       const radRotationX = degToRad(this.rotation.x);
       const radRotationY = degToRad(this.rotation.y);
       const radRotationZ = degToRad(this.rotation.z);
-
       const rotationEuler = new THREE.Euler(
         radRotationX,
         radRotationY,
-        radRotationZ
+        radRotationZ,
+        "XYZ"
       );
       const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
         rotationEuler
       );
 
       this.geometry.applyMatrix4(rotationMatrix);
-      this.rotation.set(0, 0, 0); // Reset rotation after baking
+
+      this.geometry.translate(
+        geometryCenter.x,
+        geometryCenter.y,
+        geometryCenter.z
+      );
     }
   }
 

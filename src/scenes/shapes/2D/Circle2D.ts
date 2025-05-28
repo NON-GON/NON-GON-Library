@@ -39,18 +39,18 @@ export class Circle2D extends Base2DScene {
 
   public getSliderParams() {
     return {
-      radius: this.radius
-    }
+      radius: this.radius,
+    };
   }
 
   public getId() {
     return this.id;
   }
-  
+
   public getColor() {
     return this.color;
   }
-  
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(
       GeometryType2D.Circle,

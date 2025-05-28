@@ -18,6 +18,8 @@ import { Circle } from "./2D/Circle";
 import { Convexcircle } from "./2D/Convexcircle";
 import { ConvexLine } from "./2D/Convexline";
 import { Convex } from "./3D/Convex";
+import { Geometry3DBase } from "./3D/Geometry3DBase";
+import { Geometry2DBase } from "./2D/Geometry2DBase";
 
 /**
  * Singleton class to manage creation, storage, and operations on geometries.
@@ -61,14 +63,38 @@ export class GeometryManager {
         line.name = id;
         return line;
       } else if (type === "mesh") {
-        let material = new THREE.MeshPhongMaterial({
-          color: color,
-          side: 2,
-          shininess: 100,
-        });
-        let mesh = new THREE.Mesh(geometry.getGeometry(), material);
-        mesh.name = id;
-        return mesh;
+        if (geometry instanceof Geometry3DBase) {
+          let material = new THREE.MeshPhongMaterial({
+            color: color,
+            side: 2,
+            shininess: 100,
+          });
+          let mesh = new THREE.Mesh(geometry.getGeometry(), material);
+          mesh.name = id;
+          return mesh;
+        } else if (geometry instanceof Geometry2DBase) {
+          const positions = geometry.getGeometry().attributes.position.array;
+          const points = [];
+          for (let i = 0; i < positions.length; i += 3) {
+            points.push(new THREE.Vector2(positions[i], positions[i + 1]));
+          }
+
+          // Make sure the shape is closed
+          if (!points[0].equals(points[points.length - 1])) {
+            points.push(points[0]);
+          }
+
+          const shape = new THREE.Shape(points);
+          const shapeGeometry = new THREE.ShapeGeometry(shape);
+          const mesh = new THREE.Mesh(
+            shapeGeometry,
+            new THREE.MeshBasicMaterial({
+              color: color,
+              side: THREE.DoubleSide,
+            })
+          );
+          return mesh;
+        }
       }
     } else {
       throw new Error(`Geometry with id ${id} not found.`);
@@ -348,19 +374,31 @@ export class GeometryManager {
 
   public changeRotationX(id: string, x: number) {
     let geometry = this.getGeometry(id);
-    geometry.rotation = new Vector3(x, geometry.rotation.y, geometry.rotation.z);
+    geometry.rotation = new Vector3(
+      x,
+      geometry.rotation.y,
+      geometry.rotation.z
+    );
     geometry.geometry = null;
   }
 
   public changeRotationY(id: string, y: number) {
     let geometry = this.getGeometry(id);
-    geometry.rotation = new Vector3(geometry.rotation.x, y, geometry.rotation.z);
+    geometry.rotation = new Vector3(
+      geometry.rotation.x,
+      y,
+      geometry.rotation.z
+    );
     geometry.geometry = null;
   }
 
   public changeRotationZ(id: string, z: number) {
     let geometry = this.getGeometry(id);
-    geometry.rotation = new Vector3(geometry.rotation.x, geometry.rotation.y, z);
+    geometry.rotation = new Vector3(
+      geometry.rotation.x,
+      geometry.rotation.y,
+      z
+    );
     geometry.geometry = null;
   }
 }
