@@ -69,7 +69,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
     throw new Error("Proximity query not implemented for this geometry type.");
   }
 
-  MinimumDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     throw new Error("Method not implemented.");
   }
 

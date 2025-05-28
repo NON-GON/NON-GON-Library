@@ -9,7 +9,7 @@ import {
 } from "../GeoTypes";
 import { Line } from "./Line";
 import { Geometry2DBase } from "./Geometry2DBase";
-import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+import { ShortestDistance2D } from "../../Calc/Shortest_Distance/Shortest_Distance_2D";
 export class Superellipse extends Geometry2DBase implements IGeometry2D {
   readonly xradius: number;
   readonly yradius: number;
@@ -84,27 +84,27 @@ export class Superellipse extends Geometry2DBase implements IGeometry2D {
     return this.e;
   }
 
-  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Line:
-        const res = MinimumDistance2D.superellipseLine(geometry as Line, this);
+        const res = ShortestDistance2D.superellipseLine(geometry as Line, this);
         return [
           new Vector3(res[0].x, res[0].y, res[0].z),
           new Vector3(res[1].x, res[1].y, res[1].z),
         ];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }
 
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {
-      throw new Error("Minimum distance not implemented for 3D geometries.");
+      throw new Error("Shortest distance not implemented for 3D geometries.");
     } else if (isGeometryType2D(geometry.type)) {
-      res = this.MinimumDistance2D(geometry as IGeometry2D);
+      res = this.ShortestDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
   }

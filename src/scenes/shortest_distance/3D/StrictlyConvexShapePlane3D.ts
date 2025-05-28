@@ -37,7 +37,7 @@ export class StrictlyConvexShapePlane3D extends Base3DScene {
                                 planeId, planeColor, this.plane.getSliderParams(),
                               this.colorConnection);
 
-    let points = this.geometryManager.calculateMinimumDistance(strictlyConvexShapeId, planeId);
-    this.drawMinimumDistance(points[0], points[1], this.colorConnection);
+    let points = this.geometryManager.calculateShortestDistance(strictlyConvexShapeId, planeId);
+    this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

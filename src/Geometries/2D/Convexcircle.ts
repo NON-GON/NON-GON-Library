@@ -9,7 +9,7 @@ import { IGeometry2D } from "./IGeometry2D";
 import { IGeometry3D } from "../3D/IGeometry3D";
 import * as THREE from "three";
 import { Circle } from "./Circle";
-import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+import { ShortestDistance2D } from "../../Calc/Shortest_Distance/Shortest_Distance_2D";
 export class Convexcircle extends Geometry2DBase implements IGeometry2D {
   private angle: number = -Math.PI / 2;
   readonly segments: number;
@@ -19,8 +19,7 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
     center: Vector3 | Vector2,
     radius: number,
     rotation: Vector3 | Vector2,
-    segments: number,
-    
+    segments: number
   ) {
     super();
     this.center =
@@ -101,30 +100,30 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
     return res;
   }
 
-  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Circle:
         let circle = geometry as Circle;
-        let res = MinimumDistance2D.ConvexCircle_Circle(this, circle);
+        let res = ShortestDistance2D.ConvexCircle_Circle(this, circle);
         return [
           new Vector3(res[0].x, res[0].y, 0),
           new Vector3(res[1].x, res[1].y, 0),
         ];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }
-  
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {
       throw new Error(
-        "Minimum distance 3D not implemented for this geometry type."
+        "Shortest distance 3D not implemented for this geometry type."
       );
     } else if (isGeometryType2D(geometry.type)) {
-      res = this.MinimumDistance2D(geometry as IGeometry2D);
+      res = this.ShortestDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
   }

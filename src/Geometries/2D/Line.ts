@@ -9,7 +9,7 @@ import {
 } from "../GeoTypes";
 import { Superellipse } from "./Superellipse";
 import { Geometry2DBase } from "./Geometry2DBase";
-import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+import { ShortestDistance2D } from "../../Calc/Shortest_Distance/Shortest_Distance_2D";
 import { ConvexLine } from "./Convexline";
 
 export class Line extends Geometry2DBase implements IGeometry2D {
@@ -57,11 +57,11 @@ export class Line extends Geometry2DBase implements IGeometry2D {
     }
   }
 
-  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     switch (geometry.type) {
       case GeometryType2D.Supperellipse:
-        res = MinimumDistance2D.superellipseLine(
+        res = ShortestDistance2D.superellipseLine(
           this,
           geometry as Superellipse
         );
@@ -71,24 +71,24 @@ export class Line extends Geometry2DBase implements IGeometry2D {
         ];
       case GeometryType2D.ConvexLine:
         let convexline = geometry as ConvexLine;
-        res = MinimumDistance2D.Convex_Line(convexline, this);
+        res = ShortestDistance2D.Convex_Line(convexline, this);
         return [
           new Vector3(res[0].x, res[0].y, 0),
           new Vector3(res[1].x, res[1].y, 0),
         ];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }
 
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {
-      throw new Error("Minimum distance not implemented for 3D geometries.");
+      throw new Error("Shortest distance not implemented for 3D geometries.");
     } else if (isGeometryType2D(geometry.type)) {
-      const temp = this.MinimumDistance2D(geometry as IGeometry2D);
+      const temp = this.ShortestDistance2D(geometry as IGeometry2D);
       res = [
         new Vector3(temp[0].x, temp[0].y, 0),
         new Vector3(temp[1].x, temp[1].y, 0),

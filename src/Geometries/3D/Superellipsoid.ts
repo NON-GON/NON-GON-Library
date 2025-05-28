@@ -9,7 +9,7 @@ import {
   isGeometryType2D,
   isGeometryType3D,
 } from "../GeoTypes";
-import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
+import { ShortestDistance3D } from "../../Calc/Shortest_Distance/Shortest_Distance_3D";
 import { Geometry3DBase } from "./Geometry3DBase";
 
 export class Superellipsoid extends Geometry3DBase implements IGeometry3D {
@@ -46,28 +46,28 @@ export class Superellipsoid extends Geometry3DBase implements IGeometry3D {
     this.segmentsV = segments;
   }
 
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {
       throw new Error(
-        "Minimum distance 3D not implemented for this pairs of geometries."
+        "Shortest distance 3D not implemented for this pairs of geometries."
       );
     } else if (isGeometryType2D(geometry.type)) {
-      res = this.MinimumDistance2D(geometry as IGeometry2D);
+      res = this.ShortestDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
   }
-  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Plane:
-        let res = MinimumDistance3D.superellipsoidPlane(
+        let res = ShortestDistance3D.superellipsoidPlane(
           geometry as Plane,
           this
         );
         return [res[0], res[1]];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }

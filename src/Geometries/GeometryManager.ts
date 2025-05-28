@@ -310,12 +310,12 @@ export class GeometryManager {
   }
 
   /**
-   * Calculates and logs the minimum distance between two geometries.
+   * Calculates and logs the Shortest distance between two geometries.
    * @param id1 ID of the first geometry.
    * @param id2 ID of the second geometry.
    * @returns A tuple of the closest two points ([point1, point2]).
    */
-  public calculateMinimumDistance(
+  public calculateShortestDistance(
     id1: string,
     id2: string
   ): [Vector2, Vector2] | [Vector3, Vector3] {
@@ -326,9 +326,9 @@ export class GeometryManager {
         `One or both geometries with ids ${id1} and ${id2} not found.`
       );
     }
-    let distance = geometry1.MinimumDistance(geometry2);
+    let distance = geometry1.ShortestDistance(geometry2);
     console.log(
-      `Minimum distance between ${id1} and ${id2}: ${distance[0].distanceTo(
+      `Shortest distance between ${id1} and ${id2}: ${distance[0].distanceTo(
         distance[1]
       )}`
     );

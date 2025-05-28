@@ -7,7 +7,7 @@ import { Superellipse } from "../../Geometries/2D/Superellipse";
 import { quarticRoots, Vector2, Vector3 } from "../Util/Utils";
 import * as THREE from "three";
 
-export class MinimumDistance2D {
+export class ShortestDistance2D {
   /**
    * Find the contact points between a point and an ellipse.
    * @param point
@@ -32,7 +32,7 @@ export class MinimumDistance2D {
 
     let Point_ = ellipse.InverseTransformPoint(point);
 
-    T = MinimumDistance2D.pointEllipse(
+    T = ShortestDistance2D.pointEllipse(
       Point_,
       ellipse.xradius,
       ellipse.yradius
@@ -125,12 +125,12 @@ export class MinimumDistance2D {
   ): [Vector2, Vector2] {
     const tol = 0.1;
     let p1 = ellipse1.getCenter().toVector2();
-    let p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1].toVector2();
+    let p2 = ShortestDistance2D.pointEllipseObj(p1, ellipse2)[1].toVector2();
     console.log("Point ellipse outside of while:" + p1.x + " " + p1.y);
     let dist = p1.distanceTo(p2);
 
     while (true) {
-      p1 = MinimumDistance2D.pointEllipseObj(p2, ellipse1)[1].toVector2();
+      p1 = ShortestDistance2D.pointEllipseObj(p2, ellipse1)[1].toVector2();
       console.log("Point ellipse inside of while 1:" + p1.x + " " + p1.y);
 
       console.log(p1);
@@ -139,7 +139,7 @@ export class MinimumDistance2D {
         break;
       }
       dist = dist_;
-      p2 = MinimumDistance2D.pointEllipseObj(p1, ellipse2)[1].toVector2();
+      p2 = ShortestDistance2D.pointEllipseObj(p1, ellipse2)[1].toVector2();
       console.log("Point ellipse inside of while 2:" + p2.x + " " + p2.y);
       dist_ = p1.distanceTo(p2);
       if (Math.abs(dist - dist_) < tol) {

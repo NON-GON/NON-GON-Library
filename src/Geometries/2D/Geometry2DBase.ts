@@ -63,7 +63,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     }
   }
 
-  MinimumDistance(_geometry: IGeometry2D | IGeometry3D): [Vector3, Vector3] {
+  ShortestDistance(_geometry: IGeometry2D | IGeometry3D): [Vector3, Vector3] {
     throw new Error("Method not implemented.");
   }
 

@@ -37,7 +37,7 @@ export interface IGeometry2D {
    * Returns the points of contact between two geometries.
    * @returns {[Vector3,Vector3]} points of contact.
    */
-  MinimumDistance(geometry: IGeometry2D | IGeometry3D): [Vector3, Vector3];
+  ShortestDistance(geometry: IGeometry2D | IGeometry3D): [Vector3, Vector3];
   /**
    * Returns a boolean indicating if the geometry is overlapping with one another geometry.
    * @returns {boolean} true if the geometries are overlapping, false otherwise.

@@ -10,7 +10,7 @@ import {
   isGeometryType2D,
   isGeometryType3D,
 } from "../GeoTypes";
-import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
+import { ShortestDistance3D } from "../../Calc/Shortest_Distance/Shortest_Distance_3D";
 import { Geometry3DBase } from "./Geometry3DBase";
 
 export class Sphere extends Geometry3DBase implements IGeometry3D {
@@ -31,47 +31,47 @@ export class Sphere extends Geometry3DBase implements IGeometry3D {
     this.segments = segments;
   }
 
-  MinimumDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
+  ShortestDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType3D.Ellipsoid:
-        const res = MinimumDistance3D.ellipsoidEllipsoid(
+        const res = ShortestDistance3D.ellipsoidEllipsoid(
           this,
           geometry as Ellipsoid
         );
         return [res[0], res[1]];
       case GeometryType3D.Sphere:
-        const res1 = MinimumDistance3D.ellipsoidEllipsoid(
+        const res1 = ShortestDistance3D.ellipsoidEllipsoid(
           this,
           geometry as Ellipsoid
         );
         return [res1[0], res1[1]];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }
-  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Point:
         let point = geometry as Point;
-        const res = MinimumDistance3D.point_Ellipsoid(
+        const res = ShortestDistance3D.point_Ellipsoid(
           new Vector3(point.center.x, point.center.y, 0),
           this
         );
         return [res[0], res[1]];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {
-      res = this.MinimumDistance3D(geometry as IGeometry3D);
+      res = this.ShortestDistance3D(geometry as IGeometry3D);
     } else if (isGeometryType2D(geometry.type)) {
-      res = this.MinimumDistance2D(geometry as IGeometry2D);
+      res = this.ShortestDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
   }

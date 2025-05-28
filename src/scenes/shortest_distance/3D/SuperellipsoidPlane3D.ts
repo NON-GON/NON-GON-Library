@@ -37,7 +37,7 @@ export class SuperellipsoidPlane3D extends Base3DScene {
                                 planeId, planeColor, this.plane.getSliderParams(),
                               this.colorConnection);
 
-    let points = this.geometryManager.calculateMinimumDistance(superellipsoidId, planeId);
-    this.drawMinimumDistance(points[0], points[1], this.colorConnection);
+    let points = this.geometryManager.calculateShortestDistance(superellipsoidId, planeId);
+    this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

@@ -37,7 +37,7 @@ export class SuperellipseLineSegment2D extends Base2DScene {
                                 lineSegmentId, lineSegmentColor, this.lineSegment.getSliderParams(),
                               this.colorConnection);
 
-    let points = this.geometryManager.calculateMinimumDistance(superellipseId, lineSegmentId);
-    this.drawMinimumDistance(points[0], points[1], this.colorConnection);
+    let points = this.geometryManager.calculateShortestDistance(superellipseId, lineSegmentId);
+    this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

@@ -242,8 +242,8 @@ export abstract class Base2DScene {
         this.scene.remove(this.scene.getObjectByName(shape1Id));
         newCenter(v);
         this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, 'line'));
-        const points = this.geometryManager.calculateMinimumDistance(shape1Id, shape2Id);
-        this.scene.remove(this.scene.getObjectByName(this.drawMinimumDistance(points[0], points[1], connectionColor)));
+        const points = this.geometryManager.calculateShortestDistance(shape1Id, shape2Id);
+        this.scene.remove(this.scene.getObjectByName(this.drawShortestDistance(points[0], points[1], connectionColor)));
       });
 
       label.appendChild(slider);
@@ -271,8 +271,8 @@ export abstract class Base2DScene {
         this.scene.remove(this.scene.getObjectByName(shape1Id));
         newRotation(v);
         this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, 'line'));
-        const points = this.geometryManager.calculateMinimumDistance(shape1Id, shape2Id);
-        this.scene.remove(this.scene.getObjectByName(this.drawMinimumDistance(points[0], points[1], connectionColor)));
+        const points = this.geometryManager.calculateShortestDistance(shape1Id, shape2Id);
+        this.scene.remove(this.scene.getObjectByName(this.drawShortestDistance(points[0], points[1], connectionColor)));
       });
 
       label.appendChild(slider);
@@ -304,7 +304,7 @@ export abstract class Base2DScene {
 
   protected abstract buildScene(): void;
 
-  protected drawMinimumDistance(
+  protected drawShortestDistance(
     point1: Vector3 | Vector2,
     point2: Vector3 | Vector2,
     color: number

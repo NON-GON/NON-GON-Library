@@ -34,14 +34,14 @@ export interface IGeometry3D {
    */
   getSegments(): number;
   /**
-   * Calculates the minimum distance between the current geometry and another geometry.
+   * Calculates the Shortest distance between the current geometry and another geometry.
    * @param {IGeometry3D | IGeometry2D} geometry - The geometry to compare against.
    * Can be either a 3D geometry implementing the IGeometry3D interface or a 2D geometry implementing the IGeometry2D interface.
    * @returns {[Vector3, Vector3]} An array containing two points:
    * - The closest point on the current geometry.
    * - The closest point on the input geometry.
    */
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3];
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3];
 
   /**
    * Checks if the current geometry is overlapping or in close proximity to another geometry.

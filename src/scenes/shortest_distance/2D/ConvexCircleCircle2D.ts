@@ -53,10 +53,10 @@ export class ConvexCircleCircle2D extends Base2DScene {
                                 circleId, circleColor, this.circle.getSliderParams(),
                                 this.colorConnection);
 
-    let points = this.geometryManager.calculateMinimumDistance(
+    let points = this.geometryManager.calculateShortestDistance(
       convexCircleId,
       circleId
     );
-    this.drawMinimumDistance(points[0], points[1], this.colorConnection);
+    this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

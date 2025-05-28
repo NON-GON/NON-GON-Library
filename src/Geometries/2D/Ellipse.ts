@@ -7,7 +7,7 @@ import { Vector3 } from "../../Calc/Util/Utils";
 import { isGeometryType2D, isGeometryType3D } from "../GeoTypes";
 import { Point } from "./Point";
 import { Geometry2DBase } from "./Geometry2DBase";
-import { MinimumDistance2D } from "../../Calc/Minimum_Distance/Minimum_Distance_2D";
+import { ShortestDistance2D } from "../../Calc/Shortest_Distance/Shortest_Distance_2D";
 import { ProximityQuery2D } from "../../Calc/ProximityQuery/ProximityQuery2D";
 
 export class Ellipse extends Geometry2DBase implements IGeometry2D {
@@ -20,7 +20,7 @@ export class Ellipse extends Geometry2DBase implements IGeometry2D {
     xradius: number,
     yradius: number,
     rotation: Vector3 | Vector2,
-    segments: number,
+    segments: number
   ) {
     super();
     this.center =
@@ -56,11 +56,11 @@ export class Ellipse extends Geometry2DBase implements IGeometry2D {
       return this.geometry;
     }
   }
-  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Point:
         let point = geometry as Point;
-        let res = MinimumDistance2D.pointEllipseObj(
+        let res = ShortestDistance2D.pointEllipseObj(
           new Vector2(point.center.x, point.center.y),
           this
         );
@@ -70,25 +70,25 @@ export class Ellipse extends Geometry2DBase implements IGeometry2D {
         ];
       case GeometryType2D.Ellipse:
         let ellipse = geometry as Ellipse;
-        let temp = MinimumDistance2D.ellipseEllipse(ellipse, this);
+        let temp = ShortestDistance2D.ellipseEllipse(ellipse, this);
         return [
           new Vector3(temp[0].x, temp[0].y, 0),
           new Vector3(temp[1].x, temp[1].y, 0),
         ];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {
       throw new Error(
-        "Minimum distance 3D not implemented for this geometry type."
+        "Shortest distance 3D not implemented for this geometry type."
       );
     } else if (isGeometryType2D(geometry.type)) {
-      res = this.MinimumDistance2D(geometry as IGeometry2D);
+      res = this.ShortestDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
   }

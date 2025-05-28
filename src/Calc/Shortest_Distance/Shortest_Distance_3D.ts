@@ -3,9 +3,9 @@ import { Ellipsoid } from "../../Geometries/3D/Ellipsoid";
 import { Sphere } from "../../Geometries/3D/Sphere";
 import { Plane } from "../../Geometries/2D/Plane";
 import { Superellipsoid } from "../../Geometries/3D/Superellipsoid";
-import { MinimumDistance2D } from "./Minimum_Distance_2D";
+import { ShortestDistance2D } from "./Shortest_Distance_2D";
 import { Convex } from "../../Geometries/3D/Convex";
-export class MinimumDistance3D {
+export class ShortestDistance3D {
   /**
    * Find the contact points between a point and an ellipsoid.
    * @param point
@@ -81,7 +81,7 @@ export class MinimumDistance3D {
           }
         } else {
           x = 0;
-          let l = MinimumDistance2D.pointEllipse(
+          let l = ShortestDistance2D.pointEllipse(
             new Vector2(s2, s3).toVector3(),
             b,
             c
@@ -92,7 +92,7 @@ export class MinimumDistance3D {
       } else {
         y = 0;
         if (s1 > 0) {
-          let l = MinimumDistance2D.pointEllipse(
+          let l = ShortestDistance2D.pointEllipse(
             new Vector2(s1, s3).toVector3(),
             a,
             c
@@ -127,7 +127,7 @@ export class MinimumDistance3D {
       }
       if (!computed) {
         z = 0;
-        let l = MinimumDistance2D.pointEllipse(
+        let l = ShortestDistance2D.pointEllipse(
           new Vector2(s1, s2).toVector3(),
           a,
           b
@@ -161,7 +161,7 @@ export class MinimumDistance3D {
 
     // Initialize points and distances
     let point0 = ellipsoid1.getCenter();
-    let point1 = MinimumDistance3D.point_Ellipsoid(point0, ellipsoid2)[1];
+    let point1 = ShortestDistance3D.point_Ellipsoid(point0, ellipsoid2)[1];
     let dist0 = point0.distanceTo(point1);
     let dist1: number;
     let n_iter = 0;
@@ -169,12 +169,12 @@ export class MinimumDistance3D {
     // Iterative process to find the closest points
     while (true) {
       point0 = point1;
-      point1 = MinimumDistance3D.point_Ellipsoid(point0, ellipsoid2)[1];
+      point1 = ShortestDistance3D.point_Ellipsoid(point0, ellipsoid2)[1];
       dist1 = point0.distanceTo(point1);
 
       point0 = point1;
       dist0 = dist1;
-      point1 = MinimumDistance3D.point_Ellipsoid(point0, ellipsoid1)[1];
+      point1 = ShortestDistance3D.point_Ellipsoid(point0, ellipsoid1)[1];
       dist1 = point0.distanceTo(point1);
 
       if (Math.abs(dist0 - dist1) < 1e-1 || n_iter > 15) {

@@ -10,7 +10,7 @@ import { IGeometry3D } from "./IGeometry3D";
 import { IGeometry2D } from "../2D/IGeometry2D";
 import * as THREE from "three";
 import { Plane } from "../2D/Plane";
-import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
+import { ShortestDistance3D } from "../../Calc/Shortest_Distance/Shortest_Distance_3D";
 
 export class Convex extends Geometry3DBase implements IGeometry3D {
   readonly segments: number;
@@ -192,26 +192,26 @@ export class Convex extends Geometry3DBase implements IGeometry3D {
     return res;
   }
 
-  MinimumDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {
     switch (geometry.type) {
       case GeometryType2D.Plane:
         let plane = geometry as Plane;
-        const res = MinimumDistance3D.AlmostConvexGeometryPlane(this, plane);
+        const res = ShortestDistance3D.AlmostConvexGeometryPlane(this, plane);
         return [res[0], res[1]];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }
 
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
-    console.log("MinimumDistance3D");
+    console.log("ShortestDistance3D");
     if (isGeometryType3D(geometry.type)) {
-      throw new Error("Not MinimumDistance3D for this geometry type");
+      throw new Error("Not ShortestDistance3D for this geometry type");
     } else if (isGeometryType2D(geometry.type)) {
-      this.MinimumDistance2D(geometry as IGeometry2D);
+      this.ShortestDistance2D(geometry as IGeometry2D);
     }
     return [res[0], res[1]];
   }

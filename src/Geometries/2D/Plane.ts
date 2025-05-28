@@ -10,7 +10,7 @@ import {
 import * as THREE from "three";
 import { Superellipsoid } from "../3D/Superellipsoid";
 import { Geometry2DBase } from "./Geometry2DBase";
-import { MinimumDistance3D } from "../../Calc/Minimum_Distance/Minimum_Distance_3D";
+import { ShortestDistance3D } from "../../Calc/Shortest_Distance/Shortest_Distance_3D";
 import { Convex } from "../3D/Convex";
 import { ProximityQuery3D } from "../../Calc/ProximityQuery/ProximityQuery3D";
 import { Hyperboloid } from "../3D/Hyperboloid";
@@ -41,32 +41,32 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
     this.height = height;
   }
 
-  MinimumDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {
-      res = this.MinimumDistance3D(geometry as IGeometry3D);
+      res = this.ShortestDistance3D(geometry as IGeometry3D);
     } else if (isGeometryType2D(geometry.type)) {
-      throw new Error("Minimum distance not implemented for 2D geometries.");
+      throw new Error("Shortest distance not implemented for 2D geometries.");
     }
     return [res[0], res[1]];
   }
 
-  MinimumDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
+  ShortestDistance3D(geometry: IGeometry3D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     switch (geometry.type) {
       case GeometryType3D.Superellipsoid:
-        res = MinimumDistance3D.superellipsoidPlane(
+        res = ShortestDistance3D.superellipsoidPlane(
           this,
           geometry as Superellipsoid
         );
         return [res[0], res[1]];
       case GeometryType3D.Convex:
         let convex = geometry as Convex;
-        res = MinimumDistance3D.AlmostConvexGeometryPlane(convex, this);
+        res = ShortestDistance3D.AlmostConvexGeometryPlane(convex, this);
         return [res[0], res[1]];
       default:
         throw new Error(
-          "Minimum distance not implemented for this geometry type."
+          "Shortest distance not implemented for this geometry type."
         );
     }
   }

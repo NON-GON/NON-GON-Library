@@ -37,7 +37,7 @@ export class ConvexLineLineSegment2D extends Base2DScene {
                                 lineSegmentId, lineSegmentColor, this.lineSegment.getSliderParams(),
                                 this.colorConnection);
 
-    let points = this.geometryManager.calculateMinimumDistance(convexLineId, lineSegmentId);
-    this.drawMinimumDistance(points[0], points[1], this.colorConnection);
+    let points = this.geometryManager.calculateShortestDistance(convexLineId, lineSegmentId);
+    this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

@@ -1,6 +1,6 @@
 import { StrictlyConvexShape3D } from "./shapes/3D/StrictlyConvexShape3D";
 import { Plane3D } from "./shapes/3D/Plane3D";
-import { StrictlyConvexShapePlane3D } from "./closest_distance/3D/StrictlyConvexShapePlane3D";
+import { StrictlyConvexShapePlane3D } from "./shortest_distance/3D/StrictlyConvexShapePlane3D";
 import { Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const strictlyConvexShapeCenter = new Vector3(-50, 0, 0);
   const strictlyConvexShapeRotation = new Vector3(0, 0, 0);
   const strictlyConvexShapeSegments = 100;
-  const strictlyConvexShapeId = 'Strictly Convex Shape';
+  const strictlyConvexShapeId = "Strictly Convex Shape";
   const strictlyConvexShapeColor = Colors.BRIGHT_BLUE;
   const strictlyConvexShape = new StrictlyConvexShape3D(
     canvas,
@@ -28,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const planeWidth = 50;
   const planeHeight = 75;
   const planeSegments = 100;
-  const planeId = 'Plane';
+  const planeId = "Plane";
   const planeColor = Colors.ORANGE;
   const plane = new Plane3D(
     canvas,

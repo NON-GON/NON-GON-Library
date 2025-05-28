@@ -37,7 +37,7 @@ export class PointEllipsoid3D extends Base3DScene {
                                 ellipsoidId, ellipsoidColor, this.ellipsoid.getSliderParams(),
                                 this.colorConnection);
     
-    let points = this.geometryManager.calculateMinimumDistance(pointId, ellipsoidId);
-    this.drawMinimumDistance(points[0], points[1], this.colorConnection);
+    let points = this.geometryManager.calculateShortestDistance(pointId, ellipsoidId);
+    this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

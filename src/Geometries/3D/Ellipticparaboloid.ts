@@ -30,8 +30,8 @@ export class EllipticParaboloid extends Geometry3DBase implements IGeometry3D {
     this.segments = segments;
   }
 
-  MinimumDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
-    throw new Error("Minimum distance not implemented for this geometry type.");
+  ShortestDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+    throw new Error("Shortest distance not implemented for this geometry type.");
   }
   ProximityQuery(
     geometry: IGeometry3D | IGeometry2D,

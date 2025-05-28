@@ -37,7 +37,7 @@ export class PointEllipse2D extends Base2DScene {
                                 ellipseId, ellipseColor, this.ellipse.getSliderParams(),
                                 this.colorConnection);
 
-    let points = this.geometryManager.calculateMinimumDistance(pointId, ellipseId);
-    this.drawMinimumDistance(points[0], points[1], this.colorConnection);
+    let points = this.geometryManager.calculateShortestDistance(pointId, ellipseId);
+    this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

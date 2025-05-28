@@ -1,6 +1,6 @@
 import { Superellipsoid3D } from "./shapes/3D/Superellipsoid3D";
 import { Plane3D } from "./shapes/3D/Plane3D";
-import { SuperellipsoidPlane3D } from "./closest_distance/3D/SuperellipsoidPlane3D";
+import { SuperellipsoidPlane3D } from "./shortest_distance/3D/SuperellipsoidPlane3D";
 import { Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -16,7 +16,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const superellipsoidE2 = 1;
   const superellipsoidRotation = new Vector3(0, 0, 0);
   const superellipsoidSegments = 100;
-  const superellipsoidId = 'Superellipsoid';
+  const superellipsoidId = "Superellipsoid";
   const superellipsoiColor = Colors.BRIGHT_BLUE;
   const superellipsoid = new Superellipsoid3D(
     canvas,
@@ -38,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const planeWidth = 50;
   const planeHeight = 75;
   const planeSegments = 1;
-  const planeId = 'Plane';
+  const planeId = "Plane";
   const planeColor = Colors.ORANGE;
   const plane = new Plane3D(
     canvas,

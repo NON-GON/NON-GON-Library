@@ -37,8 +37,8 @@ export class Hyperboloid extends Geometry3DBase implements IGeometry3D {
     this.rotation = rotation;
     this.segments = segments;
   }
-  MinimumDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
-    throw new Error("Minimum distance for Hyperboloid is not implemented yet.");
+  ShortestDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+    throw new Error("Shortest distance for Hyperboloid is not implemented yet.");
   }
   ProximityQuery(
     _geometry: IGeometry3D | IGeometry2D,
