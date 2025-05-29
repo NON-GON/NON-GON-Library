@@ -31,14 +31,11 @@ export abstract class Geometry3DBase implements IGeometry3D {
 
   protected normalizeGeometry() {
     if (this.geometry !== null && this.geometry !== undefined) {
+      // Remove translation to origin: keep geometry at world center
+      // Only apply rotation around the current center
       const geometryCenter = this.getCenter();
 
-      this.geometry.translate(
-        -geometryCenter.x,
-        -geometryCenter.y,
-        -geometryCenter.z
-      );
-
+      // Apply rotation around the geometry's center
       const radRotationX = degToRad(this.rotation.x);
       const radRotationY = degToRad(this.rotation.y);
       const radRotationZ = degToRad(this.rotation.z);
@@ -51,9 +48,9 @@ export abstract class Geometry3DBase implements IGeometry3D {
       const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
         rotationEuler
       );
-
       this.geometry.applyMatrix4(rotationMatrix);
 
+      // Ensure geometry is positioned at the world center
       this.geometry.translate(
         geometryCenter.x,
         geometryCenter.y,
