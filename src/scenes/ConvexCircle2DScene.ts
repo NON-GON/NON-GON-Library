@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const rotation = new Vector2(0, 0);
     const segments = 100;
     const id = 'Convex Circle';
-    const color = Colors.BRIGHT_BLUE;
+    const color = Colors.SHAPE1_COLOR;
     const scene = new ConvexCircle2D(canvas, center, radius, rotation, segments, id, color);
     scene.startAnimation();
 });

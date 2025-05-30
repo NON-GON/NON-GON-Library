@@ -55,7 +55,7 @@ export abstract class Base3DScene {
     this.scene.add(new THREE.AmbientLight(0x222222));
 
     // Grid & Axes
-    this.makeGridAndAxes();
+    //this.makeGridAndAxes();
 
     // Controls
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);

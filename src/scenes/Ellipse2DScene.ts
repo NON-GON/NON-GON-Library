@@ -10,7 +10,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const rotation = new Vector2(0, 0);
     const segments = 100;
     const id = 'Ellipse';
-    const color = Colors.BRIGHT_BLUE;
+    const color = Colors.SHAPE1_COLOR;
     const scene = new Ellipse2D(canvas, center, xradius, yradius, rotation, segments, id, color);
     scene.startAnimation();
 });

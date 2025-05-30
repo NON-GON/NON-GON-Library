@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipse1Rotation = new Vector2(0, 0);
   const ellipse1Segments = 100;
   const ellipse1Id = "Blue Ellipse";
-  const ellipse1Color = Colors.BRIGHT_BLUE;
+  const ellipse1Color = Colors.SHAPE1_COLOR;
   const ellipse1 = new Ellipse2D(
     canvas,
     ellipse1Center,
@@ -32,7 +32,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipse2Rotation = new Vector2(0, 0);
   const ellipse2Segments = 100;
   const ellipse2Id = "Orange Ellipse";
-  const ellipse2Color = Colors.ORANGE;
+  const ellipse2Color = Colors.SHAPE2_COLOR;
   const ellipse2 = new Ellipse2D(
     canvas,
     ellipse2Center,
@@ -45,7 +45,7 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Interaction
-  const colorConnection = Colors.PINK;
+  const colorConnection = Colors.CONNECTION_COLOR;
   const pointEllipse = new EllipseEllipse2D(
     canvas,
     ellipse1,

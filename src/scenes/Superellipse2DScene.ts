@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const rotation = new Vector2(0, 0);
   const segments = 100;
   const id = 'Superellipse';
-  const color = Colors.BRIGHT_BLUE;
+  const color = Colors.SHAPE1_COLOR;
   const scene = new Superellipse2D(
     canvas,
     center,

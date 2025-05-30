@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const rotation = new Vector3(0, 0, 0);
     const segments = 100;
     const id = 'Elliptic Paraboloid';
-    const color = Colors.BRIGHT_BLUE;
+    const color = Colors.SHAPE1_COLOR;
     const scene = new EllipticParaboloid3D(canvas, center, xradius, yradius, height, rotation, segments, id, color);
     scene.startAnimation();
 });

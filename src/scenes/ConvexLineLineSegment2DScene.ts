@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const convexLineRotation = new Vector2(0, 0);
   const convexLineSegments = 100;
   const convexLineId = "Convex Line";
-  const convexLineColor = Colors.BRIGHT_BLUE;
+  const convexLineColor = Colors.SHAPE1_COLOR;
   const convexLine = new ConvexLine2D(
     canvas,
     convexLineCenter,
@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const lineSegmentEnd = new Vector2(50, -75);
   const lineSegmentRotation = new Vector2(0, 0);
   const lineId = "Line Segment";
-  const lineSegmentColor = Colors.ORANGE;
+  const lineSegmentColor = Colors.SHAPE2_COLOR;
   const lineSegment = new LineSegment2D(
     canvas,
     lineSegmentStart,
@@ -38,7 +38,7 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Interaction
-  const colorConnection = Colors.PINK;
+  const colorConnection = Colors.CONNECTION_COLOR;
   const convexLineLineSegment = new ConvexLineLineSegment2D(
     canvas,
     convexLine,

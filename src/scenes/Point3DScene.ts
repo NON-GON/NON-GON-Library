@@ -6,7 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('c') as HTMLCanvasElement;
     const center = new Vector3(0, 0, 0);
     const id = 'Point';
-    const color = Colors.BRIGHT_BLUE;
+    const color = Colors.SHAPE1_COLOR;
     const scene = new Point3D(canvas, center, id, color);
     scene.startAnimation();
 });
