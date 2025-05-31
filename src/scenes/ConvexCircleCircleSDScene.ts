@@ -2,7 +2,7 @@ import { ConvexCircle2D } from "./shapes/2D/ConvexCircle2D";
 import { Circle2D } from "./shapes/2D/Circle2D";
 import { Vector2 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
-import { ConvexCircleCircle2D } from "./shortest_distance/2D/ConvexCircleCircle2D";
+import { ConvexCircleCircleSD } from "./shortest_distance/2D/ConvexCircleCircleSD";
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
@@ -43,7 +43,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Interaction
   const colorConnection = Colors.CONNECTION_COLOR;
-  const convexCircleCircle = new ConvexCircleCircle2D(
+  const convexCircleCircle = new ConvexCircleCircleSD(
     canvas,
     convexCircle,
     circle,

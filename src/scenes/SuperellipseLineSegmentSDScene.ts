@@ -1,6 +1,6 @@
 import { Superellipse2D } from "./shapes/2D/Superellipse2D";
 import { LineSegment2D } from "./shapes/2D/LineSegment2D";
-import { SuperellipseLineSegment2D } from "./shortest_distance/2D/SuperellipseLineSegment2D";
+import { SuperellipseLineSegmentSD } from "./shortest_distance/2D/SuperellipseLineSegmentSD";
 import { Vector2 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -45,7 +45,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Interaction
   const colorConnection = Colors.CONNECTION_COLOR;
-  const superellipseLineSegment = new SuperellipseLineSegment2D(
+  const superellipseLineSegment = new SuperellipseLineSegmentSD(
     canvas,
     superellipse,
     lineSegment,

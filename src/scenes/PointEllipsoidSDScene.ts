@@ -1,6 +1,6 @@
 import { Point3D } from "./shapes/3D/Point3D";
 import { Ellipsoid3D } from "./shapes/3D/Ellipsoid3D";
-import { PointEllipsoid3D } from "./shortest_distance/3D/PointEllipsoid3D";
+import { PointEllipsoidSD } from "./shortest_distance/3D/PointEllipsoidSD";
 import { Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -36,7 +36,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Interaction
   const colorConnection = Colors.CONNECTION_COLOR;
-  const pointEllipsoid = new PointEllipsoid3D(
+  const pointEllipsoid = new PointEllipsoidSD(
     canvas,
     point,
     ellipsoid,

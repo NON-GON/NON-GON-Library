@@ -3,7 +3,7 @@ import { ConvexLine2D } from "../../shapes/2D/ConvexLine2D";
 import { LineSegment2D } from "../../shapes/2D/LineSegment2D";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
 
-export class ConvexLineLineSegment2D extends Base2DScene {
+export class ConvexLineLineSegmentSD extends Base2DScene {
   private convexLine: ConvexLine2D;
   private lineSegment: LineSegment2D;
   private colorConnection: number;

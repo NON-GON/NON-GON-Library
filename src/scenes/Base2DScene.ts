@@ -22,7 +22,7 @@ export abstract class Base2DScene {
     const near = 0.1;
     const far = 1000;
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this.camera.position.set(0, 0, -100);
+    this.camera.position.set(0, 0, 200);
     this.camera.lookAt(0, 0, 0);
 
     // Scene & Light

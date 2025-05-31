@@ -1,5 +1,5 @@
 import { Ellipse2D } from "./shapes/2D/Ellipse2D";
-import { EllipseEllipse2D } from "./shortest_distance/2D/EllipseEllipse2D";
+import { EllipseEllipseSD } from "./shortest_distance/2D/EllipseEllipseSD";
 import { Vector2 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -31,7 +31,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipse2YRadius = 25;
   const ellipse2Rotation = new Vector2(0, 0);
   const ellipse2Segments = 100;
-  const ellipse2Id = "Orange Ellipse";
+  const ellipse2Id = "Red Ellipse";
   const ellipse2Color = Colors.SHAPE2_COLOR;
   const ellipse2 = new Ellipse2D(
     canvas,
@@ -46,7 +46,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Interaction
   const colorConnection = Colors.CONNECTION_COLOR;
-  const pointEllipse = new EllipseEllipse2D(
+  const pointEllipse = new EllipseEllipseSD(
     canvas,
     ellipse1,
     ellipse2,

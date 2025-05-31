@@ -3,7 +3,7 @@ import { ConvexCircle2D } from "../../shapes/2D/ConvexCircle2D";
 import { Circle2D } from "../../shapes/2D/Circle2D";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
 
-export class ConvexCircleCircle2D extends Base2DScene {
+export class ConvexCircleCircleSD extends Base2DScene {
   private convexCircle: ConvexCircle2D;
   private circle: Circle2D;
   private colorConnection: number;

@@ -2,7 +2,7 @@ import { ConvexLine2D } from "./shapes/2D/ConvexLine2D";
 import { LineSegment2D } from "./shapes/2D/LineSegment2D";
 import { Vector2 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
-import { ConvexLineLineSegment2D } from "./shortest_distance/2D/ConvexLineLineSegment2D";
+import { ConvexLineLineSegmentSD } from "./shortest_distance/2D/ConvexLineLineSegmentSD";
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
@@ -39,7 +39,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Interaction
   const colorConnection = Colors.CONNECTION_COLOR;
-  const convexLineLineSegment = new ConvexLineLineSegment2D(
+  const convexLineLineSegment = new ConvexLineLineSegmentSD(
     canvas,
     convexLine,
     lineSegment,

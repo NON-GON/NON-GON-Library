@@ -3,7 +3,7 @@ import { Superellipse2D } from "../../shapes/2D/Superellipse2D";
 import { LineSegment2D } from "../../shapes/2D/LineSegment2D";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
 
-export class SuperellipseLineSegment2D extends Base2DScene {
+export class SuperellipseLineSegmentSD extends Base2DScene {
   private superellipse: Superellipse2D;
   private lineSegment: LineSegment2D;
   private colorConnection: number;

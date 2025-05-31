@@ -1,6 +1,6 @@
 import { Point2D } from "./shapes/2D/Point2D";
 import { Ellipse2D } from "./shapes/2D/Ellipse2D";
-import { PointEllipse2D } from "./shortest_distance/2D/PointEllipse2D";
+import { PointEllipseSD } from "./shortest_distance/2D/PointEllipseSD";
 import { Vector2 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -34,7 +34,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Interaction
   const colorConnection = Colors.CONNECTION_COLOR;
-  const pointEllipse = new PointEllipse2D(
+  const pointEllipse = new PointEllipseSD(
     canvas,
     point,
     ellipse,

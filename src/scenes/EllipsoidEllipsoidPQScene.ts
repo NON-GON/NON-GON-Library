@@ -1,5 +1,5 @@
 import { Ellipsoid3D } from "./shapes/3D/Ellipsoid3D";
-import { EllipsoidEllipsoid3D } from "./shortest_distance/3D/EllipsoidEllipsoid3D";
+import { EllipsoidEllipsoidPQ } from "./proximity_queries/3D/EllipsoidEllipsoidPQ";
 import { Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -34,7 +34,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipsoid2ZRadius = 25;
   const ellipsoid2Rotation = new Vector3(0, 0, 0);
   const ellipsoid2Segments = 100;
-  const ellipsoid2Id = "Orange Ellipsoid";
+  const ellipsoid2Id = "Red Ellipsoid";
   const ellipsoid2Color = Colors.SHAPE2_COLOR;
   const ellipsoid2 = new Ellipsoid3D(
     canvas,
@@ -49,12 +49,10 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Interaction
-  const colorConnection = Colors.CONNECTION_COLOR;
-  const ellipsoidEllipsoid = new EllipsoidEllipsoid3D(
+  const ellipsoidEllipsoid = new EllipsoidEllipsoidPQ(
     canvas,
     ellipsoid1,
-    ellipsoid2,
-    colorConnection
+    ellipsoid2
   );
   ellipsoidEllipsoid.startAnimation();
 });

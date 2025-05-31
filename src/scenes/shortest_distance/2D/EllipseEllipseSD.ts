@@ -2,7 +2,7 @@ import { Base2DScene } from "../../Base2DScene";
 import { Ellipse2D } from "../../shapes/2D/Ellipse2D";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
 
-export class EllipseEllipse2D extends Base2DScene {
+export class EllipseEllipseSD extends Base2DScene {
   private ellipse1: Ellipse2D;
   private ellipse2: Ellipse2D;
   private colorConnection: number;

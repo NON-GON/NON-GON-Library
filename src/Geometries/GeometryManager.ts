@@ -354,6 +354,11 @@ export class GeometryManager {
     return result;
   }
 
+  public deletePreviousGeometry(id: string) {
+    let geometry = this.getGeometry(id);
+    geometry.geometry = null;
+  }
+
   public changeCenterX(id: string, x: number) {
     let geometry = this.getGeometry(id);
     geometry.center = new Vector3(x, geometry.center.y, geometry.center.z);

@@ -1,6 +1,6 @@
 import { StrictlyConvexShape3D } from "./shapes/3D/StrictlyConvexShape3D";
 import { Plane3D } from "./shapes/3D/Plane3D";
-import { StrictlyConvexShapePlane3D } from "./shortest_distance/3D/StrictlyConvexShapePlane3D";
+import { StrictlyConvexShapePlaneSD } from "./shortest_distance/3D/StrictlyConvexShapePlaneSD";
 import { Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -43,7 +43,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Interaction
   const colorConnection = Colors.CONNECTION_COLOR;
-  const strictlyConvexShapePlane = new StrictlyConvexShapePlane3D(
+  const strictlyConvexShapePlane = new StrictlyConvexShapePlaneSD(
     canvas,
     strictlyConvexShape,
     plane,
