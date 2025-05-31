@@ -93,6 +93,7 @@ export class GeometryManager {
               side: THREE.DoubleSide,
             })
           );
+          mesh.name = id;
           return mesh;
         }
       }

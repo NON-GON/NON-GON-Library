@@ -14,7 +14,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const cylinder1Rotation = new Vector3(0, 0, 0);
   const cylinder1Segments = 100;
   const cylinder1Id = "Blue Cylinder";
-  const cylinder1Color = Colors.SHAPE1_COLOR;
+  const cylinder1Color = Colors.SHAPE1_COLOR_3D;
   const cylinder1 = new Cylinder3D(
     canvas,
     cylinder1Center,
@@ -35,7 +35,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const cylinder2Rotation = new Vector3(0, 0, 0);
   const cylinder2Segments = 100;
   const cylinder2Id = "Red Cylinder";
-  const cylinder2Color = Colors.SHAPE2_COLOR;
+  const cylinder2Color = Colors.SHAPE2_COLOR_3D;
   const cylinder2 = new Cylinder3D(
     canvas,
     cylinder2Center,

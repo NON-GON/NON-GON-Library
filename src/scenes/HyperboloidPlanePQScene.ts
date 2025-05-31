@@ -16,7 +16,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const hyperboloidRotation = new Vector3(90, 0, 0);
   const hyperboloidSegments = 100;
   const hyperboloidId = "Hyperboloid";
-  const hyperboloidColor = Colors.SHAPE1_COLOR;
+  const hyperboloidColor = Colors.SHAPE1_COLOR_3D;
   const hyperboloid = new Hyperboloid3D(
     canvas,
     hyperboloidCenter,
@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const planeHeight = 100;
   const planeSegments = 100;
   const planeId = "Plane";
-  const planeColor = Colors.SHAPE2_COLOR;
+  const planeColor = Colors.SHAPE2_COLOR_3D;
   const plane = new Plane3D(
     canvas,
     planeCenter,

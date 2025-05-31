@@ -21,23 +21,17 @@ export class ConvexLineLineSegmentSD extends Base2DScene {
   }
 
   protected buildScene(): void {
-    const convexLineId = this.convexLine.getId();
-    const convexLineColor = this.convexLine.getColor();
-    this.geometryManager.createGeometry(GeometryType2D.ConvexLine, convexLineId, this.convexLine.getParams());
-    const convexLineMesh = this.geometryManager.getGeometryMesh(convexLineId, convexLineColor, "line");
+    this.geometryManager.createGeometry(GeometryType2D.ConvexLine, this.convexLine.getId(), this.convexLine.getParams());
+    const convexLineMesh = this.geometryManager.getGeometryMesh(this.convexLine.getId(), this.convexLine.getColor(), "mesh");
     this.scene.add(convexLineMesh);
 
-    const lineSegmentId = this.lineSegment.getId();
-    const lineSegmentColor = this.lineSegment.getColor();
-    this.geometryManager.createGeometry(GeometryType2D.Line, lineSegmentId, this.lineSegment.getParams());
-    const lineSegmentMesh = this.geometryManager.getGeometryMesh(lineSegmentId, lineSegmentColor, "line");
+    this.geometryManager.createGeometry(GeometryType2D.Line, this.lineSegment.getId(), this.lineSegment.getParams());
+    const lineSegmentMesh = this.geometryManager.getGeometryMesh(this.lineSegment.getId(), this.lineSegment.getColor(), "mesh");
     this.scene.add(lineSegmentMesh);
 
-    this.makeSlidersInteraction(convexLineId, convexLineColor, this.convexLine.getSliderParams(),
-                                lineSegmentId, lineSegmentColor, this.lineSegment.getSliderParams(),
-                                this.colorConnection);
+    this.makeSlidersInteraction(this.convexLine, this.lineSegment, this.colorConnection);
 
-    let points = this.geometryManager.calculateShortestDistance(convexLineId, lineSegmentId);
+    let points = this.geometryManager.calculateShortestDistance(this.convexLine.getId(), this.lineSegment.getId());
     this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

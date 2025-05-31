@@ -21,7 +21,7 @@ export class Line extends Geometry2DBase implements IGeometry2D {
   constructor(
     start: Vector2 | Vector3,
     end: Vector2 | Vector3,
-    rotation: Vector3
+    rotation: Vector3 | Vector2
   ) {
     super();
     this.start =
@@ -36,7 +36,10 @@ export class Line extends Geometry2DBase implements IGeometry2D {
     }
     this.segments = 1; // A line has one segment by default
     this.type = GeometryType2D.Line;
-    this.rotation = rotation;
+    this.rotation =
+      rotation instanceof Vector2
+        ? new Vector3(rotation.x, rotation.y, 0)
+        : rotation;
   }
 
   public getGeometry(): any {

@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const rotation = new Vector3(0, 0, 0);
     const segments = 100;
     const id = 'Strictly Convex Shape';
-    const color = Colors.SHAPE1_COLOR;
+    const color = Colors.SHAPE1_COLOR_3D;
     const scene = new StrictlyConvexShape3D(canvas, center, rotation, segments, id, color);
     scene.startAnimation();
 });

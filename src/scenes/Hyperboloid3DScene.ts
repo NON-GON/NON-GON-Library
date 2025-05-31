@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const rotation = new Vector3(0, 0, 0);
     const segments = 100;
     const id = 'Hyperboloid';
-    const color = Colors.SHAPE1_COLOR;
+    const color = Colors.SHAPE1_COLOR_3D;
     const scene = new Hyperboloid3D(canvas, center, xradius, yradius, zfactor, height, rotation, segments, id, color);
     scene.startAnimation();
 });

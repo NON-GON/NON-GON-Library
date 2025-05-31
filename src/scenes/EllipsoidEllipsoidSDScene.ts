@@ -14,7 +14,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipsoid1Rotation = new Vector3(0, 0, 0);
   const ellipsoid1Segments = 100;
   const ellipsoid1Id = "Blue Ellipsoid";
-  const ellipsoid1Color = Colors.SHAPE1_COLOR;
+  const ellipsoid1Color = Colors.SHAPE1_COLOR_3D;
   const ellipsoid1 = new Ellipsoid3D(
     canvas,
     ellipsoid1Center,
@@ -35,7 +35,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipsoid2Rotation = new Vector3(0, 0, 0);
   const ellipsoid2Segments = 100;
   const ellipsoid2Id = "Red Ellipsoid";
-  const ellipsoid2Color = Colors.SHAPE2_COLOR;
+  const ellipsoid2Color = Colors.SHAPE2_COLOR_3D;
   const ellipsoid2 = new Ellipsoid3D(
     canvas,
     ellipsoid2Center,

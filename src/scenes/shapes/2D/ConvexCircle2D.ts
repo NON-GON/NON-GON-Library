@@ -60,7 +60,7 @@ export class ConvexCircle2D extends Base2DScene {
     const mesh = this.geometryManager.getGeometryMesh(
       this.id,
       this.color,
-      "line"
+      "mesh"
     );
     this.makeSlidersSolo(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);

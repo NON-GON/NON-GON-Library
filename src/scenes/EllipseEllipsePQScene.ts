@@ -1,5 +1,5 @@
 import { Ellipse2D } from "./shapes/2D/Ellipse2D";
-import { EllipseEllipseSD } from "./shortest_distance/2D/EllipseEllipseSD";
+import { EllipseEllipsePQ } from "./proximity_queries/2D/EllipseEllipsePQ";
 import { Vector2 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
@@ -45,12 +45,10 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Interaction
-  const colorConnection = Colors.CONNECTION_COLOR;
-  const pointEllipse = new EllipseEllipseSD(
+  const pointEllipse = new EllipseEllipsePQ(
     canvas,
     ellipse1,
-    ellipse2,
-    colorConnection
+    ellipse2
   );
   pointEllipse.startAnimation();
 });

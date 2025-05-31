@@ -10,7 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Point
   const pointCenter = new Vector2(-50, 50);
   const pointId = "Point";
-  const pointColor = Colors.SHAPE1_COLOR;
+  const pointColor = Colors.SHAPE1_COLOR_2D;
   const point = new Point2D(canvas, pointCenter, pointId, pointColor);
 
   // Ellipse
@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipseRotation = new Vector2(0, 0);
   const ellipseSegments = 100;
   const ellipseId = "Ellipse";
-  const ellipseColor = Colors.SHAPE2_COLOR;
+  const ellipseColor = Colors.SHAPE2_COLOR_2D;
   const ellipse = new Ellipse2D(
     canvas,
     ellipseCenter,

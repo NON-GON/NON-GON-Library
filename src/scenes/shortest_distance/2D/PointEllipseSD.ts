@@ -21,23 +21,17 @@ export class PointEllipseSD extends Base2DScene {
   }
 
   protected buildScene(): void {
-    const pointId = this.point.getId()
-    const pointColor = this.point.getColor()
-    this.geometryManager.createGeometry(GeometryType2D.Point, pointId, this.point.getParams());
-    const pointMesh = this.geometryManager.getGeometryMesh(pointId, pointColor, "line");
+    this.geometryManager.createGeometry(GeometryType2D.Point, this.point.getId(), this.point.getParams());
+    const pointMesh = this.geometryManager.getGeometryMesh(this.point.getId(), this.point.getColor(), "mesh");
     this.scene.add(pointMesh);
 
-    const ellipseId = this.ellipse.getId();
-    const ellipseColor = this.ellipse.getColor();
-    this.geometryManager.createGeometry(GeometryType2D.Ellipse, ellipseId, this.ellipse.getParams());
-    const ellipseMesh = this.geometryManager.getGeometryMesh(ellipseId, ellipseColor, "line");
+    this.geometryManager.createGeometry(GeometryType2D.Ellipse, this.ellipse.getId(), this.ellipse.getParams());
+    const ellipseMesh = this.geometryManager.getGeometryMesh(this.ellipse.getId(), this.ellipse.getColor(), "mesh");
     this.scene.add(ellipseMesh);
 
-    this.makeSlidersInteraction(pointId, pointColor, this.point.getSliderParams(),
-                                ellipseId, ellipseColor, this.ellipse.getSliderParams(),
-                                this.colorConnection);
+    this.makeSlidersInteraction(this.point, this.ellipse, this.colorConnection);
 
-    let points = this.geometryManager.calculateShortestDistance(pointId, ellipseId);
+    let points = this.geometryManager.calculateShortestDistance(this.point.getId(), this.ellipse.getId());
     this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

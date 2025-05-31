@@ -17,7 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const superellipsoidRotation = new Vector3(0, 0, 0);
   const superellipsoidSegments = 100;
   const superellipsoidId = "Superellipsoid";
-  const superellipsoiColor = Colors.SHAPE1_COLOR;
+  const superellipsoiColor = Colors.SHAPE1_COLOR_3D;
   const superellipsoid = new Superellipsoid3D(
     canvas,
     superellipsoidCenter,
@@ -39,7 +39,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const planeHeight = 75;
   const planeSegments = 1;
   const planeId = "Plane";
-  const planeColor = Colors.SHAPE2_COLOR;
+  const planeColor = Colors.SHAPE2_COLOR_3D;
   const plane = new Plane3D(
     canvas,
     planeCenter,

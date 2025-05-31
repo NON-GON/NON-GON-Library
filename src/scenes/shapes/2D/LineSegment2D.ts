@@ -48,11 +48,11 @@ export class LineSegment2D extends Base2DScene {
   public getColor() {
     return this.color;
   }
-  
+
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Line, this.id, this.getParams());
     const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
-    this.makeSlidersSolo(this.id, this.color, this.getSliderParams());
+    this.makeSlidersSolo(this.id, this.color, this.getSliderParams(), this);
     this.scene.add(mesh);
   }
 }

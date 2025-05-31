@@ -15,7 +15,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipsoidRotation = new Vector3(0, 0, 0);
   const ellipsoidSegments = 100;
   const ellipsoidId = "Ellipsoid";
-  const ellipsoidColor = Colors.SHAPE1_COLOR;
+  const ellipsoidColor = Colors.SHAPE1_COLOR_3D;
   const ellipsoid = new Ellipsoid3D(
     canvas,
     ellipsoidCenter,
@@ -36,7 +36,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipticParaboloidRotation = new Vector3(-90, 0, 0);
   const ellipticParaboloidSegments = 100;
   const ellipticParaboloidId = "Elliptic Paraboloid";
-  const ellipticParaboloidColor = Colors.SHAPE2_COLOR;
+  const ellipticParaboloidColor = Colors.SHAPE2_COLOR_3D;
   const ellipticParaboloid = new EllipticParaboloid3D(
     canvas,
     ellipticParaboloidCenter,

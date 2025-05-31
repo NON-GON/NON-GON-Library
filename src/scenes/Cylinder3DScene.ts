@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const rotation = new Vector3(90, 0, 0);
     const segments = 100;
     const id = 'Cylinder';
-    const color = Colors.SHAPE1_COLOR;
+    const color = Colors.SHAPE1_COLOR_3D;
     const scene = new Cylinder3D(canvas, center, xradius, yradius, height, rotation, segments, id, color);
     scene.startAnimation();
 });

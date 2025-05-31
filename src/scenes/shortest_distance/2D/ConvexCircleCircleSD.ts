@@ -21,41 +21,35 @@ export class ConvexCircleCircleSD extends Base2DScene {
   }
 
   protected buildScene(): void {
-    const convexCircleId = this.convexCircle.getId();
-    const convexCircleColor = this.convexCircle.getColor();
     this.geometryManager.createGeometry(
       GeometryType2D.ConvexCircle,
-      convexCircleId,
+      this.convexCircle.getId(),
       this.convexCircle.getParams()
     );
     const convexCircleMesh = this.geometryManager.getGeometryMesh(
-      convexCircleId,
-      convexCircleColor,
-      "line"
+      this.convexCircle.getId(),
+      this.convexCircle.getColor(),
+      "mesh"
     );
     this.scene.add(convexCircleMesh);
 
-    const circleId = this.circle.getId();
-    const circleColor = this.circle.getColor();
     this.geometryManager.createGeometry(
       GeometryType2D.Circle,
-      circleId,
+      this.circle.getId(),
       this.circle.getParams()
     );
     const circleMesh = this.geometryManager.getGeometryMesh(
-      circleId,
-      circleColor,
-      "line"
+      this.circle.getId(),
+      this.circle.getColor(),
+      "mesh"
     );
     this.scene.add(circleMesh);
 
-    this.makeSlidersInteraction(convexCircleId, convexCircleColor, this.convexCircle.getSliderParams(),
-                                circleId, circleColor, this.circle.getSliderParams(),
-                                this.colorConnection);
+    this.makeSlidersInteraction(this.convexCircle, this.circle, this.colorConnection);
 
     let points = this.geometryManager.calculateShortestDistance(
-      convexCircleId,
-      circleId
+      this.convexCircle.getId(),
+      this.circle.getId()
     );
     this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }

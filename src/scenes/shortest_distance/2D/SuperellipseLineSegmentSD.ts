@@ -21,23 +21,17 @@ export class SuperellipseLineSegmentSD extends Base2DScene {
   }
 
   protected buildScene(): void {
-    const superellipseId = this.superellipse.getId();
-    const superellipseColor = this.superellipse.getColor();
-    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, superellipseId, this.superellipse.getParams());
-    const superellipseMesh = this.geometryManager.getGeometryMesh(superellipseId, superellipseColor, "line");
+    this.geometryManager.createGeometry(GeometryType2D.Supperellipse, this.superellipse.getId(), this.superellipse.getParams());
+    const superellipseMesh = this.geometryManager.getGeometryMesh(this.superellipse.getId(), this.superellipse.getColor(), "mesh");
     this.scene.add(superellipseMesh);
 
-    const lineSegmentId = this.lineSegment.getId();
-    const lineSegmentColor = this.lineSegment.getColor();
-    this.geometryManager.createGeometry(GeometryType2D.Line, lineSegmentId, this.lineSegment.getParams());
-    const lineSegmentMesh = this.geometryManager.getGeometryMesh(lineSegmentId, lineSegmentColor, "line");
+    this.geometryManager.createGeometry(GeometryType2D.Line, this.lineSegment.getId(), this.lineSegment.getParams());
+    const lineSegmentMesh = this.geometryManager.getGeometryMesh(this.lineSegment.getId(), this.lineSegment.getColor(), "mesh");
     this.scene.add(lineSegmentMesh);
 
-    this.makeSlidersInteraction(superellipseId, superellipseColor, this.superellipse.getSliderParams(),
-                                lineSegmentId, lineSegmentColor, this.lineSegment.getSliderParams(),
-                              this.colorConnection);
+    this.makeSlidersInteraction(this.superellipse, this.lineSegment, this.colorConnection);
 
-    let points = this.geometryManager.calculateShortestDistance(superellipseId, lineSegmentId);
+    let points = this.geometryManager.calculateShortestDistance(this.superellipse.getId(), this.lineSegment.getId());
     this.drawShortestDistance(points[0], points[1], this.colorConnection);
   }
 }

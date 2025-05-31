@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const strictlyConvexShapeRotation = new Vector3(0, 0, 0);
   const strictlyConvexShapeSegments = 100;
   const strictlyConvexShapeId = "Strictly Convex Shape";
-  const strictlyConvexShapeColor = Colors.SHAPE1_COLOR;
+  const strictlyConvexShapeColor = Colors.SHAPE1_COLOR_3D;
   const strictlyConvexShape = new StrictlyConvexShape3D(
     canvas,
     strictlyConvexShapeCenter,
@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const planeHeight = 75;
   const planeSegments = 100;
   const planeId = "Plane";
-  const planeColor = Colors.SHAPE2_COLOR;
+  const planeColor = Colors.SHAPE2_COLOR_3D;
   const plane = new Plane3D(
     canvas,
     planeCenter,

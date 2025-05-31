@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Colors } from "../colors";
 import { GeometryManager } from "../Geometries/GeometryManager";
 import { Vector2, Vector3 } from "../Calc/Util/Utils";
+import { ShapeGeometry } from "three";
 
 export abstract class Base2DScene {
   protected geometryManager = new GeometryManager();
@@ -25,14 +26,9 @@ export abstract class Base2DScene {
     this.camera.position.set(0, 0, 200);
     this.camera.lookAt(0, 0, 0);
 
-    // Scene & Light
+    // Scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(Colors.BACKGROUND);
-
-    const light = new THREE.DirectionalLight(Colors.WHITE, 3);
-    light.position.set(0, 0, 200);
-    light.lookAt(0, 0, 0);
-    this.scene.add(light);
 
     // Grid & Axes
     //this.makeAxes();
@@ -137,30 +133,36 @@ export abstract class Base2DScene {
     return cone;
   }
 
-  protected makeSlidersSolo(shapeId: string, shapeColor: number, shapeParams: any) {
+  protected makeSlidersSolo(shapeId: string, shapeColor: number, shapeParams: any, lineSegment?: any | undefined) {
     const fieldSet = document.createElement('fieldset');
     const legend = document.createElement('legend');
     legend.textContent = shapeId;
     fieldSet.appendChild(legend);
-    this.makeShapeCenterSliders(fieldSet, shapeId, shapeColor);
+    
+    if (lineSegment !== undefined) {
+      this.makeLineSegmentEndpointsSliders(fieldSet, lineSegment, shapeColor)
+    } else {
+      this.makeShapeCenterSliders(fieldSet, shapeId, shapeColor);
+    }
+
     this.makeShapeRotationSliders(fieldSet, shapeId, shapeColor);
     this.sliders.appendChild(fieldSet);
   }
 
-  protected makeSlidersInteraction(shape1Id: string, shape1Color: number, shape1Params: any,
-                                   shape2Id: string, shape2Color: number, shape2Params: any,
-                                   connectionColor: number) {
-    this.makeSlidersInteractionAux(shape1Id, shape1Color, shape1Params, shape2Id, connectionColor);
-    this.makeSlidersInteractionAux(shape2Id, shape2Color, shape2Params, shape1Id, connectionColor);
+  protected makeSlidersInteraction(shape1: any, shape2: any, connectionColor?: number | undefined) {
+    this.makeSlidersInteractionAux(shape1, shape2, connectionColor);
+    this.makeSlidersInteractionAux(shape2, shape1, connectionColor);
   }
 
-  protected makeSlidersInteractionAux(shape1Id: string, shape1Color: number, shape1Params: any, shape2Id: string, connectionColor: number) {
+  protected makeSlidersInteractionAux(shape1: any, shape2: any, connectionColor: number | undefined) {
     const fieldSet = document.createElement('fieldset');
     const legend = document.createElement('legend');
-    legend.textContent = shape1Id;
+    legend.textContent = shape1.getId();
     fieldSet.appendChild(legend);
-    this.makeShapeCenterSlidersInteraction(fieldSet, shape1Id, shape1Color, shape2Id, connectionColor);
-    this.makeShapeRotationSlidersInteraction(fieldSet, shape1Id, shape1Color, shape2Id, connectionColor);
+
+    this.makeShapeCenterSlidersInteraction(fieldSet, shape1, shape2, connectionColor);
+    this.makeShapeRotationSlidersInteraction(fieldSet, shape1, shape2, connectionColor);
+
     this.sliders.appendChild(fieldSet);
   }
 
@@ -184,7 +186,39 @@ export abstract class Base2DScene {
         const v = parseFloat(slider.value);
         this.scene.remove(this.scene.getObjectByName(shapeId));
         newCenter(v);
-        this.scene.add(this.geometryManager.getGeometryMesh(shapeId, shapeColor, 'line'));
+        this.scene.add(this.geometryManager.getGeometryMesh(shapeId, shapeColor, 'mesh'));
+      });
+
+      label.appendChild(slider);
+      fieldSet.appendChild(label);
+      fieldSet.appendChild(document.createElement('br'));
+    });
+  }
+
+  private makeLineSegmentEndpointsSliders(fieldSet: HTMLFieldSetElement, shape: any, shapeColor: number) {
+    const shapeStart = shape.start;
+    const shapeEnd = shape.end;
+    const fields = [['Start X: ', shapeStart.x, v => shape.start = new Vector2(v, shapeStart.y)],
+                    ['Start Y: ', shapeStart.y, v => shape.start = new Vector2(shapeStart.x, v)],
+                    ['End X: ', shapeEnd.x, v => shape.end = new Vector2(v, shapeEnd.y)],
+                    ['End Y: ', shapeEnd.y, v => shape.end = new Vector2(shapeEnd.x, v)]];
+                    
+    fields.forEach( ([labelText, value, newCenter]) => {      
+      const label = document.createElement('label');
+      label.textContent = labelText;
+    
+      const slider = document.createElement('input');
+      slider.type  = 'range';
+      slider.min   = '-100';
+      slider.max   = '100';
+      slider.step  = '0.01';
+      slider.value = value.toString();
+    
+      slider.addEventListener('input', () => {        
+        const v = parseFloat(slider.value);
+        this.scene.remove(this.scene.getObjectByName(shape.getId()));
+        newCenter(v);
+        this.scene.add(this.geometryManager.getGeometryMesh(shape.getId(), shapeColor, 'line'));
       });
 
       label.appendChild(slider);
@@ -212,7 +246,7 @@ export abstract class Base2DScene {
         const v = parseFloat(slider.value);
         this.scene.remove(this.scene.getObjectByName(shapeId));
         newRotation(v);
-        this.scene.add(this.geometryManager.getGeometryMesh(shapeId, shapeColor, 'line'));
+        this.scene.add(this.geometryManager.getGeometryMesh(shapeId, shapeColor, 'mesh'));
       });
 
       label.appendChild(slider);
@@ -221,7 +255,12 @@ export abstract class Base2DScene {
     });
   }
 
-  private makeShapeCenterSlidersInteraction(fieldSet: HTMLFieldSetElement, shape1Id: string, shape1Color: number, shape2Id: string, connectionColor: number) {
+  private makeShapeCenterSlidersInteraction(fieldSet: HTMLFieldSetElement, shape1: any, shape2: any, connectionColor: number | undefined) {
+    const shape1Id = shape1.getId();
+    const shape1Color = shape1.getColor();
+    const shape2Id = shape2.getId();
+    const shape2Color = shape2.getColor();
+
     const shapeCenter = this.geometryManager.getGeometry(shape1Id).center;
     const fields = [['Center X: ', shapeCenter.x, v => this.geometryManager.changeCenterX(shape1Id, v)],
                     ['Center Y: ', shapeCenter.y, v => this.geometryManager.changeCenterY(shape1Id, v)]];
@@ -241,9 +280,35 @@ export abstract class Base2DScene {
         const v = parseFloat(slider.value);
         this.scene.remove(this.scene.getObjectByName(shape1Id));
         newCenter(v);
-        this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, 'line'));
-        const points = this.geometryManager.calculateShortestDistance(shape1Id, shape2Id);
-        this.scene.remove(this.scene.getObjectByName(this.drawShortestDistance(points[0], points[1], connectionColor)));
+        
+        if (connectionColor !== undefined) {
+          this.scene.add(
+            this.geometryManager.getGeometryMesh(shape1Id, shape1Color, "mesh")
+          );
+          const points = this.geometryManager.calculateShortestDistance(
+            shape1Id,
+            shape2Id
+          );
+          this.scene.remove(
+            this.scene.getObjectByName(
+              this.drawShortestDistance(points[0], points[1], connectionColor)
+            )
+          );
+        } else {
+          if (this.geometryManager.calculateProximityQuery(shape1Id, shape2Id)) {
+            this.scene.remove(this.scene.getObjectByName(shape2Id));
+            this.geometryManager.deletePreviousGeometry(shape2Id);
+
+            this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, "line"));
+            this.scene.add(this.geometryManager.getGeometryMesh(shape2Id, shape2Color, "line"));
+          } else {
+            this.scene.remove(this.scene.getObjectByName(shape2Id));
+            this.geometryManager.deletePreviousGeometry(shape2Id);
+
+            this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, "mesh"));
+            this.scene.add(this.geometryManager.getGeometryMesh(shape2Id, shape2Color, "mesh"));
+          }
+        }
       });
 
       label.appendChild(slider);
@@ -251,7 +316,13 @@ export abstract class Base2DScene {
       fieldSet.appendChild(document.createElement('br'));
     });
   }
-  private makeShapeRotationSlidersInteraction(fieldSet: HTMLFieldSetElement, shape1Id: string, shape1Color: number, shape2Id: string, connectionColor: number) {
+
+  private makeShapeRotationSlidersInteraction(fieldSet: HTMLFieldSetElement, shape1: any, shape2: any, connectionColor: number) {
+    const shape1Id = shape1.getId();
+    const shape1Color = shape1.getColor();
+    const shape2Id = shape2.getId();
+    const shape2Color = shape2.getColor();
+
     const shapeRotation = this.geometryManager.getGeometry(shape1Id).rotation;
     const fields = [['Rotation Z: ', shapeRotation.z, v => this.geometryManager.changeRotationZ(shape1Id, v)]];
 
@@ -270,9 +341,35 @@ export abstract class Base2DScene {
         const v = parseFloat(slider.value);
         this.scene.remove(this.scene.getObjectByName(shape1Id));
         newRotation(v);
-        this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, 'line'));
-        const points = this.geometryManager.calculateShortestDistance(shape1Id, shape2Id);
-        this.scene.remove(this.scene.getObjectByName(this.drawShortestDistance(points[0], points[1], connectionColor)));
+
+        if (connectionColor !== undefined) {
+          this.scene.add(
+            this.geometryManager.getGeometryMesh(shape1Id, shape1Color, "mesh")
+          );
+          const points = this.geometryManager.calculateShortestDistance(
+            shape1Id,
+            shape2Id
+          );
+          this.scene.remove(
+            this.scene.getObjectByName(
+              this.drawShortestDistance(points[0], points[1], connectionColor)
+            )
+          );
+        } else {
+          if (this.geometryManager.calculateProximityQuery(shape1Id, shape2Id)) {
+            this.scene.remove(this.scene.getObjectByName(shape2Id));
+            this.geometryManager.deletePreviousGeometry(shape2Id);
+
+            this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, "line"));
+            this.scene.add(this.geometryManager.getGeometryMesh(shape2Id, shape2Color, "line"));
+          } else {
+            this.scene.remove(this.scene.getObjectByName(shape2Id));
+            this.geometryManager.deletePreviousGeometry(shape2Id);
+
+            this.scene.add(this.geometryManager.getGeometryMesh(shape1Id, shape1Color, "mesh"));
+            this.scene.add(this.geometryManager.getGeometryMesh(shape2Id, shape2Color, "mesh"));
+          }
+        }
       });
 
       label.appendChild(slider);

@@ -10,7 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Point
   const pointCenter = new Vector3(-50, 50, 50);
   const pointId = "Point";
-  const pointColor = Colors.SHAPE1_COLOR;
+  const pointColor = Colors.SHAPE1_COLOR_3D;
   const point = new Point3D(canvas, pointCenter, pointId, pointColor);
 
   // Ellipsoid
@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const ellipsoidRotation = new Vector3(0, 0, 0);
   const ellipsoidSegments = 100;
   const ellipsoidId = "Ellipsoid";
-  const ellipsoidColor = Colors.SHAPE2_COLOR;
+  const ellipsoidColor = Colors.SHAPE2_COLOR_3D;
   const ellipsoid = new Ellipsoid3D(
     canvas,
     ellipsoidCenter,

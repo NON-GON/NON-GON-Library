@@ -56,7 +56,7 @@ export class Ellipse2D extends Base2DScene {
   
   protected buildScene(): void {
     this.geometryManager.createGeometry(GeometryType2D.Ellipse, this.id, this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
+    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'mesh');
     this.makeSlidersSolo(this.id, this.color, this.getSliderParams());
     this.scene.add(mesh);
   }
