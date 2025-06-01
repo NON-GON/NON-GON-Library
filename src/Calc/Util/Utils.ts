@@ -2048,10 +2048,39 @@ export function IsPlaneBetween(
   middlePlaneCenter: Vector3,
   plane2Center: Vector3
 ): boolean {
-  const axis = plane2Center.subtract(plane1Center).normalize();
-  const toMiddle = middlePlaneCenter.subtract(plane1Center);
+  // Define vectors along the common axis
+  let axis = plane2Center.subtract(plane1Center).normalize();
+  let toMiddle = middlePlaneCenter.subtract(plane1Center);
 
-  const projection = toMiddle.dot(axis);
+  // Project the toMiddle vector onto the axis
+  let projection = toMiddle.dot(axis);
 
+  // Check if the middle plane is between the other two along the common axis
   return projection > 0 && projection < plane1Center.distanceTo(plane2Center);
+}
+
+/**
+ * Converts an angle in degress to radians.
+ *
+ * @param {number} degrees - The angle in radians to convert.
+ * @returns {number} The angle converted to degrees.
+ *
+ * @remarks
+ * - Uses the formula: radians = (degress * π) / 180
+ */
+export function degToRad(degrees: number): number {
+  return (degrees * Math.PI) / 180;
+}
+
+/**
+ * Converts an angle in radians to degrees.
+ *
+ * @param {number} radians - The angle in radians to convert.
+ * @returns {number} The angle converted to degrees.
+ *
+ * @remarks
+ * - Uses the formula: degrees = radians * (180 / π)
+ */
+export function radToDeg(radians: number): number {
+  return (radians * 180) / Math.PI;
 }

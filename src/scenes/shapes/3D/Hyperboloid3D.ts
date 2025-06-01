@@ -9,6 +9,7 @@ export class Hyperboloid3D extends Base3DScene {
   private zfactor: number;
   private height: number;
   private rotation: Vector3;
+  private hyperboloidType: "one-sheeted" | "two-sheeted";
   private segments: number;
   private id: string;
   private color: number;
@@ -20,6 +21,7 @@ export class Hyperboloid3D extends Base3DScene {
               zfactor: number,
               height: number,
               rotation: Vector3,
+              hyperboloidType: "one-sheeted" | "two-sheeted" = "one-sheeted",
               segments: number,
               id: string,
               color: number) {
@@ -30,6 +32,7 @@ export class Hyperboloid3D extends Base3DScene {
     this.zfactor = zfactor;
     this.height = height;
     this.rotation = rotation;
+    this.hyperboloidType = hyperboloidType;
     this.segments = segments;
     this.id = id;
     this.color = color;
@@ -42,6 +45,7 @@ export class Hyperboloid3D extends Base3DScene {
       yradius: this.yradius,
       zfactor: this.zfactor,
       height: this.height,
+      hyperboloidType: this.hyperboloidType,
       rotation: this.rotation,
       segments: this.segments
     };

@@ -21,6 +21,10 @@ import { Convex } from "./3D/Convex";
 import { Geometry3DBase } from "./3D/Geometry3DBase";
 import { Geometry2DBase } from "./2D/Geometry2DBase";
 
+export enum HyperboloidType {
+  OneSheeted = "OneSheeted",
+  TwoSheeted = "TwoSheeted",
+}
 /**
  * Singleton class to manage creation, storage, and operations on geometries.
  */
@@ -248,6 +252,7 @@ export class GeometryManager {
           params.zfactor,
           params.height,
           params.rotation,
+          params.hyperboloidType,
           params.segments
         );
       case GeometryType3D.Sphere:
@@ -430,5 +435,19 @@ export class GeometryManager {
       z
     );
     geometry.geometry = null;
+  }
+
+  public static isPlaneBetween(
+    plane1Center: Vector3,
+    middlePlaneCenter: Vector3,
+    plane2Center: Vector3
+  ): boolean {
+    // Define vector along the axis from plane1 to plane2
+    const axis = plane2Center.clone().subtract(plane1Center).normalize();
+    const toMiddle = middlePlaneCenter.clone().subtract(plane1Center);
+    // Project the toMiddle vector onto the axis
+    const projection = toMiddle.dot(axis);
+    // Check if the middle plane is between the other two along the axis
+    return projection > 0 && projection < plane1Center.distanceTo(plane2Center);
   }
 }

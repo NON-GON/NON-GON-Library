@@ -25,6 +25,7 @@ window.addEventListener("DOMContentLoaded", () => {
     hyperboloidZFactor,
     hyperboloidHeight,
     hyperboloidRotation,
+    "two-sheeted", // or "one-sheeted"
     hyperboloidSegments,
     hyperboloidId,
     hyperboloidColor
@@ -32,7 +33,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Plane
   const planeCenter = new Vector3(50, -50, -50);
-  const planeRotation = new Vector3(0, 0, 90);
+  const planeRotation = new Vector3(0, 0, 0);
   const planeWidth = 50;
   const planeHeight = 100;
   const planeSegments = 100;
@@ -50,10 +51,6 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Interaction
-  const hyperboloidPlane = new HyperboloidPlanePQ(
-    canvas,
-    hyperboloid,
-    plane
-  );
+  const hyperboloidPlane = new HyperboloidPlanePQ(canvas, hyperboloid, plane);
   hyperboloidPlane.startAnimation();
 });

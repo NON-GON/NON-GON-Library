@@ -5,6 +5,8 @@ import { EllipticParaboloid } from "../../Geometries/3D/Ellipticparaboloid";
 import { Hyperboloid } from "../../Geometries/3D/Hyperboloid";
 import {
   ApproximatlyEqual,
+  radToDeg,
+  degToRad,
   calDetMatrix4x4,
   DescartesLawOfSignsFourthDegreePolynomial,
   FindClosestPoints,
@@ -1427,38 +1429,39 @@ export class ProximityQuery3D {
     hyperboloid: Hyperboloid,
     plane: Plane
   ): boolean {
-    if (hyperboloid.zfactor >= 0) {
-      return true;
-    }
-    const planeNormal = plane.getNormal().normalize();
-    const hyperboloidForward = hyperboloid.forward().normalize();
-    const c = hyperboloid.zfactor;
+    const zRadius = hyperboloid.height / 2;
 
-    const center = hyperboloid.getCenter();
-    const forwardScaled = hyperboloidForward.scale(c);
-    const top = center.add(forwardScaled);
-    const bottom = center.subtract(forwardScaled);
+    const hyperboloidForward = hyperboloid.forward();
+    const planeNormal = plane.getNormal();
 
-    const isAligned =
-      ApproximatlyEqual(planeNormal.dot(hyperboloidForward), 1) ||
-      ApproximatlyEqual(planeNormal.dot(hyperboloidForward), -1);
+    const dot = hyperboloidForward.dot(planeNormal);
 
-    const isPlaneBetween = IsPlaneBetween(top, plane.getCenter(), bottom);
+    const center = hyperboloid.center;
+    const planeCenter = plane.center;
 
-    if (isAligned) {
-      return !isPlaneBetween;
-    }
+    const top = center.clone().add(hyperboloidForward.clone().scale(zRadius));
+    const bottom = center
+      .clone()
+      .subtract(hyperboloidForward.clone().scale(zRadius));
 
-    if (isPlaneBetween) {
-      let angle = planeNormal.angleTo(hyperboloidForward);
-      angle = angle > 90 ? 180 - angle : angle;
+    if (Math.abs(dot - 1) < 1e-3 || Math.abs(dot + 1) < 1e-3) {
+      // Aligned
+      if (IsPlaneBetween(top, planeCenter, bottom)) {
+        return false;
+      } else {
+        return true;
+      }
+    } else if (IsPlaneBetween(top, planeCenter, bottom)) {
+      let angle = radToDeg(hyperboloidForward.angleTo(planeNormal));
+      if (angle > 90) angle = 180 - angle;
 
-      const distance = center.distanceTo(plane.getCenter());
-      const threshold = distance >= 1 ? distance * c : c;
+      const distance = center.distanceTo(planeCenter);
+      const threshold = distance >= 1 ? distance * zRadius : zRadius;
 
       return angle > 40 / threshold;
+    } else {
+      console.log("");
+      return true;
     }
-
-    return true;
   }
 }
