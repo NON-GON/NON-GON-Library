@@ -73,6 +73,30 @@ export class GeometryManager {
           mesh.name = id;
           return mesh;
         } else if (geometry instanceof Geometry2DBase) {
+          if (geometry instanceof Plane) {
+            const planeGeometry = geometry.getGeometry();
+            const mesh = new THREE.Mesh(
+              planeGeometry,
+              new THREE.MeshPhongMaterial({
+                color: color,
+                side: 2,
+                shininess: 100,
+              })
+            );
+            mesh.name = id;
+            return mesh;
+          }
+
+          if (geometry instanceof Point) {
+            const sphereGeometry = new THREE.SphereGeometry(1);
+            const material = new THREE.MeshBasicMaterial({ color: color });
+            const mesh = new THREE.Mesh(sphereGeometry, material);
+            const center = geometry.getCenter();
+            mesh.position.set(center.x, center.y, center.z);
+            mesh.name = id;
+            return mesh;
+          }
+
           const positions = geometry.getGeometry().attributes.position.array;
           const points = [];
           for (let i = 0; i < positions.length; i += 3) {
