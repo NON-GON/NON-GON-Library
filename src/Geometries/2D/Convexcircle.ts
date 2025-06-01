@@ -14,7 +14,7 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
   private angle: number = -Math.PI / 2;
   readonly segments: number;
   readonly radius: number;
-  public type: GeometryType2D = GeometryType2D.ConvexLine;
+  public type: GeometryType2D = GeometryType2D.ConvexCircle;
   constructor(
     center: Vector3 | Vector2,
     radius: number,
@@ -34,9 +34,12 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
 
   public getGeometry(): any {
     if (this.geometry !== null && this.geometry !== undefined) {
+      console.log("Returning existing Convex Circle Geometry");
       return this.geometry;
     } else {
       const points: Vector2[] = [];
+      this.angle = -Math.PI / 2; // <-- Reset angle here
+
       for (let i = 0; i <= this.segments + 1; i++) {
         let f = this.f_c(this.angle, this.radius);
         let fd = this.fd_c(this.angle, this.radius);
