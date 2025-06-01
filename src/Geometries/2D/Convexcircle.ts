@@ -34,7 +34,6 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
 
   public getGeometry(): any {
     if (this.geometry !== null && this.geometry !== undefined) {
-      console.log("Returning existing Convex Circle Geometry");
       return this.geometry;
     } else {
       const points: Vector2[] = [];
