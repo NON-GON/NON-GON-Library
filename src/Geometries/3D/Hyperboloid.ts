@@ -89,7 +89,6 @@ export class Hyperboloid extends Geometry3DBase implements IGeometry3D {
     const maxZ = this.height / 2;
 
     const generateSheet = (sign: number) => {
-      const baseIndex = vertices.length / 3;
 
       // Add tip vertex
       const epsilon = 1e-4;

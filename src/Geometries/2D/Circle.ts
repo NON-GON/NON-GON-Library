@@ -20,7 +20,7 @@ export class Circle extends Geometry2DBase implements IGeometry2D {
     center: Vector3 | Vector2,
     radius: number,
     rotation: Vector3 | Vector2,
-    segments: number,
+    segments: number
   ) {
     super();
     this.center =
@@ -58,6 +58,12 @@ export class Circle extends Geometry2DBase implements IGeometry2D {
 
   public getRadius(): number {
     return this.radius;
+  }
+
+  public point(theta: number): Vector3 {
+    let x = this.radius * Math.cos(theta) + this.center.x;
+    let y = this.radius * Math.sin(theta) + this.center.y;
+    return new Vector3(x, y, 0).rotate(this.rotation);
   }
 
   ShortestDistance2D(geometry: IGeometry2D): [Vector3, Vector3] {

@@ -253,17 +253,17 @@ export class ShortestDistance2D {
    * @returns A tuple of two points: the closest point of the Convexcircle and the closest point of the circle.
    */
   static ConvexCircle_Circle(convexCircle: Convexcircle, circle: Circle) {
-    let center_convex = convexCircle.getCenter();
-    let R_c = circle.getRadius();
-    let center_circle = circle.getCenter();
-    let cc = center_convex.add(center_circle.scale(-1));
-    let y_ = convexCircle.TransformDirection(new Vector3(-1, 0, 0));
-    let alpha = (Math.PI / 180) * y_.toVector2().signedAngle(cc.toVector2());
+    let center_convex = circle.getCenter().toVector2();
+    let R_c = 5;
+    let center_circle = convexCircle.getCenter().toVector2();
+    let cc = center_convex.subtract(center_circle);
+    let y_ = circle.TransformDirection(new Vector3(-1, 0, 0));
+    let alpha = y_.toVector2().signedAngle(cc);
     let rpc = convexCircle.point(alpha, R_c);
-    let convex_point = convexCircle.TransformPoint(rpc.toVector3());
-    let l = circle.InverseTransformPoint(convex_point);
+    let convex_point = circle.TransformPoint(rpc.toVector3());
+    let l = convexCircle.InverseTransformPoint(convex_point);
     l = l.normalize().scale(R_c);
-    l = circle.TransformPoint(l.toVector3());
-    return [l.toVector3(), convex_point];
+    l = convexCircle.TransformPoint(l);
+    return [l, convex_point];
   }
 }

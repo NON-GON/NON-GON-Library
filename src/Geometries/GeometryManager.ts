@@ -20,6 +20,7 @@ import { ConvexLine } from "./2D/Convexline";
 import { Convex } from "./3D/Convex";
 import { Geometry3DBase } from "./3D/Geometry3DBase";
 import { Geometry2DBase } from "./2D/Geometry2DBase";
+import { ConvexLine2D } from "../scenes/shapes/2D/ConvexLine2D";
 
 export enum HyperboloidType {
   OneSheeted = "OneSheeted",
@@ -61,6 +62,9 @@ export class GeometryManager {
     let geometry = this._geometries[id];
     if (geometry) {
       type = type ?? "line";
+      if (geometry instanceof ConvexLine2D) {
+        type = "line"; // ConvexLine2D is always a line
+      }
       if (type === "line") {
         let material = new THREE.LineBasicMaterial({ color: color });
         let line = new THREE.Line(geometry.getGeometry(), material);
