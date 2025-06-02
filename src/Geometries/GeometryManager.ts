@@ -20,7 +20,6 @@ import { ConvexLine } from "./2D/Convexline";
 import { Convex } from "./3D/Convex";
 import { Geometry3DBase } from "./3D/Geometry3DBase";
 import { Geometry2DBase } from "./2D/Geometry2DBase";
-import { ConvexLine2D } from "../scenes/shapes/2D/ConvexLine2D";
 
 export enum HyperboloidType {
   OneSheeted = "OneSheeted",
@@ -304,8 +303,6 @@ export class GeometryManager {
         return new Plane(
           params.center,
           params.rotation,
-          params.width,
-          params.height,
           params.segments
         );
       case GeometryType2D.Point:

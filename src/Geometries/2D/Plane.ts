@@ -27,8 +27,6 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
   constructor(
     center: Vector2 | Vector3,
     rotation: Vector3,
-    width: number,
-    height: number,
     segments: number
   ) {
     
