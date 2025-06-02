@@ -31,14 +31,15 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
     height: number,
     segments: number
   ) {
+    
     super();
     this.center =
       center instanceof Vector2 ? new Vector3(center.x, center.y, 0) : center;
     this.rotation = rotation;
     this.segments = segments;
     this.rotation = rotation;
-    this.width = width;
-    this.height = height;
+    this.width = 1000;
+    this.height = 1000;
   }
 
   ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {

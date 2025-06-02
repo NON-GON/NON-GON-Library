@@ -62,9 +62,6 @@ export class GeometryManager {
     let geometry = this._geometries[id];
     if (geometry) {
       type = type ?? "line";
-      if (geometry instanceof ConvexLine2D) {
-        type = "line"; // ConvexLine2D is always a line
-      }
       if (type === "line") {
         let material = new THREE.LineBasicMaterial({ color: color });
         let line = new THREE.Line(geometry.getGeometry(), material);
@@ -412,6 +409,7 @@ export class GeometryManager {
   }
 
   public changeRotationX(id: string, x: number) {
+    console.log("changeRotationX", id, x);
     let geometry = this.getGeometry(id);
     geometry.rotation = new Vector3(
       x,
@@ -422,6 +420,7 @@ export class GeometryManager {
   }
 
   public changeRotationY(id: string, y: number) {
+    console.log("changeRotationY", id, y);
     let geometry = this.getGeometry(id);
     geometry.rotation = new Vector3(
       geometry.rotation.x,
@@ -432,6 +431,7 @@ export class GeometryManager {
   }
 
   public changeRotationZ(id: string, z: number) {
+    console.log("changeRotationZ", id, z);
     let geometry = this.getGeometry(id);
     geometry.rotation = new Vector3(
       geometry.rotation.x,

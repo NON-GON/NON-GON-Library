@@ -31,16 +31,19 @@ export class ShortestDistance2D {
     // Transform the query point to a new system of coordinates relative to the ellipse
 
     let Point_ = ellipse.InverseTransformPoint(point);
+    console.log("Point_"+ Point_.x + " " + Point_.y + " " + Point_.z);
 
     T = ShortestDistance2D.pointEllipse(
       Point_,
       ellipse.xradius,
       ellipse.yradius
     ); // Ensure no NaN values
+    console.log("T: " + T.x + " " + T.y + " " + T.z);
     if (isNaN(T.x) || isNaN(T.y)) {
       throw new Error("Invalid result from pointEllipse");
     }
     T = ellipse.TransformPoint(T); // Transform back to world space
+    console.log("T after transform: " + T.x + " " + T.y + " " + T.z);
 
     res[0] = point;
     res[1] = T;

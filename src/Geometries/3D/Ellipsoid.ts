@@ -62,7 +62,7 @@ export class Ellipsoid extends Geometry3DBase implements IGeometry3D {
       case GeometryType2D.Point:
         let point = geometry as Point;
         const res = ShortestDistance3D.point_Ellipsoid(
-          new Vector3(point.center.x, point.center.y, 0),
+          new Vector3(point.center.x, point.center.y, point.center.z),
           this
         );
         return [res[0], res[1]];

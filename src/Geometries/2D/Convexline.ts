@@ -33,6 +33,7 @@ export class ConvexLine extends Geometry2DBase implements IGeometry2D {
     if (this.geometry !== null && this.geometry !== undefined) {
       return this.geometry;
     } else {
+      this.angle = -Math.PI / 2; 
       const points: Vector2[] = [];
       for (let i = 0; i <= this.segments + 1; i++) {
         let r = Math.sqrt(

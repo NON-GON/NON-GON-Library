@@ -263,11 +263,6 @@ export class ProximityQuery3D {
     cylinder1: Cylinder,
     cylinder2: Cylinder
   ): boolean {
-    // const xradius1 = cylinder1.xradius;
-    // const xradius2 = cylinder2.xradius;
-    // const yradius1 = cylinder1.yradius;
-    // const yradius2 = cylinder2.yradius;
-
     const cylinder1Position = cylinder1.getCenter();
     const cylinder2Position = cylinder2.getCenter();
 
@@ -283,12 +278,33 @@ export class ProximityQuery3D {
       cylinder2Position,
       cylinder2Position.add(zAxisCylinder2)
     );
+
     closestPointAxisCylinder1 = closestPointLineA;
     closestPointAxisCylinder2 = closestPointLineB;
 
     const commonNormal = closestPointAxisCylinder2.subtract(
       closestPointAxisCylinder1
     );
+
+    console.log(
+      "[Init] Cylinder1 Pos:",
+      cylinder1Position,
+      "Dir:",
+      zAxisCylinder1
+    );
+    console.log(
+      "[Init] Cylinder2 Pos:",
+      cylinder2Position,
+      "Dir:",
+      zAxisCylinder2
+    );
+    console.log(
+      "[Closest Points] C1:",
+      closestPointAxisCylinder1,
+      "C2:",
+      closestPointAxisCylinder2
+    );
+    console.log("[Common Normal] Vector:", commonNormal);
 
     let b: number, a: number, alpha: number, c: number;
 
@@ -305,42 +321,48 @@ export class ProximityQuery3D {
       );
       a = Math.abs(cylinder2Position.distanceTo(endOfSecondRay));
       alpha = 0;
+
+      console.log("[Parallel] Closest points are base points.");
     } else {
       b = closestPointAxisCylinder1.distanceTo(cylinder1Position);
-      const endOfFirstRay = closestPointAxisCylinder1;
       a = commonNormal.magnitude();
-      const endOfSecondRay = endOfFirstRay.add(commonNormal);
+      const endOfSecondRay = closestPointAxisCylinder1.add(commonNormal);
       alpha =
         Math.round(cylinder1.forward().angleTo(cylinder2.forward()) * 100) /
         100;
 
-      if (alpha > 90) {
-        alpha = 180 - alpha;
-      }
+      if (alpha > 90) alpha = 180 - alpha;
+
       c = endOfSecondRay.distanceTo(cylinder2Position);
+
+      console.log("[General Case] Closest points not at base.");
     }
 
+    // Precision clean-up
     if (a < 0.00001) a = 0;
     if (b < 0.00001) b = 0;
     if (c < 0.00001) c = 0;
     if (Math.abs(alpha) < 0.00001) alpha = 0;
 
+    console.log(`[Parameters] a: ${a}, b: ${b}, c: ${c}, alpha: ${alpha}`);
+
     const s1 = cylinder1.yradius / 2;
     const s2 = cylinder2.yradius / 2;
-    // const r1 = xradius1;
-    // const r2 = xradius2;
 
     if ((alpha === 0 || alpha === 180) && b === 0) {
-      return (
+      console.log("[Case] Parallel and aligned.");
+      const intersects =
         s1 + s2 >= Math.abs(c) &&
-        cylinder1.xradius + cylinder2.xradius >= Math.abs(a)
-      );
+        cylinder1.xradius + cylinder2.xradius >= Math.abs(a);
+      console.log("[Result] Parallel overlap:", intersects);
+      return intersects;
     } else {
       if (
         Math.abs(b) <= s1 &&
         Math.abs(c) <= s2 &&
         Math.abs(a) <= cylinder1.xradius + cylinder2.xradius
       ) {
+        console.log("[Early Out] Bounding box overlap.");
         return true;
       } else {
         let doZAxisIntersect = false;
@@ -349,9 +371,7 @@ export class ProximityQuery3D {
           closestPointAxisCylinder1.distanceTo(closestPointAxisCylinder2) <=
           0.001
         ) {
-          const directionA = zAxisCylinder1;
-          const directionB = zAxisCylinder2;
-          const crossProduct = directionA.cross(directionB);
+          const crossProduct = zAxisCylinder1.cross(zAxisCylinder2);
           closestPointAxisCylinder2 = closestPointAxisCylinder2.add(
             crossProduct
           );
@@ -359,6 +379,8 @@ export class ProximityQuery3D {
             closestPointAxisCylinder2.subtract(closestPointAxisCylinder1)
           );
           doZAxisIntersect = true;
+
+          console.log("[Intersection] Cylinder axes intersect.");
         }
 
         const Circle1Center1 = cylinder1Position.add(zAxisCylinder1.scale(s1));
@@ -385,6 +407,7 @@ export class ProximityQuery3D {
         );
 
         if (!points[0] || !points[1] || !points[2] || !points[3]) {
+          console.log("[Failure] Intersection points could not be calculated.");
           return false;
         }
 
@@ -446,11 +469,14 @@ export class ProximityQuery3D {
           }
         }
 
+        console.log("[SAT] Testing rectangle intersection.");
         if (!RectanglesIntersect(Q1Vertices, Q2Vertices)) {
+          console.log("[SAT] No intersection.");
           return false;
         }
 
-        return VertexEdgeTestFunction(
+        console.log("[SAT] Rectangles intersect. Running VertexEdgeTest...");
+        const result = VertexEdgeTestFunction(
           s1,
           s2,
           cylinder1.xradius,
@@ -463,6 +489,9 @@ export class ProximityQuery3D {
           cylinder2,
           commonNormal
         );
+
+        console.log("[VertexEdgeTest] Result:", result);
+        return result;
       }
     }
   }

@@ -30,7 +30,9 @@ export class Cylinder extends Geometry3DBase implements IGeometry3D {
   }
 
   ShortestDistance(_geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
-    throw new Error("Shortest distance not implemented for this geometry type.");
+    throw new Error(
+      "Shortest distance not implemented for this geometry type."
+    );
   }
   ProximityQuery(
     geometry: IGeometry3D | IGeometry2D,
@@ -54,10 +56,16 @@ export class Cylinder extends Geometry3DBase implements IGeometry3D {
     }
   }
   public forward(): Vector3 {
-    const x = Math.cos(this.rotation.y) * Math.cos(this.rotation.x);
-    const y = Math.sin(this.rotation.x);
-    const z = Math.sin(this.rotation.y) * Math.cos(this.rotation.x);
-    return new Vector3(x, y, z).normalize();
+    // Convert degrees to radians
+    const rotX = THREE.MathUtils.degToRad(this.rotation.x);
+    const rotY = THREE.MathUtils.degToRad(this.rotation.y);
+    const rotZ = THREE.MathUtils.degToRad(this.rotation.z);
+    // Local forward vector (z-axis)
+    const forward = new THREE.Vector3(0, 0, 1);
+    // Apply rotation using Euler and Matrix4
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    forward.applyEuler(euler);
+    return new Vector3(forward.x, forward.y, forward.z).normalize();
   }
 
   public getGeometry(): any {

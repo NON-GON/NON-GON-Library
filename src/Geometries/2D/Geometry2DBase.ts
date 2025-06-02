@@ -31,7 +31,6 @@ export abstract class Geometry2DBase implements IGeometry2D {
 
   protected normalizeGeometry() {
     if (this.geometry) {
-
       const geometryCenter = this.getCenter();
 
       this.geometry.translate(
@@ -74,185 +73,182 @@ export abstract class Geometry2DBase implements IGeometry2D {
     throw new Error("Method not implemented for this geometry.");
   }
   public LocalSpaceToWorldSpace(point: Vector3): Vector3 {
-    // Ensure rotation values are valid numbers
-    const rotX =
+    // Convert rotation from degrees to radians
+    const rotX = degToRad(
       isNaN(this.rotation.x) || this.rotation.x === undefined
         ? 0
-        : this.rotation.x;
-    const rotY =
+        : this.rotation.x
+    );
+    const rotY = degToRad(
       isNaN(this.rotation.y) || this.rotation.y === undefined
         ? 0
-        : this.rotation.y;
-    const rotZ =
+        : this.rotation.y
+    );
+    const rotZ = degToRad(
       isNaN(this.rotation.z) || this.rotation.z === undefined
         ? 0
-        : this.rotation.z;
+        : this.rotation.z
+    );
 
-    // Step 1: Rotate point by ellipsoid rotation
-    const cosX = Math.cos(rotX);
-    const sinX = Math.sin(rotX);
-    const cosY = Math.cos(rotY);
-    const sinY = Math.sin(rotY);
-    const cosZ = Math.cos(rotZ);
-    const sinZ = Math.sin(rotZ);
-
-    // Apply rotation around X-axis
-    const rotatedX1 = point.x;
-    const rotatedY1 = point.y * cosX - point.z * sinX;
-    const rotatedZ1 = point.y * sinX + point.z * cosX;
-
-    // Apply rotation around Y-axis
-    const rotatedX2 = rotatedX1 * cosY - rotatedZ1 * sinY;
-    const rotatedY2 = rotatedY1;
-    const rotatedZ2 = rotatedX1 * sinY + rotatedZ1 * cosY;
-
-    // Apply rotation around Z-axis
-    const worldX = rotatedX2 * cosZ - rotatedY2 * sinZ;
-    const worldY = rotatedX2 * sinZ + rotatedY2 * cosZ;
-    const worldZ = rotatedZ2;
+    // Step 1: Rotate point by ellipsoid rotation using Euler/Matrix4
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
+    const v = new THREE.Vector3(point.x, point.y, point.z);
+    v.applyMatrix4(matrix);
 
     // Step 2: Translate back to world space
     return new Vector3(
-      worldX + this.center.x,
-      worldY + this.center.y,
-      worldZ + this.center.z
+      v.x + this.center.x,
+      v.y + this.center.y,
+      v.z + this.center.z
     );
   }
+
   public WorldSpaceToLocalSpace(point: Vector3): Vector3 {
     // Step 1: Translate point to ellipsoid's center
-    const translatedX = point.x - this.center.x;
-    const translatedY = point.y - this.center.y;
-    const translatedZ = point.z - this.center.z;
+    const translated = new THREE.Vector3(
+      point.x - this.center.x,
+      point.y - this.center.y,
+      point.z - this.center.z
+    );
 
-    // Step 2: Rotate point by negative ellipsoid rotation
-    const cosX = Math.cos(-this.rotation.x);
-    const sinX = Math.sin(-this.rotation.x);
-    const cosY = Math.cos(-this.rotation.y);
-    const sinY = Math.sin(-this.rotation.y);
-    const cosZ = Math.cos(-this.rotation.z);
-    const sinZ = Math.sin(-this.rotation.z);
+    // Convert rotation from degrees to radians
+    const rotX = degToRad(
+      isNaN(this.rotation.x) || this.rotation.x === undefined
+        ? 0
+        : this.rotation.x
+    );
+    const rotY = degToRad(
+      isNaN(this.rotation.y) || this.rotation.y === undefined
+        ? 0
+        : this.rotation.y
+    );
+    const rotZ = degToRad(
+      isNaN(this.rotation.z) || this.rotation.z === undefined
+        ? 0
+        : this.rotation.z
+    );
 
-    // Apply rotation around Z-axis
-    const rotatedX1 = translatedX * cosZ - translatedY * sinZ;
-    const rotatedY1 = translatedX * sinZ + translatedY * cosZ;
-    const rotatedZ1 = translatedZ;
-
-    // Apply rotation around Y-axis
-    const rotatedX2 = rotatedX1 * cosY + rotatedZ1 * sinY;
-    const rotatedY2 = rotatedY1;
-    const rotatedZ2 = -rotatedX1 * sinY + rotatedZ1 * cosY;
-
-    // Apply rotation around X-axis
-    const localX = rotatedX2;
-    const localY = rotatedY2 * cosX - rotatedZ2 * sinX;
-    const localZ = rotatedY2 * sinX + rotatedZ2 * cosX;
-
-    return new Vector3(localX, localY, localZ);
+    // Step 2: Rotate point by negative ellipsoid rotation using Euler/Matrix4
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
+    translated.applyMatrix4(matrix);
+    return new Vector3(translated.x, translated.y, translated.z);
   }
 
   public TransformDirection(direction: Vector3): Vector3 {
-    // Ensure rotation values are valid numbers
-    const rotX =
+    // Convert rotation from degrees to radians
+    const rotX = degToRad(
       isNaN(this.rotation.x) || this.rotation.x === undefined
         ? 0
-        : this.rotation.x;
-    const rotY =
+        : this.rotation.x
+    );
+    const rotY = degToRad(
       isNaN(this.rotation.y) || this.rotation.y === undefined
         ? 0
-        : this.rotation.y;
-    const rotZ =
+        : this.rotation.y
+    );
+    const rotZ = degToRad(
       isNaN(this.rotation.z) || this.rotation.z === undefined
         ? 0
-        : this.rotation.z;
+        : this.rotation.z
+    );
 
-    // Step 1: Rotate point by ellipsoid rotation
-    const cosX = Math.cos(rotX);
-    const sinX = Math.sin(rotX);
-    const cosY = Math.cos(rotY);
-    const sinY = Math.sin(rotY);
-    const cosZ = Math.cos(rotZ);
-    const sinZ = Math.sin(rotZ);
-
-    // Apply rotation around X-axis
-    const rotatedX1 = direction.x;
-    const rotatedY1 = direction.y * cosX - direction.z * sinX;
-    const rotatedZ1 = direction.y * sinX + direction.z * cosX;
-
-    // Apply rotation around Y-axis
-    const rotatedX2 = rotatedX1 * cosY - rotatedZ1 * sinY;
-    const rotatedY2 = rotatedY1;
-    const rotatedZ2 = rotatedX1 * sinY + rotatedZ1 * cosY;
-
-    // Apply rotation around Z-axis
-    const transformedX = rotatedX2 * cosZ - rotatedY2 * sinZ;
-    const transformedY = rotatedX2 * sinZ + rotatedY2 * cosZ;
-    const transformedZ = rotatedZ2;
-
-    return new Vector3(transformedX, transformedY, transformedZ);
+    // Only rotate, do not translate
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
+    const v = new THREE.Vector3(direction.x, direction.y, direction.z);
+    v.applyMatrix4(matrix);
+    return new Vector3(v.x, v.y, v.z);
   }
 
   public InverseTransformDirection(direction: Vector3): Vector3 {
-    // Ensure rotation values are valid numbers
-    const rotX =
+    // Convert rotation from degrees to radians
+    const rotX = degToRad(
       isNaN(this.rotation.x) || this.rotation.x === undefined
         ? 0
-        : this.rotation.x;
-    const rotY =
+        : this.rotation.x
+    );
+    const rotY = degToRad(
       isNaN(this.rotation.y) || this.rotation.y === undefined
         ? 0
-        : this.rotation.y;
-    const rotZ =
+        : this.rotation.y
+    );
+    const rotZ = degToRad(
       isNaN(this.rotation.z) || this.rotation.z === undefined
         ? 0
-        : this.rotation.z;
+        : this.rotation.z
+    );
 
-    // Step 1: Rotate point by ellipsoid rotation
-    const cosX = Math.cos(-rotX);
-    const sinX = Math.sin(-rotX);
-    const cosY = Math.cos(-rotY);
-    const sinY = Math.sin(-rotY);
-    const cosZ = Math.cos(-rotZ);
-    const sinZ = Math.sin(-rotZ);
-
-    // Apply rotation around Z-axis
-    const rotatedX1 = direction.x * cosZ - direction.y * sinZ;
-    const rotatedY1 = direction.x * sinZ + direction.y * cosZ;
-    const rotatedZ1 = direction.z;
-
-    // Apply rotation around Y-axis
-    const rotatedX2 = rotatedX1 * cosY + rotatedZ1 * sinY;
-    const rotatedY2 = rotatedY1;
-    const rotatedZ2 = -rotatedX1 * sinY + rotatedZ1 * cosY;
-
-    // Apply rotation around X-axis
-    const transformedX = rotatedX2;
-    const transformedY = rotatedY2 * cosX - rotatedZ2 * sinX;
-    const transformedZ = rotatedY2 * sinX + rotatedZ2 * cosX;
-
-    return new Vector3(transformedX, transformedY, transformedZ);
+    // Only rotate, do not translate
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
+    const v = new THREE.Vector3(direction.x, direction.y, direction.z);
+    v.applyMatrix4(matrix);
+    return new Vector3(v.x, v.y, v.z);
   }
 
   public TransformPoint(point: Vector3): Vector3 {
-    // Step 1: Rotate point by ellipsoid rotation
-    const rotatedPoint = this.TransformDirection(point);
+    // Convert rotation from degrees to radians
+    const rotX = degToRad(
+      isNaN(this.rotation.x) || this.rotation.x === undefined
+        ? 0
+        : this.rotation.x
+    );
+    const rotY = degToRad(
+      isNaN(this.rotation.y) || this.rotation.y === undefined
+        ? 0
+        : this.rotation.y
+    );
+    const rotZ = degToRad(
+      isNaN(this.rotation.z) || this.rotation.z === undefined
+        ? 0
+        : this.rotation.z
+    );
+
+    // Step 1: Rotate point by ellipsoid rotation using Euler/Matrix4
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
+    const v = new THREE.Vector3(point.x, point.y, point.z);
+    v.applyMatrix4(matrix);
 
     // Step 2: Translate to world space
     return new Vector3(
-      rotatedPoint.x + this.center.x,
-      rotatedPoint.y + this.center.y,
-      rotatedPoint.z + this.center.z
+      v.x + this.center.x,
+      v.y + this.center.y,
+      v.z + this.center.z
     );
   }
 
   public InverseTransformPoint(point: Vector3): Vector3 {
     // Step 1: Translate point to local space
-    const translatedX = point.x - this.center.x;
-    const translatedY = point.y - this.center.y;
-    const translatedZ = point.z - this.center.z;
-
-    // Step 2: Rotate point by negative ellipsoid rotation
-    return this.InverseTransformDirection(
-      new Vector3(translatedX, translatedY, translatedZ)
+    const translated = new THREE.Vector3(
+      point.x - this.center.x,
+      point.y - this.center.y,
+      point.z - this.center.z
     );
+
+    // Convert rotation from degrees to radians
+    const rotX = degToRad(
+      isNaN(this.rotation.x) || this.rotation.x === undefined
+        ? 0
+        : this.rotation.x
+    );
+    const rotY = degToRad(
+      isNaN(this.rotation.y) || this.rotation.y === undefined
+        ? 0
+        : this.rotation.y
+    );
+    const rotZ = degToRad(
+      isNaN(this.rotation.z) || this.rotation.z === undefined
+        ? 0
+        : this.rotation.z
+    );
+
+    // Step 2: Rotate point by negative ellipsoid rotation using Euler/Matrix4
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
+    translated.applyMatrix4(matrix);
+    return new Vector3(translated.x, translated.y, translated.z);
   }
 }

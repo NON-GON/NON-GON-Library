@@ -43,14 +43,12 @@ export class Superellipse extends Geometry2DBase implements IGeometry2D {
     if (this.geometry !== null && this.geometry !== undefined) {
       return this.geometry;
     } else {
-      console.log("Creating Superellipse Geometry");
-
       const n = this.e ?? 2; // exponent for superellipse
       const a = this.xradius ?? 1; // horizontal radius
       const b = this.yradius ?? 1; // vertical radius
       const segments = this.segments ?? 64;
 
-      const vertices: number[] = [];
+      const points: Vector3[] = [];
 
       const sign = (x: number) => (x < 0 ? -1 : 1);
       const exp = (base: number, p: number) =>
@@ -58,21 +56,13 @@ export class Superellipse extends Geometry2DBase implements IGeometry2D {
 
       for (let i = 0; i <= segments; i++) {
         const theta = (i / segments) * 2 * Math.PI;
-
         const x = a * exp(Math.cos(theta), n) + this.center.x;
         const y = b * exp(Math.sin(theta), n) + this.center.y;
-
-        vertices.push(x, y, 0); // z = 0 for 2D shape
+        points.push(new Vector3(x, y, 0)); // z = 0 for 2D shape
       }
 
-      this.geometry = new THREE.BufferGeometry();
-      this.geometry.setAttribute(
-        "position",
-        new THREE.Float32BufferAttribute(vertices, 3)
-      );
-
-      this.geometry.computeVertexNormals?.(); // Optional
-
+      this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+      this.normalizeGeometry();
       return this.geometry;
     }
   }

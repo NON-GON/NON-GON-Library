@@ -16,6 +16,7 @@ export class ShortestDistance3D {
     point: Vector3,
     ellipsoid: Ellipsoid | Sphere
   ): Vector3[] {
+    const copyPoint = point.clone();
     let sol: Vector3[] = [new Vector3(0, 0, 0), new Vector3(0, 0, 0)];
     let a = 0;
     let b = 0;
@@ -140,10 +141,25 @@ export class ShortestDistance3D {
     x = multx * x;
     y = multy * y;
     z = multz * z;
-    sol[0] = point;
+    sol[0] = copyPoint;
     let pop = new Vector3(x, y, z);
     pop = ellipsoid.LocalSpaceToWorldSpace(pop);
     sol[1] = pop;
+    console.log(
+      "Shortest distance point to ellipsoid: " +
+        sol[0].x +
+        " " +
+        sol[0].y +
+        " " +
+        sol[0].z +
+        " " +
+        " -> " +
+        sol[1].x +
+        " " +
+        sol[1].y +
+        " " +
+        sol[1].z
+    );
     return sol;
   }
 
