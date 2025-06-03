@@ -8,7 +8,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Superellipsoid
-  const superellipsoidCenter = new Vector3(-50, 50, 50);
+  const superellipsoidCenter = new Vector3(0, 25, 0);
   const superellipsoidXRadius = 25;
   const superellipsoidYRadius = 25;
   const superellipsoidZRadius = 50;
@@ -33,7 +33,7 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Plane
-  const planeCenter = new Vector3(-50, -50, 50);
+  const planeCenter = new Vector3(0, -25, 0);
   const planeRotation = new Vector3(0, 0, 0);
   const planeWidth = 50;
   const planeHeight = 75;

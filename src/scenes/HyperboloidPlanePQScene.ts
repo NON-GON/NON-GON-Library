@@ -8,13 +8,13 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Hyperboloid
-  const hyperboloidCenter = new Vector3(-50, 50, 50);
+  const hyperboloidCenter = new Vector3(0, 0, 15);
   const hyperboloidXRadius = 12.5;
   const hyperboloidYRadius = 12.5;
   const hyperboloidZFactor = 12;
   const hyperboloidHeight = 75;
   const hyperboloidRotation = new Vector3(90, 0, 0);
-  const hyperboloidSegments = 100;
+  const hyperboloidSegments = 25;
   const hyperboloidId = "Hyperboloid";
   const hyperboloidColor = Colors.SHAPE1_COLOR_3D;
   const hyperboloid = new Hyperboloid3D(
@@ -25,18 +25,18 @@ window.addEventListener("DOMContentLoaded", () => {
     hyperboloidZFactor,
     hyperboloidHeight,
     hyperboloidRotation,
-    "two-sheeted", // or "one-sheeted"
+    "one-sheeted", // or "one-sheeted"
     hyperboloidSegments,
     hyperboloidId,
     hyperboloidColor
   );
 
   // Plane
-  const planeCenter = new Vector3(50, -50, -50);
-  const planeRotation = new Vector3(0, 0, 0);
+  const planeCenter = new Vector3(0, 0, -15);
+  const planeRotation = new Vector3(90, 0, 90);
   const planeWidth = 50;
   const planeHeight = 100;
-  const planeSegments = 100;
+  const planeSegments = 25;
   const planeId = "Plane";
   const planeColor = Colors.SHAPE2_COLOR_3D;
   const plane = new Plane3D(

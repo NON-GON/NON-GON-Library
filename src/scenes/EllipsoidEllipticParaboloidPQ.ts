@@ -8,12 +8,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Ellipsoid
-  const ellipsoidCenter = new Vector3(-50, 50, 50);
+  const ellipsoidCenter = new Vector3(0, 0, 15);
   const ellipsoidXRadius = 25;
   const ellipsoidYRadius = 50;
   const ellipsoidZRadius = 25;
   const ellipsoidRotation = new Vector3(0, 0, 0);
-  const ellipsoidSegments = 100;
+  const ellipsoidSegments = 25;
   const ellipsoidId = "Ellipsoid";
   const ellipsoidColor = Colors.SHAPE1_COLOR_3D;
   const ellipsoid = new Ellipsoid3D(
@@ -29,12 +29,12 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Elliptic Paraboloid
-  const ellipticParaboloidCenter = new Vector3(50, -100, -50);
+  const ellipticParaboloidCenter = new Vector3(0, -50, -15);
   const ellipticParaboloidXRadius = 25;
   const ellipticParaboloidYRadius = 25;
   const ellipticParaboloidHeight = 100;
   const ellipticParaboloidRotation = new Vector3(-90, 0, 0);
-  const ellipticParaboloidSegments = 100;
+  const ellipticParaboloidSegments = 25;
   const ellipticParaboloidId = "Elliptic Paraboloid";
   const ellipticParaboloidColor = Colors.SHAPE2_COLOR_3D;
   const ellipticParaboloid = new EllipticParaboloid3D(

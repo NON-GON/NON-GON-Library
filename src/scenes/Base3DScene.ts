@@ -3,6 +3,7 @@ import { Colors } from "../colors";
 import { GeometryManager } from "../Geometries/GeometryManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Vector2, Vector3 } from "../Calc/Util/Utils";
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 
 export abstract class Base3DScene {
   protected geometryManager = new GeometryManager();
@@ -28,8 +29,9 @@ export abstract class Base3DScene {
     const near = 0.1;
     const far = 1000;
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this.camera.position.set(-200, 200, 200);
-    //this.camera.position.set(-100, 50, 80); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
+    this.camera.position.set(-100, 50, 80);
+    //this.camera.position.set(-150, 75, 120); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
+    //this.camera.position.set(-150, 0, 0); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
     this.camera.lookAt(0, 0, 0);
 
     // Scene & Light
@@ -77,10 +79,69 @@ export abstract class Base3DScene {
       }
     });
 
+    const exporter = new GLTFExporter();
+
+    window.addEventListener('keydown', (event) => {
+      // Use 'e' key (case-insensitive) to trigger export
+      if (event.key.toLowerCase() !== 'e') return;
+      event.preventDefault();
+
+      // Options for high-quality .glb
+      const options = {
+        binary: true,         // Export as .glb
+        embedImages: true,    // Embed textures into the .glb
+        maxTextureSize: Infinity, // Preserve full-resolution textures
+        // You can add more options here: trs, onlyVisible, truncateDrawRange, etc.
+      };
+
+      exporter.parse(
+        this.scene,
+        (result) => {
+          // If binary is true, result is an ArrayBuffer representing the .glb
+          if (result instanceof ArrayBuffer) {
+            this.saveArrayBuffer(result, 'scene_export.glb');
+            console.log('✅ Export successful: scene_export.glb');
+          } else {
+            // Fallback for non-binary (e.g., .gltf JSON) if you change options
+            const output = JSON.stringify(result, null, 2);
+            const blob = new Blob([output], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.href = URL.createObjectURL(blob);
+            link.download = 'scene_export.gltf';
+            link.click();
+            setTimeout(() => {
+              URL.revokeObjectURL(link.href);
+              document.body.removeChild(link);
+            }, 100);
+            console.log('✅ Export successful: scene_export.gltf');
+          }
+        },
+        options
+      );
+    });
+
     // Resize Handler
     window.addEventListener("resize", this.onWindowResize.bind(this));
   }
 
+  private saveArrayBuffer(buffer: ArrayBuffer, filename: string) {
+    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+
+    // Clean up
+    setTimeout(() => {
+      URL.revokeObjectURL(link.href);
+      document.body.removeChild(link);
+    }, 100);
+  }
+  
   private saveScreenshot() {
     const canvas = this.renderer.domElement;
     const dataURL = canvas.toDataURL("image/png");

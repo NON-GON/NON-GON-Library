@@ -36,8 +36,8 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
     this.rotation = rotation;
     this.segments = segments;
     this.rotation = rotation;
-    this.width = 1000;
-    this.height = 1000;
+    this.width = 50;
+    this.height = 100;
   }
 
   ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {

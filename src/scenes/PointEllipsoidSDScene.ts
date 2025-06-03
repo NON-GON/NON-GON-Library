@@ -8,13 +8,13 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Point
-  const pointCenter = new Vector3(-50, 50, 50);
+  const pointCenter = new Vector3(25, 25, 25);
   const pointId = "Point";
   const pointColor = Colors.SHAPE1_COLOR_3D;
   const point = new Point3D(canvas, pointCenter, pointId, pointColor);
 
   // Ellipsoid
-  const ellipsoidCenter = new Vector3(50, -50, -50);
+  const ellipsoidCenter = new Vector3(-25, -25, -25);
   const ellipsoidXRadius = 25;
   const ellipsoidYRadius = 50;
   const ellipsoidZRadius = 25;

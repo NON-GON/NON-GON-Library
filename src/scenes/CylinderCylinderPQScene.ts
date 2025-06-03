@@ -7,12 +7,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Cylinder1
-  const cylinder1Center = new Vector3(-50, 50, 50);
+  const cylinder1Center = new Vector3(0, 0, 12);
   const cylinder1XRadius = 25;
   const cylinder1YRadius = 25;
   const cylinder1Height = 100;
   const cylinder1Rotation = new Vector3(0, 0, 0);
-  const cylinder1Segments = 100;
+  const cylinder1Segments = 25;
   const cylinder1Id = "Blue Cylinder";
   const cylinder1Color = Colors.SHAPE1_COLOR_3D;
   const cylinder1 = new Cylinder3D(
@@ -28,12 +28,12 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Cylinder2
-  const cylinder2Center = new Vector3(50, -50, -50);
+  const cylinder2Center = new Vector3(0, 0, -12);
   const cylinder2XRadius = 25;
   const cylinder2YRadius = 25;
   const cylinder2Height = 100;
   const cylinder2Rotation = new Vector3(0, 0, 0);
-  const cylinder2Segments = 100;
+  const cylinder2Segments = 25;
   const cylinder2Id = "Red Cylinder";
   const cylinder2Color = Colors.SHAPE2_COLOR_3D;
   const cylinder2 = new Cylinder3D(
