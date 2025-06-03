@@ -1,4 +1,4 @@
-import { Base2DScene } from '../../Base2DScene';
+import { Base2DScene } from "../../Base2DScene";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
 import { Vector2 } from "../../../Calc/Util/Utils";
 
@@ -9,12 +9,14 @@ export class LineSegment2D extends Base2DScene {
   private id: string;
   private color: number;
 
-  constructor(canvas: HTMLCanvasElement,
-              start: Vector2,
-              end: Vector2,
-              rotation: Vector2,
-              id: string,
-              color: number) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    start: Vector2,
+    end: Vector2,
+    rotation: Vector2,
+    id: string,
+    color: number
+  ) {
     super(canvas);
     this.start = start;
     this.end = end;
@@ -24,10 +26,10 @@ export class LineSegment2D extends Base2DScene {
   }
 
   public getParams() {
-    return { 
+    return {
       start: this.start,
       end: this.end,
-      rotation: this.rotation
+      rotation: this.rotation,
     };
   }
 
@@ -37,21 +39,30 @@ export class LineSegment2D extends Base2DScene {
       start_y: this.start.y,
       end_x: this.end.x,
       end_y: this.end.y,
-      rotation: this.rotation
-    }
+      rotation: this.rotation,
+    };
   }
 
   public getId() {
     return this.id;
   }
-  
+
   public getColor() {
     return this.color;
   }
 
   protected buildScene(): void {
-    this.geometryManager.createGeometry(GeometryType2D.Line, this.id, this.getParams());
-    const mesh = this.geometryManager.getGeometryMesh(this.id, this.color, 'line');
+    this.geometryManager.createGeometry(
+      GeometryType2D.Line,
+      this.id,
+      this.getParams()
+    );
+    const mesh = this.geometryManager.getGeometryMesh(
+      this.id,
+      this.color,
+      "line",
+      4
+    );
     this.makeSlidersSolo(this.id, this.color, this.getSliderParams(), this);
     this.scene.add(mesh);
   }

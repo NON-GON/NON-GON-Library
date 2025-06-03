@@ -57,12 +57,13 @@ export class GeometryManager {
    * @param type Optional type of geometry (line or mesh).
    * @returns A THREE.Mesh or THREE.Line object representing the geometry.
    */
-  public getGeometryMesh(id: string, color: number, type?: string): any {
+  public getGeometryMesh(id: string, color: number, type?: string, width?:number): any {
     let geometry = this._geometries[id];
     if (geometry) {
       type = type ?? "line";
       if (type === "line") {
-        let material = new THREE.LineBasicMaterial({ color: color });
+        console.log(width);
+        let material = new THREE.LineBasicMaterial({ color: color, linewidth: width ?? 1 });
         let line = new THREE.Line(geometry.getGeometry(), material);
         line.name = id;
         return line;
