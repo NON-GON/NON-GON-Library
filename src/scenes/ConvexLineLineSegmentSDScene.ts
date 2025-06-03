@@ -1,6 +1,6 @@
 import { ConvexLine2D } from "./shapes/2D/ConvexLine2D";
 import { LineSegment2D } from "./shapes/2D/LineSegment2D";
-import { Vector2 } from "../Calc/Util/Utils";
+import { Vector2, Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 import { ConvexLineLineSegmentSD } from "./shortest_distance/2D/ConvexLineLineSegmentSD";
 
@@ -9,7 +9,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Convex Line
   const convexLineCenter = new Vector2(0, 0);
-  const convexLineRotation = new Vector2(0, 0);
+  const convexLineRotation = new Vector3(0, 0, 31);
   const convexLineSegments = 100;
   const convexLineId = "Convex Line";
   const convexLineColor = Colors.SHAPE1_COLOR_2D;
@@ -23,9 +23,9 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Line Segment
-  const lineSegmentStart = new Vector2(25, 25);
-  const lineSegmentEnd = new Vector2(50, -75);
-  const lineSegmentRotation = new Vector2(0, 0);
+  const lineSegmentStart = new Vector2(25, -25);
+  const lineSegmentEnd = new Vector2(-5, -25);
+  const lineSegmentRotation = new Vector3(0, 0, 0);
   const lineId = "Line Segment";
   const lineSegmentColor = Colors.SHAPE2_COLOR_2D;
   const lineSegment = new LineSegment2D(

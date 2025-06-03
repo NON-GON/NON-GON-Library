@@ -1,12 +1,12 @@
 import { Base2DScene } from '../../Base2DScene';
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
-import { Vector2 } from "../../../Calc/Util/Utils";
+import { Vector2, Vector3 } from "../../../Calc/Util/Utils";
 
 export class Ellipse2D extends Base2DScene {
   private center: Vector2;
   private xradius: number;
   private yradius: number;
-  private rotation: Vector2;
+  private rotation: Vector3;
   private segments: number;
   private id: string;
   private color: number;
@@ -15,7 +15,7 @@ export class Ellipse2D extends Base2DScene {
               center: Vector2,
               xradius: number,
               yradius: number,
-              rotation: Vector2,
+              rotation: Vector3,
               segments: number,
               id: string,
               color: number) {

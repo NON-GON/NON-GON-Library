@@ -1,17 +1,17 @@
 import { Base2DScene } from '../../Base2DScene';
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
-import { Vector2 } from "../../../Calc/Util/Utils";
+import { Vector2, Vector3 } from "../../../Calc/Util/Utils";
 
 export class ConvexLine2D extends Base2DScene {
   private center: Vector2;
-  private rotation: Vector2;
+  private rotation: Vector3;
   private segments: number;
   private id: string;
   private color: number;
 
   constructor(canvas: HTMLCanvasElement,
               center: Vector2,
-              rotation: Vector2,
+              rotation: Vector3,
               segments: number,
               id: string,
               color: number) {

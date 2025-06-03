@@ -48,7 +48,8 @@ export class ConvexLineLineSegmentSD extends Base2DScene {
     this.makeSlidersInteraction(
       this.convexLine,
       this.lineSegment,
-      this.colorConnection
+      this.colorConnection,
+      this.lineSegment
     );
 
     let points = this.geometryManager.calculateShortestDistance(

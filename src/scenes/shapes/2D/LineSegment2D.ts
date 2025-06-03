@@ -1,11 +1,11 @@
 import { Base2DScene } from "../../Base2DScene";
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
-import { Vector2 } from "../../../Calc/Util/Utils";
+import { Vector2, Vector3 } from "../../../Calc/Util/Utils";
 
 export class LineSegment2D extends Base2DScene {
   private start: Vector2;
   private end: Vector2;
-  private rotation: Vector2;
+  private rotation: Vector3;
   private id: string;
   private color: number;
 
@@ -13,7 +13,7 @@ export class LineSegment2D extends Base2DScene {
     canvas: HTMLCanvasElement,
     start: Vector2,
     end: Vector2,
-    rotation: Vector2,
+    rotation: Vector3,
     id: string,
     color: number
   ) {

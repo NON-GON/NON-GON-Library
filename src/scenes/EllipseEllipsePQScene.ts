@@ -1,16 +1,16 @@
 import { Ellipse2D } from "./shapes/2D/Ellipse2D";
 import { EllipseEllipsePQ } from "./proximity_queries/2D/EllipseEllipsePQ";
-import { Vector2 } from "../Calc/Util/Utils";
+import { Vector2, Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Ellipse1
-  const ellipse1Center = new Vector2(-30, 30);
+  const ellipse1Center = new Vector2(20, 0);
   const ellipse1XRadius = 50;
   const ellipse1YRadius = 25;
-  const ellipse1Rotation = new Vector2(0, 0);
+  const ellipse1Rotation = new Vector3(0, 0, 90);
   const ellipse1Segments = 100;
   const ellipse1Id = "Blue Ellipse";
   const ellipse1Color = Colors.SHAPE1_COLOR_2D;
@@ -26,10 +26,10 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Ellipse2
-  const ellipse2Center = new Vector2(30, -30);
+  const ellipse2Center = new Vector2(-20, 0);
   const ellipse2XRadius = 50;
   const ellipse2YRadius = 25;
-  const ellipse2Rotation = new Vector2(0, 0);
+  const ellipse2Rotation = new Vector3(0, 0, 90);
   const ellipse2Segments = 100;
   const ellipse2Id = "Red Ellipse";
   const ellipse2Color = Colors.SHAPE2_COLOR_2D;

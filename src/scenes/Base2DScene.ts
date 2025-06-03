@@ -140,7 +140,7 @@ export abstract class Base2DScene {
     fieldSet.appendChild(legend);
     
     if (lineSegment !== undefined) {
-      this.makeLineSegmentEndpointsSliders(fieldSet, lineSegment, shapeColor)
+      this.makeLineSegmentEndpointsSliders(fieldSet, lineSegment, shapeColor);
     } else {
       this.makeShapeCenterSliders(fieldSet, shapeId, shapeColor);
     }
@@ -149,20 +149,24 @@ export abstract class Base2DScene {
     this.sliders.appendChild(fieldSet);
   }
 
-  protected makeSlidersInteraction(shape1: any, shape2: any, connectionColor?: number | undefined) {
+  protected makeSlidersInteraction(shape1: any, shape2: any, connectionColor?: number | undefined, lineSegment?: any | undefined) {
     this.makeSlidersInteractionAux(shape1, shape2, connectionColor);
-    this.makeSlidersInteractionAux(shape2, shape1, connectionColor);
+    this.makeSlidersInteractionAux(shape2, shape1, connectionColor, lineSegment);
   }
 
-  protected makeSlidersInteractionAux(shape1: any, shape2: any, connectionColor: number | undefined) {
+  protected makeSlidersInteractionAux(shape1: any, shape2: any, connectionColor: number | undefined, lineSegment?: any | undefined) {
     const fieldSet = document.createElement('fieldset');
     const legend = document.createElement('legend');
     legend.textContent = shape1.getId();
     fieldSet.appendChild(legend);
 
-    this.makeShapeCenterSlidersInteraction(fieldSet, shape1, shape2, connectionColor);
-    this.makeShapeRotationSlidersInteraction(fieldSet, shape1, shape2, connectionColor);
+    if (lineSegment !== undefined) {
+      this.makeLineSegmentEndpointsSliders(fieldSet, lineSegment, lineSegment.getColor());
+    } else {
+      this.makeShapeCenterSlidersInteraction(fieldSet, shape1, shape2, connectionColor);
+    }
 
+    this.makeShapeRotationSlidersInteraction(fieldSet, shape1, shape2, connectionColor);
     this.sliders.appendChild(fieldSet);
   }
 

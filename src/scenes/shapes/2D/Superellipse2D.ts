@@ -1,13 +1,13 @@
 import { Base2DScene } from '../../Base2DScene';
 import { GeometryType2D } from "../../../Geometries/GeoTypes";
-import { Vector2 } from "../../../Calc/Util/Utils";
+import { Vector2, Vector3 } from "../../../Calc/Util/Utils";
 
 export class Superellipse2D extends Base2DScene {
   private center: Vector2;
   private xradius: number;
   private yradius: number;
   private exponent: number;
-  private rotation: Vector2;
+  private rotation: Vector3;
   private segments: number;
   private id: string;
   private color: number;
@@ -17,7 +17,7 @@ export class Superellipse2D extends Base2DScene {
               xradius: number,
               yradius: number,
               exponent: number,
-              rotation: Vector2,
+              rotation: Vector3,
               segments: number,
               id: string,
               color: number) {

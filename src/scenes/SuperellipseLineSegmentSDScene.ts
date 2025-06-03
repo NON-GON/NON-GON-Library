@@ -1,18 +1,18 @@
 import { Superellipse2D } from "./shapes/2D/Superellipse2D";
 import { LineSegment2D } from "./shapes/2D/LineSegment2D";
 import { SuperellipseLineSegmentSD } from "./shortest_distance/2D/SuperellipseLineSegmentSD";
-import { Vector2 } from "../Calc/Util/Utils";
+import { Vector2, Vector3 } from "../Calc/Util/Utils";
 import { Colors } from "../colors";
 
 window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Superellipse
-  const superellipseCenter = new Vector2(0, 0);
+  const superellipseCenter = new Vector2(0, 25);
   const superellipseXRadius = 50;
   const superellipseYRadius = 25;
   const superellipseExponent = 0.5;
-  const superellipseRotation = new Vector2(0, 0);
+  const superellipseRotation = new Vector3(0, 0, 0);
   const superellipseSegments = 100;
   const superellipseId = "Superellipse";
   const superellipseColor = Colors.SHAPE1_COLOR_2D;
@@ -29,9 +29,9 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Line Segment
-  const lineSegmentStart = new Vector2(-75, 0);
-  const lineSegmentEnd = new Vector2(75, 0);
-  const lineSegmentRotation = new Vector2(0, 0);
+  const lineSegmentStart = new Vector2(50, -25);
+  const lineSegmentEnd = new Vector2(-50, -25);
+  const lineSegmentRotation = new Vector3(0, 0, 0);
   const lineSegmentId = "Line Segment";
   const lineSegmentColor = Colors.SHAPE2_COLOR_2D;
   const lineSegment = new LineSegment2D(
