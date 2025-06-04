@@ -57,13 +57,21 @@ export class GeometryManager {
    * @param type Optional type of geometry (line or mesh).
    * @returns A THREE.Mesh or THREE.Line object representing the geometry.
    */
-  public getGeometryMesh(id: string, color: number, type?: string, width?:number): any {
+  public getGeometryMesh(
+    id: string,
+    color: number,
+    type?: string,
+    width?: number
+  ): any {
     let geometry = this._geometries[id];
     if (geometry) {
       type = type ?? "line";
       if (type === "line") {
         console.log(width);
-        let material = new THREE.LineBasicMaterial({ color: color, linewidth: width ?? 1 });
+        let material = new THREE.LineBasicMaterial({
+          color: color,
+          linewidth: width ?? 1,
+        });
         let line = new THREE.Line(geometry.getGeometry(), material);
         line.name = id;
         return line;
@@ -301,11 +309,7 @@ export class GeometryManager {
       case GeometryType2D.Line:
         return new Line(params.start, params.end, params.rotation);
       case GeometryType2D.Plane:
-        return new Plane(
-          params.center,
-          params.rotation,
-          params.segments
-        );
+        return new Plane(params.center, params.rotation, params.segments);
       case GeometryType2D.Point:
         return new Point(params.center);
       case GeometryType2D.Supperellipse:
@@ -389,24 +393,48 @@ export class GeometryManager {
   }
 
   public changeCenterX(id: string, x: number) {
+    if (this._geometries[id] === undefined) {
+      throw new Error(`Geometry with id ${id} not found.`);
+    }
+    if (this._geometries[id].type === GeometryType2D.Line) {
+      throw new Error("Cannot change center of a Line geometry.");
+    }
     let geometry = this.getGeometry(id);
     geometry.center = new Vector3(x, geometry.center.y, geometry.center.z);
     geometry.geometry = null;
   }
 
   public changeCenterY(id: string, y: number) {
+    if (this._geometries[id] === undefined) {
+      throw new Error(`Geometry with id ${id} not found.`);
+    }
+    if (this._geometries[id].type === GeometryType2D.Line) {
+      throw new Error("Cannot change center of a Line geometry.");
+    }
     let geometry = this.getGeometry(id);
     geometry.center = new Vector3(geometry.center.x, y, geometry.center.z);
     geometry.geometry = null;
   }
 
   public changeCenterZ(id: string, z: number) {
+    if (this._geometries[id] === undefined) {
+      throw new Error(`Geometry with id ${id} not found.`);
+    }
+    if (this._geometries[id].type === GeometryType2D.Line) {
+      throw new Error("Cannot change center of a Line geometry.");
+    }
     let geometry = this.getGeometry(id);
     geometry.center = new Vector3(geometry.center.x, geometry.center.y, z);
     geometry.geometry = null;
   }
 
   public changeRotationX(id: string, x: number) {
+    if (this._geometries[id] === undefined) {
+      throw new Error(`Geometry with id ${id} not found.`);
+    }
+    if (this._geometries[id].type === GeometryType2D.Line) {
+      throw new Error("Cannot change rotation of a Line geometry.");
+    }
     console.log("changeRotationX", id, x);
     let geometry = this.getGeometry(id);
     geometry.rotation = new Vector3(
@@ -418,6 +446,12 @@ export class GeometryManager {
   }
 
   public changeRotationY(id: string, y: number) {
+    if (this._geometries[id] === undefined) {
+      throw new Error(`Geometry with id ${id} not found.`);
+    }
+    if (this._geometries[id].type === GeometryType2D.Line) {
+      throw new Error("Cannot change rotation of a Line geometry.");
+    }
     console.log("changeRotationY", id, y);
     let geometry = this.getGeometry(id);
     geometry.rotation = new Vector3(
@@ -429,6 +463,12 @@ export class GeometryManager {
   }
 
   public changeRotationZ(id: string, z: number) {
+    if (this._geometries[id] === undefined) {
+      throw new Error(`Geometry with id ${id} not found.`);
+    }
+    if (this._geometries[id].type === GeometryType2D.Line) {
+      throw new Error("Cannot change rotation of a Line geometry.");
+    }
     console.log("changeRotationZ", id, z);
     let geometry = this.getGeometry(id);
     geometry.rotation = new Vector3(
@@ -436,6 +476,30 @@ export class GeometryManager {
       geometry.rotation.y,
       z
     );
+    geometry.geometry = null;
+  }
+
+  public changePointsOfLine(
+    id: string,
+    start?: Vector2 | Vector3,
+    end?: Vector2 | Vector3
+  ): void {
+    if (this._geometries[id] === undefined) {
+      throw new Error(`Geometry with id ${id} not found.`);
+    }
+    if (this._geometries[id].type !== GeometryType2D.Line) {
+      throw new Error("Cannot change points of a non-Line geometry.");
+    }
+    let geometry = this.getGeometry(id);
+    const currentStart = geometry.start;
+    const currentEnd = geometry.end;
+
+    geometry.start = start
+      ? new Vector3(start.x, start.y, (start as Vector3).z ?? 0)
+      : currentStart;
+    geometry.end = end
+      ? new Vector3(end.x, end.y, (end as Vector3).z ?? 0)
+      : currentEnd;
     geometry.geometry = null;
   }
 
