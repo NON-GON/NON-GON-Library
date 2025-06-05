@@ -61,7 +61,7 @@ export class LineSegment2D extends Base2DScene {
       this.id,
       this.color,
       "line",
-      150
+      3
     );
     this.makeSlidersSolo(this.id, this.color, this.getSliderParams(), this);
     this.scene.add(mesh);

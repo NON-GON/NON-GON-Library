@@ -29,7 +29,8 @@ export class ConvexLineLineSegmentSD extends Base2DScene {
     const convexLineMesh = this.geometryManager.getGeometryMesh(
       this.convexLine.getId(),
       this.convexLine.getColor(),
-      "line"
+      "line",
+      2
     );
     this.scene.add(convexLineMesh);
 
@@ -41,7 +42,8 @@ export class ConvexLineLineSegmentSD extends Base2DScene {
     const lineSegmentMesh = this.geometryManager.getGeometryMesh(
       this.lineSegment.getId(),
       this.lineSegment.getColor(),
-      "line"
+      "line",
+      3
     );
     this.scene.add(lineSegmentMesh);
 

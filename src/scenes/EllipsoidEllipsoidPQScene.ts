@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Ellipsoid1
-  const ellipsoid1Center = new Vector3(0, 0, 20);
+  const ellipsoid1Center = new Vector3(0, 0, 15);
   const ellipsoid1XRadius = 25;
   const ellipsoid1YRadius = 50;
   const ellipsoid1ZRadius = 25;
@@ -28,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Ellipsoid2
-  const ellipsoid2Center = new Vector3(0, 0, -20);
+  const ellipsoid2Center = new Vector3(0, 0, -15);
   const ellipsoid2XRadius = 25;
   const ellipsoid2YRadius = 50;
   const ellipsoid2ZRadius = 25;

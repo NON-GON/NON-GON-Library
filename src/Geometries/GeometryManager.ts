@@ -121,7 +121,7 @@ export class GeometryManager {
           let material = new THREE.MeshPhongMaterial({
             color: color,
             side: 2,
-            shininess: 100,
+            shininess: 1000,
           });
           let mesh = new THREE.Mesh(geometry.getGeometry(), material);
           mesh.name = id;

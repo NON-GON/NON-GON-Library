@@ -40,7 +40,7 @@ body {
 }
 
 main {
-  max-width: 50%;
+  max-width: 75%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -82,7 +82,6 @@ section h3::after {
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
-  max-width: calc(4 * 150px + 3 * 20px);
   margin-top: 10px;
   margin-left: auto;
   margin-right: auto;

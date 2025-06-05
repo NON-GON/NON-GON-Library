@@ -4,6 +4,7 @@ import { GeometryManager } from "../Geometries/GeometryManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Vector2, Vector3 } from "../Calc/Util/Utils";
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 
 export abstract class Base3DScene {
   protected geometryManager = new GeometryManager();
@@ -29,9 +30,9 @@ export abstract class Base3DScene {
     const near = 0.1;
     const far = 1000;
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this.camera.position.set(-100, 50, 80);
-    //this.camera.position.set(-150, 75, 120); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
-    //this.camera.position.set(-150, 0, 0); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
+    //this.camera.position.set(-100, 50, 80);
+    this.camera.position.set(-150, 75, 120); // CAM PERSPECTIVE FOR 3D ILLUSTRATIONS ONLY
+    //this.camera.position.set(-150, 0, 0); // for PQ illustrations
     this.camera.lookAt(0, 0, 0);
 
     // Scene & Light
@@ -600,8 +601,10 @@ export abstract class Base3DScene {
     point2: Vector3 | Vector2,
     color: number
   ) {
-    const lineMaterial = new THREE.LineBasicMaterial({ color: color });
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+    console.log(point1, point2);
+    const lineMaterial = new MeshLineMaterial({ color: color, lineWidth: 1.75});
+    const lineGeometry = new MeshLineGeometry()
+    lineGeometry.setPoints([
       new THREE.Vector3(
         parseFloat(point1.x.toFixed(3)),
         parseFloat(point1.y.toFixed(3)),
@@ -614,8 +617,8 @@ export abstract class Base3DScene {
       ),
     ]);
 
-    const line = new THREE.Line(lineGeometry, lineMaterial);
-    line.name = "connection";
+    const line = new THREE.Mesh(lineGeometry, lineMaterial);
+    line.name = 'connection';
     this.scene.add(line);
 
     return line.name;

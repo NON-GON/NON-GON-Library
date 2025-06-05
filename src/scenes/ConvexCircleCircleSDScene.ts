@@ -8,9 +8,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Convex Circle
-  const convexCircleCenter = new Vector2(0, 0);
+  const convexCircleCenter = new Vector2(35, 35);
   const convexCircleRadius = 25;
-  const convexCircleRotation = new Vector3(0, 0, 0);
+  const convexCircleRotation = new Vector3(0, 0, 180);
   const convexCircleSegments = 100;
   const convexCircleId = "Convex Circle";
   const convexCircleColor = Colors.SHAPE1_COLOR_2D;
@@ -25,7 +25,7 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Circle
-  const circleCenter = new Vector2(50, 50);
+  const circleCenter = new Vector2(-35, -35);
   const circleRadius = 25;
   const circleRotation = new Vector3(0, 0, 0);
   const circleSegments = 100;

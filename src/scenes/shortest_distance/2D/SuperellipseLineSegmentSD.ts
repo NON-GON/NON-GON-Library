@@ -26,7 +26,7 @@ export class SuperellipseLineSegmentSD extends Base2DScene {
     this.scene.add(superellipseMesh);
 
     this.geometryManager.createGeometry(GeometryType2D.Line, this.lineSegment.getId(), this.lineSegment.getParams());
-    const lineSegmentMesh = this.geometryManager.getGeometryMesh(this.lineSegment.getId(), this.lineSegment.getColor(), "line");
+    const lineSegmentMesh = this.geometryManager.getGeometryMesh(this.lineSegment.getId(), this.lineSegment.getColor(), "line", 4);
     this.scene.add(lineSegmentMesh);
 
     this.makeSlidersInteraction(this.superellipse, this.lineSegment, this.colorConnection, this.lineSegment);

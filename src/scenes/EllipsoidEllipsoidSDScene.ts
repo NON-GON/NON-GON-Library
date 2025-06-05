@@ -7,11 +7,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const canvas = document.getElementById("c") as HTMLCanvasElement;
 
   // Ellipsoid1
-  const ellipsoid1Center = new Vector3(25, 25, 25);
+  const ellipsoid1Center = new Vector3(0, 0, 50);
   const ellipsoid1XRadius = 25;
   const ellipsoid1YRadius = 50;
   const ellipsoid1ZRadius = 25;
-  const ellipsoid1Rotation = new Vector3(0, 0, 0);
+  const ellipsoid1Rotation = new Vector3(90, 0, 0);
   const ellipsoid1Segments = 100;
   const ellipsoid1Id = "Blue Ellipsoid";
   const ellipsoid1Color = Colors.SHAPE1_COLOR_3D;
@@ -28,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
   );
 
   // Ellipsoid2
-  const ellipsoid2Center = new Vector3(-25, -25, -25);
+  const ellipsoid2Center = new Vector3(0, 0, -50);
   const ellipsoid2XRadius = 25;
   const ellipsoid2YRadius = 50;
   const ellipsoid2ZRadius = 25;
