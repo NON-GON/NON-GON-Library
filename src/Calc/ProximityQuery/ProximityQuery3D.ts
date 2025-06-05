@@ -253,6 +253,7 @@ export class ProximityQuery3D {
     return [point1, point2, point3, point4];
   }
 
+  
   /**
    * Checks if two cylinders intersect in 3D space using the Chittawadigi method.
    * @param cylinder1 - The first cylinder.
@@ -263,6 +264,17 @@ export class ProximityQuery3D {
     cylinder1: Cylinder,
     cylinder2: Cylinder
   ): boolean {
+    console.log("[Center] Cylinder1:", cylinder1.getCenter());
+    console.log("[Center] Cylinder2:", cylinder2.getCenter());
+    console.log("[Rotation] Cylinder1:", cylinder1.rotation);
+    console.log("[Rotation] Cylinder2:", cylinder2.rotation);
+    console.log("[Radius] Cylinder1:", cylinder1.xradius);
+    console.log("[Radius] Cylinder2:", cylinder2.xradius);
+    console.log("[Height] Cylinder1:", cylinder1.height);
+    console.log("[Height] Cylinder2:", cylinder2.height);
+
+
+
     const cylinder1Position = cylinder1.getCenter();
     const cylinder2Position = cylinder2.getCenter();
 
@@ -1129,6 +1141,8 @@ export class ProximityQuery3D {
       Ellipsoid1,
       Ellipsoid2
     );
+
+
 
     const a4 = characteristicPolynomialValues[0];
     const a3 = characteristicPolynomialValues[1];

@@ -20,6 +20,7 @@ import { ConvexLine } from "./2D/Convexline";
 import { Convex } from "./3D/Convex";
 import { Geometry3DBase } from "./3D/Geometry3DBase";
 import { Geometry2DBase } from "./2D/Geometry2DBase";
+import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 
 export enum HyperboloidType {
   OneSheeted = "OneSheeted",
@@ -67,7 +68,47 @@ export class GeometryManager {
     if (geometry) {
       type = type ?? "line";
       if (type === "line") {
-        console.log(width);
+        if (width !== undefined) {
+          const positions = geometry.getGeometry().attributes.position.array;
+          // If only two points, interpolate more for a clean line
+          let points: number[] = [];
+          if (positions.length === 6) {
+            // positions = [x1, y1, z1, x2, y2, z2]
+            const start = new THREE.Vector3(
+              positions[0],
+              positions[1],
+              positions[2]
+            );
+            const end = new THREE.Vector3(
+              positions[3],
+              positions[4],
+              positions[5]
+            );
+            const segments = 32; // More segments = smoother line
+            for (let i = 0; i <= segments; i++) {
+              const t = i / segments;
+              const pt = new THREE.Vector3().lerpVectors(start, end, t);
+              points.push(pt.x, pt.y, pt.z);
+            }
+          } else {
+            points = Array.from(positions);
+          }
+
+          const meshLineGeometry = new MeshLineGeometry();
+          meshLineGeometry.setPoints(points);
+
+          const meshLineMaterial = new MeshLineMaterial({
+            color: color,
+            lineWidth: width, // width in world units
+            resolution:  new THREE.Vector2(
+              window.innerWidth, window.innerHeight),
+          });
+
+          const line = new THREE.Mesh(meshLineGeometry, meshLineMaterial);
+          line.name = id;
+          return line;
+        }
+
         let material = new THREE.LineBasicMaterial({
           color: color,
           linewidth: width ?? 1,
@@ -154,7 +195,7 @@ export class GeometryManager {
     this._geometries = {};
   }
 
-  constructor() {
+  private constructor() {
     if (GeometryManager._instance) {
       return GeometryManager._instance;
     }

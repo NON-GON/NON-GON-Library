@@ -31,7 +31,7 @@ export class ShortestDistance2D {
     // Transform the query point to a new system of coordinates relative to the ellipse
 
     let Point_ = ellipse.InverseTransformPoint(point);
-    console.log("Point_"+ Point_.x + " " + Point_.y + " " + Point_.z);
+    console.log("Point_" + Point_.x + " " + Point_.y + " " + Point_.z);
 
     T = ShortestDistance2D.pointEllipse(
       Point_,
@@ -256,17 +256,36 @@ export class ShortestDistance2D {
    * @returns A tuple of two points: the closest point of the Convexcircle and the closest point of the circle.
    */
   static ConvexCircle_Circle(convexCircle: Convexcircle, circle: Circle) {
-    let center_convex = circle.getCenter().toVector2();
-    let R_c = 5;
-    let center_circle = convexCircle.getCenter().toVector2();
-    let cc = center_convex.subtract(center_circle);
-    let y_ = circle.TransformDirection(new Vector3(-1, 0, 0));
-    let alpha = y_.toVector2().signedAngle(cc);
+    // Get centers in world space
+    let center_convex = convexCircle.getCenter().toVector2();
+    let center_circle = circle.getCenter().toVector2();
+
+    // Direction from convexCircle to circle
+    let direction = center_circle.subtract(center_convex).normalize();
+
+    // Compute angle in convexCircle's local space
+    let localDir = convexCircle
+      .InverseTransformDirection(direction.toVector3())
+      .toVector2()
+      .normalize();
+    let alpha = Math.atan2(localDir.y, localDir.x);
+
+    // Get farthest point on convexCircle in this direction
+    let R_c = convexCircle.getRadius();
     let rpc = convexCircle.point(alpha, R_c);
-    let convex_point = circle.TransformPoint(rpc.toVector3());
-    let l = convexCircle.InverseTransformPoint(convex_point);
-    l = l.normalize().scale(R_c);
-    l = convexCircle.TransformPoint(l);
-    return [l, convex_point];
+
+    // Transform this point to world space
+    let convex_point = convexCircle.TransformPoint(rpc.toVector3());
+
+    // Find the closest point on the circle in the direction of the convex_point
+    let dir_to_convex = convex_point
+      .toVector2()
+      .subtract(center_circle)
+      .normalize();
+    let circle_point = center_circle.add(
+      dir_to_convex.scale(circle.getRadius())
+    );
+
+    return [convex_point, circle_point.toVector3()];
   }
 }

@@ -61,6 +61,13 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
     }
   }
 
+  /**
+   * Returns the effective radius at a given angle for the convex circle.
+   * @param angle The angle (in radians) at which to get the radius.
+   */
+  public getRadius(): number {
+    return this.radius;
+  }
   public point(angle: number, radius: number): Vector2 {
     let f = this.f_c(angle, radius);
     let fd = this.fd_c(angle, radius);
