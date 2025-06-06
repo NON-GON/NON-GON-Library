@@ -62,7 +62,7 @@ export class Cylinder extends Geometry3DBase implements IGeometry3D {
     const rotZ = THREE.MathUtils.degToRad(this.rotation.z);
     // Local forward vector (z-axis)
     const forward = new THREE.Vector3(0, 0, 1);
-    // Apply rotation using Euler and Matrix4
+    // Apply -90 degrees rotation around X axis first
     const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
     forward.applyEuler(euler);
     return new Vector3(forward.x, forward.y, forward.z).normalize();
@@ -75,10 +75,13 @@ export class Cylinder extends Geometry3DBase implements IGeometry3D {
       console.log("Creating Cylinder Geometry");
       const cylinderGeometry = new THREE.CylinderGeometry(
         this.xradius,
-        this.yradius,
+        this.yradius/4,
         this.height,
         this.segments
       );
+      // Apply -90 degrees rotation around X axis to align base as requested
+      const baseRotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
+      cylinderGeometry.applyMatrix4(baseRotation);
       this.geometry = cylinderGeometry;
 
       this.normalizeGeometry();

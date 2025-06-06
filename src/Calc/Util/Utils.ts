@@ -146,8 +146,12 @@ export class Vector3 {
   public magnitude(): number {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
-  public equal(vector: Vector3): boolean {
-    return this.x === vector.x && this.y === vector.y && this.z === vector.z;
+  public equal(vector: Vector3, epsilon: number = 1e-3): boolean {
+    return (
+      Math.abs(this.x - vector.x) < epsilon &&
+      Math.abs(this.y - vector.y) < epsilon &&
+      Math.abs(this.z - vector.z) < epsilon
+    );
   }
 
   public cross(vector: Vector3): Vector3 {
@@ -252,7 +256,7 @@ export function FindClosestPoints(
   const crossProduct = directionA.cross(directionB);
 
   // Check if lines are parallel
-  if (crossProduct.magnitude() < 0.001) {
+  if (crossProduct.magnitude() < 0.01) {
     return { closestPointLineA: A1, closestPointLineB: B1 };
   }
 
@@ -609,41 +613,40 @@ export function FindIntersectionPoints(
   circleNormal: Vector3,
   radius: number
 ): Vector3[] | null {
-  // Ensure the circle's normal is perpendicular to the plane
-  const dotProduct = planeNormal.dot(circleNormal);
-  if (dotProduct >= 0.00001 || dotProduct <= -0.00001) {
-    return null;
-  }
+  // Ensure normals are normalized
+  planeNormal = planeNormal.clone().normalize();
+  circleNormal = circleNormal.clone().normalize();
+
+  // Check perpendicularity
+  const dot = planeNormal.dot(circleNormal);
+  if (Math.abs(dot) > 1e-5) return null;
 
   // Project circle center onto the plane
-  const distanceToPlane = planeNormal.dot(circleCenter.subtract(planePoint));
-  const projectedCenter = circleCenter.subtract(
-    planeNormal.scale(distanceToPlane)
+  const distanceToPlane = planeNormal.dot(
+    circleCenter.clone().subtract(planePoint)
   );
+  const projectedCenter = circleCenter
+    .clone()
+    .subtract(planeNormal.clone().scale(distanceToPlane));
 
-  // Calculate distance from the projected center to the circle center
+  // Distance from projected center to circle center
   const centerDistance = projectedCenter.distanceTo(circleCenter);
 
   if (centerDistance > radius) {
-    // No intersection
     return [];
-  } else if (centerDistance === radius) {
-    // One intersection point
+  } else if (Math.abs(centerDistance - radius) < 1e-6) {
     return [projectedCenter];
   } else {
-    // Two intersection points
     const distanceFromProjectedCenter = Math.sqrt(
       radius * radius - centerDistance * centerDistance
     );
-    const direction = planeNormal.cross(circleNormal).normalize();
-
-    const intersectionPoint1 = projectedCenter.add(
-      direction.scale(distanceFromProjectedCenter)
-    );
-    const intersectionPoint2 = projectedCenter.subtract(
-      direction.scale(distanceFromProjectedCenter)
-    );
-
+    const direction = planeNormal.clone().cross(circleNormal).normalize();
+    const intersectionPoint1 = projectedCenter
+      .clone()
+      .add(direction.clone().scale(distanceFromProjectedCenter));
+    const intersectionPoint2 = projectedCenter
+      .clone()
+      .subtract(direction.clone().scale(distanceFromProjectedCenter));
     return [intersectionPoint1, intersectionPoint2];
   }
 }

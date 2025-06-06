@@ -253,7 +253,6 @@ export class ProximityQuery3D {
     return [point1, point2, point3, point4];
   }
 
-  
   /**
    * Checks if two cylinders intersect in 3D space using the Chittawadigi method.
    * @param cylinder1 - The first cylinder.
@@ -264,17 +263,6 @@ export class ProximityQuery3D {
     cylinder1: Cylinder,
     cylinder2: Cylinder
   ): boolean {
-    console.log("[Center] Cylinder1:", cylinder1.getCenter());
-    console.log("[Center] Cylinder2:", cylinder2.getCenter());
-    console.log("[Rotation] Cylinder1:", cylinder1.rotation);
-    console.log("[Rotation] Cylinder2:", cylinder2.rotation);
-    console.log("[Radius] Cylinder1:", cylinder1.xradius);
-    console.log("[Radius] Cylinder2:", cylinder2.xradius);
-    console.log("[Height] Cylinder1:", cylinder1.height);
-    console.log("[Height] Cylinder2:", cylinder2.height);
-
-
-
     const cylinder1Position = cylinder1.getCenter();
     const cylinder2Position = cylinder2.getCenter();
 
@@ -298,25 +286,7 @@ export class ProximityQuery3D {
       closestPointAxisCylinder1
     );
 
-    console.log(
-      "[Init] Cylinder1 Pos:",
-      cylinder1Position,
-      "Dir:",
-      zAxisCylinder1
-    );
-    console.log(
-      "[Init] Cylinder2 Pos:",
-      cylinder2Position,
-      "Dir:",
-      zAxisCylinder2
-    );
-    console.log(
-      "[Closest Points] C1:",
-      closestPointAxisCylinder1,
-      "C2:",
-      closestPointAxisCylinder2
-    );
-    console.log("[Common Normal] Vector:", commonNormal);
+
 
     let b: number, a: number, alpha: number, c: number;
 
@@ -343,6 +313,7 @@ export class ProximityQuery3D {
         Math.round(cylinder1.forward().angleTo(cylinder2.forward()) * 100) /
         100;
 
+      alpha = radToDeg(alpha);
       if (alpha > 90) alpha = 180 - alpha;
 
       c = endOfSecondRay.distanceTo(cylinder2Position);
@@ -404,6 +375,9 @@ export class ProximityQuery3D {
           zAxisCylinder2.scale(s2)
         );
 
+
+
+
         const points = this.getAllIntersectionPoints(
           cylinder1Position,
           cylinder2Position,
@@ -417,6 +391,7 @@ export class ProximityQuery3D {
           cylinder1,
           cylinder2
         );
+
 
         if (!points[0] || !points[1] || !points[2] || !points[3]) {
           console.log("[Failure] Intersection points could not be calculated.");
@@ -1141,8 +1116,6 @@ export class ProximityQuery3D {
       Ellipsoid1,
       Ellipsoid2
     );
-
-
 
     const a4 = characteristicPolynomialValues[0];
     const a3 = characteristicPolynomialValues[1];
