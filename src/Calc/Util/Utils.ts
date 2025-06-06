@@ -146,7 +146,7 @@ export class Vector3 {
   public magnitude(): number {
     return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
   }
-  public equal(vector: Vector3, epsilon: number = 1e-3): boolean {
+  public equal(vector: Vector3, epsilon: number = 1e-6): boolean {
     return (
       Math.abs(this.x - vector.x) < epsilon &&
       Math.abs(this.y - vector.y) < epsilon &&

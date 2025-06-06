@@ -1,18 +1,26 @@
 {
-  "name": "basicgeometry",
-  "private": true,
-  "version": "0.0.0",
+  "name": "non-gon",
+  "version": "0.1.0",
   "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "ts-jest": "^29.2.6",
+    "tsup": "^8.5.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
   },
