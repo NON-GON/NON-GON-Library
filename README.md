@@ -77,22 +77,20 @@
 
 ## 🔶 Available Queries
 
-### 2D Closest Distance:
+### 2D Shortest Distance:
 
 - **Point – Ellipse**
 - **Ellipse – Ellipse**
 - **Superellipse – Line Segment**
 - **Smooth Convex – Line Segment**
 - **Almost Convex/Concave – Circle**
-- **Ellipse – Ellipse** (Distance of Closest Approach)
 
-### 3D Closest Distance:
+### 3D Shortest Distance:
 
 - **Point – Ellipsoid**
 - **Ellipsoid – Ellipsoid**
 - **Superellipsoid – Plane**
 - **Strictly Convex – Plane**
-- **Ellipsoid – Ellipsoid** (Distance of Closest Approach)
 
 ### 2D Proximity Queries:
 
@@ -142,17 +140,7 @@
 
 ## License
 
-Distributed under the Unlicense License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTACT -->
-
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Distributed under the MIT License.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
