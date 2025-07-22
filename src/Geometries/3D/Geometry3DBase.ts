@@ -43,7 +43,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
         radRotationX,
         radRotationY,
         radRotationZ,
-        "XYZ"
+        "ZYX"
       );
       const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
         rotationEuler
@@ -88,7 +88,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
         : this.rotation.z
     );
     // Step 1: Rotate point by geometry rotation using Euler/Matrix4
-    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     const v = new THREE.Vector3(point.x, point.y, point.z);
     v.applyMatrix4(matrix);
@@ -124,7 +124,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
         : this.rotation.z
     );
     // Step 2: Rotate point by negative geometry rotation using Euler/Matrix4
-    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     translated.applyMatrix4(matrix);
     return new Vector3(translated.x, translated.y, translated.z);
@@ -148,7 +148,8 @@ export abstract class Geometry3DBase implements IGeometry3D {
         : this.rotation.z
     );
     // Only rotate, do not translate
-    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "ZYX");
+    
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     const v = new THREE.Vector3(direction.x, direction.y, direction.z);
     v.applyMatrix4(matrix);
@@ -173,7 +174,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
         : this.rotation.z
     );
     // Only rotate, do not translate
-    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     const v = new THREE.Vector3(direction.x, direction.y, direction.z);
     v.applyMatrix4(matrix);
@@ -198,7 +199,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
         : this.rotation.z
     );
     // Step 1: Rotate point by geometry rotation using Euler/Matrix4
-    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     const v = new THREE.Vector3(point.x, point.y, point.z);
     v.applyMatrix4(matrix);
@@ -234,7 +235,7 @@ export abstract class Geometry3DBase implements IGeometry3D {
         : this.rotation.z
     );
     // Step 2: Rotate point by negative geometry rotation using Euler/Matrix4
-    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     translated.applyMatrix4(matrix);
     return new Vector3(translated.x, translated.y, translated.z);

@@ -10,6 +10,7 @@ export enum GeometryType2D {
 }
 
 export enum GeometryType3D {
+  HemiEllipsoid = "HemiEllipsoid",
   Convex = "Convex",
   Cylinder = "Cylinder",
   Ellipsoid = "Ellipsoid",

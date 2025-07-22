@@ -487,6 +487,9 @@ export class GeometryManager {
   }
 
   public changeRotationY(id: string, y: number) {
+    console.log("POKA POKA");
+
+
     if (this._geometries[id] === undefined) {
       throw new Error(`Geometry with id ${id} not found.`);
     }

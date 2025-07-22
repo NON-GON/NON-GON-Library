@@ -46,7 +46,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
         radRotationX,
         radRotationY,
         radRotationZ,
-        "XYZ"
+        "ZYX"
       );
       const rotationMatrix = new THREE.Matrix4().makeRotationFromEuler(
         rotationEuler
@@ -91,7 +91,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     );
 
     // Step 1: Rotate point by ellipsoid rotation using Euler/Matrix4
-    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     const v = new THREE.Vector3(point.x, point.y, point.z);
     v.applyMatrix4(matrix);
@@ -130,7 +130,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     );
 
     // Step 2: Rotate point by negative ellipsoid rotation using Euler/Matrix4
-    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     translated.applyMatrix4(matrix);
     return new Vector3(translated.x, translated.y, translated.z);
@@ -155,7 +155,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     );
 
     // Only rotate, do not translate
-    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     const v = new THREE.Vector3(direction.x, direction.y, direction.z);
     v.applyMatrix4(matrix);
@@ -181,7 +181,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     );
 
     // Only rotate, do not translate
-    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     const v = new THREE.Vector3(direction.x, direction.y, direction.z);
     v.applyMatrix4(matrix);
@@ -207,7 +207,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     );
 
     // Step 1: Rotate point by ellipsoid rotation using Euler/Matrix4
-    const euler = new THREE.Euler(rotX, rotY, rotZ, "XYZ");
+    const euler = new THREE.Euler(rotX, rotY, rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     const v = new THREE.Vector3(point.x, point.y, point.z);
     v.applyMatrix4(matrix);
@@ -246,7 +246,7 @@ export abstract class Geometry2DBase implements IGeometry2D {
     );
 
     // Step 2: Rotate point by negative ellipsoid rotation using Euler/Matrix4
-    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "XYZ");
+    const euler = new THREE.Euler(-rotX, -rotY, -rotZ, "ZYX");
     const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
     translated.applyMatrix4(matrix);
     return new Vector3(translated.x, translated.y, translated.z);

@@ -5,6 +5,7 @@ import { Plane } from "../../Geometries/2D/Plane";
 import { Superellipsoid } from "../../Geometries/3D/Superellipsoid";
 import { ShortestDistance2D } from "./Shortest_Distance_2D";
 import { Convex } from "../../Geometries/3D/Convex";
+import { HemiEllipsoid } from "../../Geometries/3D/Hemiellipsoid";
 export class ShortestDistance3D {
   /**
    * Find the contact points between a point and an ellipsoid.
@@ -352,5 +353,118 @@ export class ShortestDistance3D {
     point_ = new Vector3(point_.x, 0, point_.z);
     point_ = plane.TransformPoint(point_);
     return [point_, point];
+  }
+
+  static HemiellipsoidPlane(
+    hemiellipsoid: HemiEllipsoid,
+    plane: Plane
+  ): [Vector3, Vector3] {
+    // Get hemiellipsoid parameters
+    const a = hemiellipsoid.xradius;
+    const b = hemiellipsoid.yradius;
+    const c = hemiellipsoid.zradius;
+
+    // Get plane normal in hemiellipsoid's local space
+    let planeNormal = plane.TransformDirection(new Vector3(0, 1, 0));
+    planeNormal = hemiellipsoid.InverseTransformDirection(planeNormal);
+    planeNormal = planeNormal.normalize();
+
+    // Get a reference point on the plane in hemiellipsoid's local space
+    const planeCenter = plane.getCenter();
+    let planePointLocal = hemiellipsoid.WorldSpaceToLocalSpace(planeCenter);
+
+    let bestDistance = Number.POSITIVE_INFINITY;
+    let bestContactPoint: Vector3 = new Vector3(0, 0, 0);
+    let bestPlanePoint: Vector3 = new Vector3(0, 0, 0);
+
+    const tolerance = 1e-6;
+
+    // Sample points on the hemiellipsoid surface (only upper hemisphere, phi from 0 to π/2)
+    const phiSteps = 20;
+    const thetaSteps = 40;
+
+    for (let i = 0; i < phiSteps; i++) {
+      // phi ranges from 0.01 to π/2 - 0.01 to avoid singularities
+      const phi = (Math.PI / 2 - 0.02) * (i / (phiSteps - 1)) + 0.01;
+
+      for (let j = 0; j < thetaSteps; j++) {
+        const theta = 2 * Math.PI * (j / thetaSteps);
+
+        // Standard ellipsoid parameterization for hemiellipsoid (z >= 0)
+        const x = a * Math.sin(phi) * Math.cos(theta);
+        const y = b * Math.sin(phi) * Math.sin(theta);
+        const z = c * Math.cos(phi);
+
+        const surfacePoint = new Vector3(x, y, z);
+
+        // Calculate distance to plane
+        const vecToPlane = planePointLocal.clone().subtract(surfacePoint);
+        const distance = vecToPlane.dot(planeNormal);
+
+        // Calculate surface normal at this point (gradient of ellipsoid equation)
+        const surfaceNormal = new Vector3(
+          (2 * x) / (a * a),
+          (2 * y) / (b * b),
+          (2 * z) / (c * c)
+        ).normalize();
+
+        // Check if this is close to the optimal condition (normal anti-parallel to plane normal)
+        const normalAlignment = surfaceNormal.dot(planeNormal) + 1;
+
+        // If normals are well-aligned and this gives a better distance
+        if (
+          Math.abs(normalAlignment) < tolerance &&
+          Math.abs(distance) < Math.abs(bestDistance)
+        ) {
+          bestDistance = distance;
+          bestContactPoint = surfacePoint.clone();
+          bestPlanePoint = surfacePoint
+            .clone()
+            .add(planeNormal.clone().scale(distance));
+        }
+      }
+    }
+
+    // If no good solution found with normal alignment, just find the closest point
+    if (bestContactPoint.equal(new Vector3(0, 0, 0))) {
+      for (let i = 0; i < phiSteps; i++) {
+        const phi = (Math.PI / 2 - 0.02) * (i / (phiSteps - 1)) + 0.01;
+
+        for (let j = 0; j < thetaSteps; j++) {
+          const theta = 2 * Math.PI * (j / thetaSteps);
+
+          const x = a * Math.sin(phi) * Math.cos(theta);
+          const y = b * Math.sin(phi) * Math.sin(theta);
+          const z = c * Math.cos(phi);
+
+          const surfacePoint = new Vector3(x, y, z);
+          const vecToPlane = planePointLocal.clone().subtract(surfacePoint);
+          const distance = vecToPlane.dot(planeNormal);
+
+          if (Math.abs(distance) < Math.abs(bestDistance)) {
+            bestDistance = distance;
+            bestContactPoint = surfacePoint.clone();
+            bestPlanePoint = surfacePoint
+              .clone()
+              .add(planeNormal.clone().scale(distance));
+          }
+        }
+      }
+    }
+
+    // Transform contact point back to world space
+    const worldContactPoint = hemiellipsoid.LocalSpaceToWorldSpace(
+      bestContactPoint
+    );
+
+    // Transform plane point back to world space and project onto plane
+    const worldPlanePointTemp = hemiellipsoid.LocalSpaceToWorldSpace(
+      bestPlanePoint
+    );
+    const planePointLocal2 = plane.WorldSpaceToLocalSpace(worldPlanePointTemp);
+    planePointLocal2.y = 0; // Project onto plane (y=0 in plane's local space)
+    const finalPlanePoint = plane.LocalSpaceToWorldSpace(planePointLocal2);
+
+    return [finalPlanePoint, worldContactPoint];
   }
 }
