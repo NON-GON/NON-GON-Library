@@ -18,6 +18,7 @@ import { Circle } from "./2D/Circle";
 import { Convexcircle } from "./2D/Convexcircle";
 import { ConvexLine } from "./2D/Convexline";
 import { Convex } from "./3D/Convex";
+import { HemiEllipsoid } from "./3D/Hemiellipsoid";
 import { Geometry3DBase } from "./3D/Geometry3DBase";
 import { Geometry2DBase } from "./2D/Geometry2DBase";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
@@ -100,8 +101,10 @@ export class GeometryManager {
           const meshLineMaterial = new MeshLineMaterial({
             color: color,
             lineWidth: width, // width in world units
-            resolution:  new THREE.Vector2(
-              window.innerWidth, window.innerHeight),
+            resolution: new THREE.Vector2(
+              window.innerWidth,
+              window.innerHeight
+            ),
           });
 
           const line = new THREE.Mesh(meshLineGeometry, meshLineMaterial);
@@ -325,6 +328,15 @@ export class GeometryManager {
         );
       case GeometryType3D.Convex:
         return new Convex(params.center, params.rotation, params.segments);
+      case GeometryType3D.HemiEllipsoid:
+        return new HemiEllipsoid(
+          params.xradius,
+          params.yradius,
+          params.zradius,
+          params.center,
+          params.rotation,
+          params.segments
+        );
       default:
         return null;
     }
@@ -487,9 +499,6 @@ export class GeometryManager {
   }
 
   public changeRotationY(id: string, y: number) {
-    console.log("POKA POKA");
-
-
     if (this._geometries[id] === undefined) {
       throw new Error(`Geometry with id ${id} not found.`);
     }

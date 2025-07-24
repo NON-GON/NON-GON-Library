@@ -68,6 +68,7 @@ export class Convexcircle extends Geometry2DBase implements IGeometry2D {
   public getRadius(): number {
     return this.radius;
   }
+  
   public point(angle: number, radius: number): Vector2 {
     let f = this.f_c(angle, radius);
     let fd = this.fd_c(angle, radius);

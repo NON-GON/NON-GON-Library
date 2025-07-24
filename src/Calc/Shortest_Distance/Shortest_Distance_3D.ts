@@ -355,6 +355,12 @@ export class ShortestDistance3D {
     return [point_, point];
   }
 
+  /**
+   * Find the contact points between a hemiellipsoid(half of a ellipsoid) and a plane.
+   * @param hemiellipsoid
+   * @param plane
+   * @returns
+   */
   static HemiellipsoidPlane(
     hemiellipsoid: HemiEllipsoid,
     plane: Plane

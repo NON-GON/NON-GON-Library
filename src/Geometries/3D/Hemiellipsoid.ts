@@ -1,126 +1,141 @@
-import * as THREE from "three";
 import { Vector3 } from "../../Calc/Util/Utils";
-import { IGeometry3D } from "./IGeometry3D";
-import { GeometryType3D } from "../GeoTypes";
+import { IGeometry2D } from "../2D/IGeometry2D";
+import {
+  GeometryType3D,
+  isGeometryType2D,
+  isGeometryType3D,
+} from "../GeoTypes";
 import { Geometry3DBase } from "./Geometry3DBase";
+import { IGeometry3D } from "./IGeometry3D";
+import * as THREE from "three";
+import { ShortestDistance3D } from "../../Calc/Shortest_Distance/Shortest_Distance_3D";
+import { Plane } from "../2D/Plane";
 
-export class HemiEllipsoid extends Geometry3DBase implements IGeometry3D {
-  readonly xradius: number;
-  readonly yradius: number;
-  readonly zradius: number;
-  public type: GeometryType3D = GeometryType3D.HemiEllipsoid;
+/**
+ * Represents a hemiellipsoid (half of an ellipsoid) geometry.
+ * A hemiellipsoid is the upper half of an ellipsoid (z >= 0).
+ */
+export class HemiEllipsoid extends Geometry3DBase {
+  type: GeometryType3D = GeometryType3D.HemiEllipsoid;
 
+  /**
+   * Semi-axis length along the x-axis
+   */
+  xradius: number;
+
+  /**
+   * Semi-axis length along the y-axis
+   */
+  yradius: number;
+
+  /**
+   * Semi-axis length along the z-axis
+   */
+  zradius: number;
+
+  /**
+   * Creates a new HemiEllipsoid instance.
+   * @param xradius Semi-axis length along the x-axis
+   * @param yradius Semi-axis length along the y-axis
+   * @param zradius Semi-axis length along the z-axis
+   * @param center Center point of the hemiellipsoid
+   * @param rotation Rotation of the hemiellipsoid in degrees
+   * @param segments Number of segments for mesh generation
+   */
   constructor(
-    center: Vector3,
-    a: number,
-    b: number,
-    c: number,
-    rotation: Vector3,
-    segments: number
+    xradius: number,
+    yradius: number,
+    zradius: number,
+    center: Vector3 = new Vector3(0, 0, 0),
+    rotation: Vector3 = new Vector3(0, 0, 0),
+    segments: number = 32
   ) {
     super();
+    this.xradius = xradius;
+    this.yradius = yradius;
+    this.zradius = zradius;
     this.center = center;
-    this.xradius = a;
-    this.yradius = b;
-    this.zradius = c;
     this.rotation = rotation;
     this.segments = segments;
   }
 
-  private generatingPotential(phi: number, theta: number): number {
-    return Math.sqrt(
-      this.xradius ** 2 * Math.sin(phi) ** 2 * Math.cos(theta) ** 2 +
-        this.yradius ** 2 * Math.sin(phi) ** 2 * Math.sin(theta) ** 2 +
-        this.zradius ** 2 * Math.cos(phi) ** 2
-    );
-  }
-
-  private normalParameterization(phi: number, theta: number): Vector3 {
-    const g = this.generatingPotential(phi, theta);
-
-    const sinPhi = Math.sin(phi);
-    const cosPhi = Math.cos(phi);
-    const sinTheta = Math.sin(theta);
-    const cosTheta = Math.cos(theta);
-
-    const dg_dphi =
-      (this.xradius ** 2 * sinPhi * cosPhi * cosTheta ** 2 +
-        this.yradius ** 2 * sinPhi * cosPhi * sinTheta ** 2 -
-        this.zradius ** 2 * sinPhi * cosPhi) /
-      g;
-
-    const dg_dtheta =
-      (-(this.xradius ** 2 * sinPhi ** 2 * sinTheta * cosTheta) +
-        this.yradius ** 2 * sinPhi ** 2 * sinTheta * cosTheta) /
-      g;
-
-    const e_phi = new THREE.Vector3(
-      cosPhi * cosTheta,
-      cosPhi * sinTheta,
-      -sinPhi
-    );
-    const e_theta = new THREE.Vector3(-sinTheta, cosTheta, 0);
-    const e_n = new THREE.Vector3(sinPhi * cosTheta, sinPhi * sinTheta, cosPhi);
-
-    let r_BP: Vector3;
-
-    if (phi > 0 && phi < Math.PI) {
-      r_BP = new THREE.Vector3()
-        .addScaledVector(e_phi, dg_dphi)
-        .addScaledVector(e_theta, dg_dtheta / sinPhi)
-        .addScaledVector(e_n, g);
-    } else {
-      r_BP = new THREE.Vector3(0, 0, Math.sign(cosPhi) * this.zradius);
-    }
-
-    // Apply rotation if needed (currently not rotated)
-    return r_BP.add(this.center);
-  }
-
-  public getGeometry(): any {
-    if (this.geometry !== null && this.geometry !== undefined) {
+  /**
+   * Generates the THREE.js geometry for the hemiellipsoid.
+   * @returns THREE.BufferGeometry representing the hemiellipsoid
+   */
+  getGeometry(): any {
+    if (this.geometry !== null) {
       return this.geometry;
     }
 
-    console.log("Creating Hemiellipsoid Geometry");
-
-    const geometry = new THREE.BufferGeometry();
-    const vertices: number[] = [];
-    const indices: number[] = [];
-
-    const nPhi = this.segments;
-    const nTheta = this.segments;
-
-    for (let i = 0; i <= nPhi; i++) {
-      const phi = (i / nPhi) * (Math.PI / 2); // upper hemisphere
-      for (let j = 0; j <= nTheta; j++) {
-        const theta = (j / nTheta) * 2 * Math.PI;
-        const point = this.normalParameterization(phi, theta);
-        vertices.push(point.x, point.y, point.z);
-      }
-    }
-
-    for (let i = 0; i < nPhi; i++) {
-      for (let j = 0; j < nTheta; j++) {
-        const a = i * (nTheta + 1) + j;
-        const b = a + nTheta + 1;
-        const c = b + 1;
-        const d = a + 1;
-        indices.push(a, b, d);
-        indices.push(b, c, d);
-      }
-    }
-
-    geometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(vertices, 3)
+    const geometry = new THREE.SphereGeometry(
+      1,
+      this.segments,
+      this.segments,
+      0,
+      Math.PI * 2,
+      0,
+      Math.PI / 2
     );
-    geometry.setIndex(indices);
+
+    // Scale to create ellipsoid shape
+    const positions = geometry.attributes.position.array as Float32Array;
+    for (let i = 0; i < positions.length; i += 3) {
+      positions[i] *= this.xradius; // x
+      positions[i + 1] *= this.yradius; // y
+      positions[i + 2] *= this.zradius; // z
+    }
+
+    geometry.attributes.position.needsUpdate = true;
     geometry.computeVertexNormals();
 
     this.geometry = geometry;
     this.normalizeGeometry();
 
     return this.geometry;
+  }
+
+  /**
+   * Calculates a point on the hemiellipsoid surface using parametric equations.
+   * @param phi Angle from the positive z-axis (0 to π/2 for hemiellipsoid)
+   * @param theta Angle in the xy-plane from the positive x-axis (0 to 2π)
+   * @returns Point on the hemiellipsoid surface in local coordinates
+   */
+  point(phi: number, theta: number): Vector3 {
+    // Clamp phi to hemiellipsoid range
+    phi = Math.max(0, Math.min(Math.PI / 2, phi));
+
+    const x = this.xradius * Math.sin(phi) * Math.cos(theta);
+    const y = this.yradius * Math.sin(phi) * Math.sin(theta);
+    const z = this.zradius * Math.cos(phi);
+
+    return new Vector3(x, y, z);
+  }
+
+  /**
+   * Calculates the shortest distance between this hemiellipsoid and another geometry.
+   * @param geometry The other geometry
+   * @returns Array containing the closest points [point on this, point on other]
+   */
+  ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
+    let res = [Vector3.Zero(), Vector3.Zero()];
+    if (isGeometryType2D(geometry.type)) {
+      res = ShortestDistance3D.HemiellipsoidPlane(this, geometry as Plane);
+    } else if (isGeometryType3D(geometry.type)) {
+      throw new Error(
+        "Shortest distance not implemented for this geometry type."
+      );
+    }
+    return [res[0], res[1]];
+  }
+
+  /**
+   * Performs a proximity query between this hemiellipsoid and another geometry.
+   * @param geometry The other geometry
+   * @param method Optional method parameter
+   * @returns Boolean indicating if geometries are in proximity
+   */
+  ProximityQuery(geometry: IGeometry3D, method?: string): boolean {
+    throw new Error("ProximityQuery method not implemented for HemiEllipsoid.");
   }
 }

@@ -27,6 +27,7 @@ export * from "./Geometries/3D/Hyperboloid";
 export * from "./Geometries/3D/IGeometry3D";
 export * from "./Geometries/3D/Sphere";
 export * from "./Geometries/3D/Superellipsoid";
+export * from "./Geometries/3D/Hemiellipsoid";
 
 // Re-export GeometryManager and GeoTypes
 export * from "./Geometries/GeometryManager";
