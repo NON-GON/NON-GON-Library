@@ -146,21 +146,7 @@ export class ShortestDistance3D {
     let pop = new Vector3(x, y, z);
     pop = ellipsoid.LocalSpaceToWorldSpace(pop);
     sol[1] = pop;
-    console.log(
-      "Shortest distance point to ellipsoid: " +
-        sol[0].x +
-        " " +
-        sol[0].y +
-        " " +
-        sol[0].z +
-        " " +
-        " -> " +
-        sol[1].x +
-        " " +
-        sol[1].y +
-        " " +
-        sol[1].z
-    );
+
     return sol;
   }
 
@@ -382,10 +368,16 @@ export class ShortestDistance3D {
     let bestDistance = Number.POSITIVE_INFINITY;
     let bestContactPoint: Vector3 = new Vector3(0, 0, 0);
     let bestPlanePoint: Vector3 = new Vector3(0, 0, 0);
+    // Debug log collection
+    const debugCandidates: any[] = [];
 
     const tolerance = 1e-6;
 
     // Sample points on the hemiellipsoid surface (only upper hemisphere, phi from 0 to π/2)
+    // IMPORTANT: Hemisphere is defined with y >= 0 (Y is vertical). Parametrization:
+    // x = a * sin(phi) * cos(theta)
+    // z = c * sin(phi) * sin(theta)
+    // y = b * cos(phi)
     const phiSteps = 20;
     const thetaSteps = 40;
 
@@ -396,12 +388,10 @@ export class ShortestDistance3D {
       for (let j = 0; j < thetaSteps; j++) {
         const theta = 2 * Math.PI * (j / thetaSteps);
 
-        // Standard ellipsoid parameterization for hemiellipsoid (z >= 0)
         const x = a * Math.sin(phi) * Math.cos(theta);
-        const y = b * Math.sin(phi) * Math.sin(theta);
-        const z = c * Math.cos(phi);
-
-        const surfacePoint = new Vector3(x, y, z);
+        const z = c * Math.sin(phi) * Math.sin(theta);
+        const y = b * Math.cos(phi);
+        const surfacePoint = new Vector3(x, y, z); // y >= 0 by construction
 
         // Calculate distance to plane
         const vecToPlane = planePointLocal.clone().subtract(surfacePoint);
@@ -409,24 +399,35 @@ export class ShortestDistance3D {
 
         // Calculate surface normal at this point (gradient of ellipsoid equation)
         const surfaceNormal = new Vector3(
-          (2 * x) / (a * a),
-          (2 * y) / (b * b),
-          (2 * z) / (c * c)
+          (2 * surfacePoint.x) / (a * a),
+          (2 * surfacePoint.y) / (b * b),
+          (2 * surfacePoint.z) / (c * c)
         ).normalize();
 
         // Check if this is close to the optimal condition (normal anti-parallel to plane normal)
         const normalAlignment = surfaceNormal.dot(planeNormal) + 1;
 
         // If normals are well-aligned and this gives a better distance
-        if (
-          Math.abs(normalAlignment) < tolerance &&
-          Math.abs(distance) < Math.abs(bestDistance)
-        ) {
-          bestDistance = distance;
-          bestContactPoint = surfacePoint.clone();
-          bestPlanePoint = surfacePoint
-            .clone()
-            .add(planeNormal.clone().scale(distance));
+        // Only accept surface points on the hemi (z >= 0)
+        if (surfacePoint.y >= -1e-8) {
+          debugCandidates.push({
+            type: "surface",
+            phi: phi,
+            theta: theta,
+            point: [surfacePoint.x, surfacePoint.y, surfacePoint.z],
+            distance: distance,
+            normalAlignment: normalAlignment,
+          });
+          if (
+            Math.abs(normalAlignment) < tolerance &&
+            Math.abs(distance) < Math.abs(bestDistance)
+          ) {
+            bestDistance = distance;
+            bestContactPoint = surfacePoint.clone();
+            bestPlanePoint = surfacePoint
+              .clone()
+              .add(planeNormal.clone().scale(distance));
+          }
         }
       }
     }
@@ -440,21 +441,78 @@ export class ShortestDistance3D {
           const theta = 2 * Math.PI * (j / thetaSteps);
 
           const x = a * Math.sin(phi) * Math.cos(theta);
-          const y = b * Math.sin(phi) * Math.sin(theta);
-          const z = c * Math.cos(phi);
-
+          const z = c * Math.sin(phi) * Math.sin(theta);
+          const y = b * Math.cos(phi);
           const surfacePoint = new Vector3(x, y, z);
           const vecToPlane = planePointLocal.clone().subtract(surfacePoint);
           const distance = vecToPlane.dot(planeNormal);
 
-          if (Math.abs(distance) < Math.abs(bestDistance)) {
-            bestDistance = distance;
-            bestContactPoint = surfacePoint.clone();
-            bestPlanePoint = surfacePoint
-              .clone()
-              .add(planeNormal.clone().scale(distance));
+          if (surfacePoint.y >= -1e-8) {
+            debugCandidates.push({
+              type: "surface_fallback",
+              phi: phi,
+              theta: theta,
+              point: [surfacePoint.x, surfacePoint.y, surfacePoint.z],
+              distance: distance,
+            });
+            if (Math.abs(distance) < Math.abs(bestDistance)) {
+              bestDistance = distance;
+              bestContactPoint = surfacePoint.clone();
+              bestPlanePoint = surfacePoint
+                .clone()
+                .add(planeNormal.clone().scale(distance));
+            }
           }
         }
+      }
+    }
+
+    // Also consider the flat base (ellipse at y=0) as a candidate by sampling the ellipse perimeter and center
+    // This avoids incorrect projection when the plane is tilted.
+    const planeCenterLocal = planePointLocal.clone();
+    // Center candidate
+    const centerBase = new Vector3(0, 0, 0);
+    const distCenter = planeCenterLocal
+      .clone()
+      .subtract(centerBase)
+      .dot(planeNormal);
+    if (Math.abs(distCenter) < Math.abs(bestDistance)) {
+      debugCandidates.push({
+        type: "base_center",
+        point: [0, 0, 0],
+        distance: distCenter,
+      });
+      bestDistance = distCenter;
+      bestContactPoint = centerBase.clone();
+      bestPlanePoint = centerBase
+        .clone()
+        .add(planeNormal.clone().scale(distCenter));
+    } else {
+      debugCandidates.push({
+        type: "base_center",
+        point: [0, 0, 0],
+        distance: distCenter,
+      });
+    }
+
+    // Perimeter sampling using thetaSteps (base ellipse in x-z plane: x^2/a^2 + z^2/c^2 <=1)
+    for (let j = 0; j < thetaSteps; j++) {
+      const theta = (2 * Math.PI * j) / thetaSteps;
+      const px = a * Math.cos(theta);
+      const pz = c * Math.sin(theta);
+      const py = 0;
+      const baseP = new Vector3(px, py, pz);
+      const distP = planeCenterLocal.clone().subtract(baseP).dot(planeNormal);
+      debugCandidates.push({
+        type: "base_perimeter",
+        theta: theta,
+        point: [px, py, pz],
+        distance: distP,
+      });
+      if (Math.abs(distP) < Math.abs(bestDistance)) {
+        bestDistance = distP;
+        bestContactPoint = baseP.clone();
+        bestPlanePoint = baseP.clone().add(planeNormal.clone().scale(distP));
       }
     }
 

@@ -43,6 +43,7 @@ export class Plane extends Geometry2DBase implements IGeometry2D {
   ShortestDistance(geometry: IGeometry3D | IGeometry2D): [Vector3, Vector3] {
     let res = [Vector3.Zero(), Vector3.Zero()];
     if (isGeometryType3D(geometry.type)) {
+      console.log("ShortestDistance called for Plane and HemiEllipsoid");
       res = this.ShortestDistance3D(geometry as IGeometry3D);
     } else if (isGeometryType2D(geometry.type)) {
       throw new Error("Shortest distance not implemented for 2D geometries.");

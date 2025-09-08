@@ -338,6 +338,7 @@ export class GeometryManager {
           params.segments
         );
       default:
+        console.error(`Unknown 3D geometry type: ${type}`);
         return null;
     }
   }
@@ -389,6 +390,7 @@ export class GeometryManager {
           params.segments
         );
       case GeometryType2D.ConvexLine:
+        
         return new ConvexLine(params.center, params.rotation, params.segments);
       default:
         return null;
@@ -412,7 +414,9 @@ export class GeometryManager {
         `One or both geometries with ids ${id1} and ${id2} not found.`
       );
     }
+
     let distance = geometry1.ShortestDistance(geometry2);
+
     console.log(
       `Shortest distance between ${id1} and ${id2}: ${distance[0].distanceTo(
         distance[1]

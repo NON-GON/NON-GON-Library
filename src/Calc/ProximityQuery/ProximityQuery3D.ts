@@ -496,6 +496,7 @@ export class ProximityQuery3D {
     const sinAlpha1 = Math.sin(ellipsoid1.getRotation().x * (Math.PI / 180));
     const sinBeta1 = Math.sin(ellipsoid1.getRotation().y * (Math.PI / 180));
     const sinPhi1 = Math.sin(ellipsoid1.getRotation().z * (Math.PI / 180));
+
     const cosAlpha1 = Math.cos(ellipsoid1.getRotation().x * (Math.PI / 180));
     const cosBeta1 = Math.cos(ellipsoid1.getRotation().y * (Math.PI / 180));
     const cosPhi1 = Math.cos(ellipsoid1.getRotation().z * (Math.PI / 180));
@@ -503,6 +504,7 @@ export class ProximityQuery3D {
     const sinAlpha2 = Math.sin(ellipsoid2.getRotation().x * (Math.PI / 180));
     const sinBeta2 = Math.sin(ellipsoid2.getRotation().y * (Math.PI / 180));
     const sinPhi2 = Math.sin(ellipsoid2.getRotation().z * (Math.PI / 180));
+    
     const cosAlpha2 = Math.cos(ellipsoid2.getRotation().x * (Math.PI / 180));
     const cosBeta2 = Math.cos(ellipsoid2.getRotation().y * (Math.PI / 180));
     const cosPhi2 = Math.cos(ellipsoid2.getRotation().z * (Math.PI / 180));
@@ -1124,6 +1126,7 @@ export class ProximityQuery3D {
     const a0 = characteristicPolynomialValues[4];
     return !DescartesLawOfSignsFourthDegreePolynomial(a4, a3, a2, a1, a0);
   }
+
   /**
    * Calculates the coefficients of the characteristic polynomial of an ellipsoid and an elliptic paraboloid.
    * @param ellipsoid - The ellipsoid.
