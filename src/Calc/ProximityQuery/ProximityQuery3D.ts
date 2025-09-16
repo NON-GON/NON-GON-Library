@@ -1431,8 +1431,10 @@ export class ProximityQuery3D {
       4 * a1 * a1 * a1 * a3 * a3 * a3 -
       4 * a1 * a1 * a2 * a2 * a2 * a4 +
       a1 * a1 * a2 * a2 * a3 * a3;
-
-    if (discriminant < 0) {
+    
+    // TODO: Adjust epsilon based on the scale of the objects
+    let eps = 1e-6;
+    if (discriminant < eps) {
       return true;
     }
     return false;
