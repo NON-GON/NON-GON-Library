@@ -390,7 +390,6 @@ export class GeometryManager {
           params.segments
         );
       case GeometryType2D.ConvexLine:
-        
         return new ConvexLine(params.center, params.rotation, params.segments);
       default:
         return null;

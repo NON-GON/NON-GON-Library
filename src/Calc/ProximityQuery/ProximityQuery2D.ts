@@ -30,7 +30,7 @@ export class ProximityQuery2D {
   ): boolean {
     const x1 = positionAABB1.x;
     const y1 = positionAABB1.y;
-    
+
     const x2 = positionAABB2.x;
     const y2 = positionAABB2.y;
 
@@ -76,6 +76,93 @@ export class ProximityQuery2D {
       const shape1 = SAT(normals2[i], corners1, shape1Min, shape1Max);
       const shape2 = SAT(normals2[i], corners2, shape2Min, shape2Max);
       if (overlaps(shape1[0], shape1[1], shape2[0], shape2[1])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  /**
+   * Checks if two oriented bounding boxes (OBBs) intersect using the Separating Axis Theorem (SAT) but using rational trigonometry.
+   *
+   * @param normals1 - Normals (axes) of the first OBB.
+   * @param normals2 - Normals (axes) of the second OBB.
+   * @param corners1 - Corner points of the first OBB.
+   * @param corners2 - Corner points of the second OBB.
+   * @returns True if the OBBs intersect, false otherwise.
+   */
+  public static rational_OBB_OBB2D(
+    center1: Vector3,
+    halfW1: number,
+    halfH1: number,
+    dir1: { p: number; q: number },
+    center2: Vector3,
+    halfW2: number,
+    halfH2: number,
+    dir2: { p: number; q: number }
+  ): boolean {
+    // Define local axes purely from direction vectors
+    const u1: Vector3 = new Vector3(dir1.p, dir1.q, 0);
+    const v1: Vector3 = new Vector3(-dir1.q, dir1.p, 0);
+
+    const u2: Vector3 = new Vector3(dir2.p, dir2.q, 0);
+    const v2: Vector3 = new Vector3(-dir2.q, dir2.p, 0);
+
+    // Build corners using center ± u*halfW ± v*halfH
+    const corners1: Vector3[] = [
+      new Vector3(
+        center1.x + u1.x * halfW1 + v1.x * halfH1,
+        center1.y + u1.y * halfW1 + v1.y * halfH1,
+        0
+      ),
+      new Vector3(
+        center1.x - u1.x * halfW1 + v1.x * halfH1,
+        center1.y - u1.y * halfW1 + v1.y * halfH1,
+        0
+      ),
+      new Vector3(
+        center1.x - u1.x * halfW1 - v1.x * halfH1,
+        center1.y - u1.y * halfW1 - v1.y * halfH1,
+        0
+      ),
+      new Vector3(
+        center1.x + u1.x * halfW1 - v1.x * halfH1,
+        center1.y + u1.y * halfW1 - v1.y * halfH1,
+        0
+      ),
+    ];
+
+    const corners2: Vector3[] = [
+      new Vector3(
+        center2.x + u2.x * halfW2 + v2.x * halfH2,
+        center2.y + u2.y * halfW2 + v2.y * halfH2,
+        0
+      ),
+      new Vector3(
+        center2.x - u2.x * halfW2 + v2.x * halfH2,
+        center2.y - u2.y * halfW2 + v2.y * halfH2,
+        0
+      ),
+      new Vector3(
+        center2.x - u2.x * halfW2 - v2.x * halfH2,
+        center2.y - u2.y * halfW2 - v2.y * halfH2,
+        0
+      ),
+      new Vector3(
+        center2.x + u2.x * halfW2 - v2.x * halfH2,
+        center2.y + u2.y * halfW2 - v2.y * halfH2,
+        0
+      ),
+    ];
+
+    // Axes to test (two axes from each OBB)
+    const axes: Vector3[] = [u1, v1, u2, v2];
+
+    for (let i = 0; i < axes.length; i++) {
+      const axis = axes[i];
+      const proj1 = SAT(axis, corners1, 0, 0);
+      const proj2 = SAT(axis, corners2, 0, 0);
+      if (!overlaps(proj1[0], proj1[1], proj2[0], proj2[1])) {
         return false;
       }
     }

@@ -153,6 +153,8 @@ export class ShortestDistance2D {
 
     return [p1.toVector2(), p2];
   }
+
+  
   /**
    * Find the contact points between a line and an ellipse.
    * @param line
