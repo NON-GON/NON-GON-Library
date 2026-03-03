@@ -15,7 +15,7 @@
     <a href="*"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://non-gon.github.io/NON-GON-WEBSITE/">View Demo</a>
+    <a href="https://non-gon.github.io/NON-GON-WEBSITE/docs/index.html">View Demo</a>
   </p>
 </div>
 
