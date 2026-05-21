@@ -12,10 +12,10 @@
   <p align="center">
     A Non-Polygonal Collision Detection Library for Real-Time Queries Between Smooth Convex Shapes
     <br />
-    <a href="*"><strong>Explore the docs »</strong></a>
+    <a href="https://non-gon.github.io/NON-GON-WEBSITE/docs/index.html"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://non-gon.github.io/NON-GON-WEBSITE/docs/index.html">View Demo</a>
+    <a href="https://non-gon.github.io/NON-GON-WEBSITE/">View Demo</a>
   </p>
 </div>
 
